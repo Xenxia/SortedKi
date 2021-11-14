@@ -1,0 +1,15 @@
+ERROR:
+  create_config_file: 'Erreur durant la création du fichier de configuration de trie.'
+  permission_file: 'Le processus ne peut pas accéder au fichier car le(s) fichier(s) "{file}" est utilisé par un autre processus.'
+
+OK:
+  sorted: 'le fichier "{file}" à été déplacé dans {path}.'
+  sorted_double: 'le fichier "{file}" à été renomé "{new_name}" et déplacé dans {path}.'
+
+UI:
+  button_sort: 'Trié'
+  button_clear: 'Effacer log'
+  button_edit: 'Editer configuration'
+  button_export: 'Exporter configuration'
+  button_import: 'Importer configuration'
+  button_return: 'Retour'
