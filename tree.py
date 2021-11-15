@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
+from collections import OrderedDict
+from ctypes import windll
 import os, pathlib, sys, ntpath, shutil
 from tkinter import *
 from tkinter import filedialog
+from typing import Any, Tuple, TypedDict
 # from tkinter import ttk
 from ImportPyinstaller import Pyimport
 from PIL import Image, ImageTk
@@ -24,15 +27,13 @@ else:
 
 exe_file = ntpath.basename(exe_file)
 
-# sys.exit()
-
 langage = lang_app(path=exe_path)
 
 if not os.path.exists('config.yml'):
     write_default_config(langage.lang)
-    dico = read_yaml('config.yml')
+    dico = read_yaml('./config.yml')
 else:
-    dico = read_yaml('config.yml')
+    dico = read_yaml('./config.yml')
 
 def doublon(file: str, path: str) -> str:
     fileName, fileExt = os.path.splitext(file)
@@ -79,6 +80,13 @@ def clearTerminal(terminal: Text) -> None:
 def export():
     pathfile = filedialog.asksaveasfilename(defaultextension=".configTree" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree")])
     shutil.copy(src="./config.yml", dst=pathfile)
+
+def imports() -> Tuple[OrderedDict, TypedDict]:
+    pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree")])
+    os.remove("./config.yml")
+    shutil.copy(src=pathfile, dst="./config.yml")
+    dico = read_yaml('./config.yml')
+    windll.kernel32.SetFileAttributesW('./config.yml', 8198)
 
 def sort():
     for key in dico[1]['config_sort']:
@@ -208,7 +216,7 @@ button_export = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#
 button_export.conf_pos(x=225, y=48, width=150, height=24)
 button_export.hide()
 
-button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'])
+button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=lambda: dico=imports())
 button_import.conf_pos(x=225, y=72, width=150, height=24)
 button_import.hide()
 

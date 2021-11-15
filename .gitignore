@@ -1,6 +1,5 @@
+__pycache__/
 .vscode/
 build/
 dist/
 *.spec
-__pycache__/
-func/__pycache__/

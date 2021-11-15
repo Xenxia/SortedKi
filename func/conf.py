@@ -1,4 +1,4 @@
-from ctypes import *
+from ctypes import windll
 from typing import Any, Literal, Tuple, TypedDict
 from collections import OrderedDict
 from ruamel.yaml import YAML
@@ -11,11 +11,18 @@ def write_yaml(name_file: str, content: Any) -> None:
     yml.indent(mapping=2, sequence=2, offset=2)
     with open(name_file, 'w') as file:
         yml.dump(content, file)
+    
+    file.close()
 
-def read_yaml(file: str) -> Tuple[OrderedDict, TypedDict]:
+def read_yaml(name_file: str) -> Tuple[OrderedDict, TypedDict]:
 
-    OrderedDict_dict: OrderedDict = YAML().load(open(file, 'r', encoding='utf8'))
-    classique_dict: TypedDict = YAML(typ="safe", pure=True).load(open(file, 'r', encoding='utf8'))
+    with open(name_file, 'r', encoding='utf8') as file:
+        classique_dict: TypedDict = YAML(typ="safe", pure=True).load(file)
+        file.close()
+
+    with open(name_file, 'r', encoding='utf8') as file:
+        OrderedDict_dict: OrderedDict = YAML().load(file)
+        file.close()
 
     return OrderedDict_dict, classique_dict
 
