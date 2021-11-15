@@ -1,15 +1,16 @@
 ERROR:
-  create_config_file: 'Error during the creation of the sorting configuration file'
-  permission_file: 'The process cannot access the file because this file {file} is used by another process'
+  create_config_file: Error during the creation of the sorting configuration file
+  permission_file: The process cannot access the file because this file {file} is used by another process
 
 OK:
-  sorted: 'The file "{file}" has been moved to {path}.'
-  sorted_double: 'The file "{file}" has been renamed "{new_name}" and moved to {path}.'
+  sorted: The file "{file}" has been moved to {path}.
+  sorted_double: The file "{file}" has been renamed "{new_name}" and moved to {path}.
+  unsorted: the file "{file}" has not been sorted, it has been moved to {path}.
 
 UI:
-  button_sort: 'Sort'
-  button_clear: 'Clear log'
-  button_edit: 'Edit settings'
-  button_export: 'Export settings'
-  button_import: 'Import settings'
-  button_return: 'Back'
+  button_sort: Sort
+  button_clear: Clear log
+  button_edit: Edit settings
+  button_export: Export settings
+  button_import: Import settings
+  button_return: Back

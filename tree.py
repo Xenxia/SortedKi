@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-from collections import OrderedDict
 from ctypes import windll
 import os, pathlib, sys, ntpath, shutil
 from tkinter import *
 from tkinter import filedialog
-from typing import Any, Tuple, TypedDict
 # from tkinter import ttk
 from ImportPyinstaller import Pyimport
 from PIL import Image, ImageTk
@@ -16,7 +14,7 @@ Pyimport(folder_path='image').add_path()
 
 exe_path = Pyimport().get_execute_path()
 
-from conf import read_yaml, write_default_config
+from conf import configTree
 from ui import Button_v, Label_v, Text_v
 from langages import lang_app
 
@@ -29,11 +27,8 @@ exe_file = ntpath.basename(exe_file)
 
 langage = lang_app(path=exe_path)
 
-if not os.path.exists('config.yml'):
-    write_default_config(langage.lang)
-    dico = read_yaml('./config.yml')
-else:
-    dico = read_yaml('./config.yml')
+conf = configTree(lang=langage.lang)
+conf.loadConfig()
 
 def doublon(file: str, path: str) -> str:
     fileName, fileExt = os.path.splitext(file)
@@ -50,11 +45,11 @@ def doublon(file: str, path: str) -> str:
     
     return new_name
 
-def ctrlEvent(event) -> str:
-    if(12==event.state and event.keysym=='c' ):
-        return
-    else:
-        return "break"
+# def ctrlEvent(event) -> str:
+#     if(12==event.state and event.keysym=='c' ):
+#         return
+#     else:
+#         return "break"
 
 def printTerminal(text: str, terminal: Text, colored_text: str = 'none', color: str = '#FFFFFF') -> None:
     terminal.insert(END, text + "\n")
@@ -81,18 +76,18 @@ def export():
     pathfile = filedialog.asksaveasfilename(defaultextension=".configTree" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree")])
     shutil.copy(src="./config.yml", dst=pathfile)
 
-def imports() -> Tuple[OrderedDict, TypedDict]:
+def imports():
     pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree")])
     os.remove("./config.yml")
     shutil.copy(src=pathfile, dst="./config.yml")
-    dico = read_yaml('./config.yml')
     windll.kernel32.SetFileAttributesW('./config.yml', 8198)
+    conf.reloadConfig()
 
 def sort():
-    for key in dico[1]['config_sort']:
-        for key2 in dico[1]['config_sort'][key]['ext']:
-            path = './'+dico[1]['config_sort'][key]['path']
-            
+    for key in conf.CONFIG[1]['config_sort']:
+        for key2 in conf.CONFIG[1]['config_sort'][key]['ext']:
+            path = './'+conf.CONFIG[1]['config_sort'][key]['path']
+
             if not os.path.exists(path):
                 os.mkdir(path)
 
@@ -100,11 +95,13 @@ def sort():
 
                 while True:
 
-                    if str(file) in dico[1]['doNotSort'] or str(file) == exe_file:
+                    if str(file) in conf.CONFIG[1]['doNotSort'] or str(file) == exe_file or str(file) == "config.yml":
                         break
 
                     try:
                         os.rename(str(file), path+'/'+str(file))
+                        printTerminal("OK: " + langage.lang['OK']['sorted'].format(file=str(file), path=path), console1, color='#00FF00', colored_text='OK')
+                        break
 
                     # For permission related errors
                     except PermissionError:
@@ -122,10 +119,7 @@ def sort():
                         print('ERROR : ' + str(error))
                         break
 
-                    printTerminal("OK: " + langage.lang['OK']['sorted'].format(file=str(file), path=path), console1, color='#00FF00', colored_text='OK')
-                    break
-
-    if dico[1]['unsorted'] == True :
+    if conf.CONFIG[1]['unsorted'] == True :
         if not os.path.exists('./#Unsorted'):
             os.mkdir('./#Unsorted')
         
@@ -133,19 +127,22 @@ def sort():
             
             while True:
 
-                if str(file) in dico[1]['doNotSort'] or str(file) == exe_file:
+                if str(file) in conf.CONFIG[1]['doNotSort'] or str(file) == exe_file or str(file) == "config.yml":
                     break
 
                 try:
                     os.rename(str(file), './#Unsorted/'+str(file))
+                    printTerminal("OK: " + langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), console1, color='#00FF00', colored_text='OK')
                     break
 
                 # For permission related errors
                 except PermissionError:
-                    input(langage.lang['ERROR']['permission_file'].format(file=str(file)))
+                    printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), console1, color="#FF7F00", colored_text="WARNING")
+                    break
 
                 except FileExistsError:
-                    doublon(str(file), path)
+                    new = doublon(str(file), path)
+                    printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), console1, color='#00FF00', colored_text='OK')
                     break
 
                 # For other errors
@@ -216,7 +213,7 @@ button_export = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#
 button_export.conf_pos(x=225, y=48, width=150, height=24)
 button_export.hide()
 
-button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=lambda: dico=imports())
+button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=imports)
 button_import.conf_pos(x=225, y=72, width=150, height=24)
 button_import.hide()
 
