@@ -15,7 +15,7 @@ class Button_v(Button):
         self.width = 0
         self.height = 0
 
-    def conf_pos(self, x: int, y: int, width: int, height: int):
+    def position(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -47,7 +47,7 @@ class Label_v(Label):
         self.width = 0
         self.height = 0
 
-    def conf_pos(self, x: int, y: int, width: int, height: int):
+    def position(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -74,7 +74,7 @@ class Text_v(Text):
         self.height = 0
 
 
-    def conf_pos(self, x: int, y: int, width: int, height: int):
+    def position(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -92,18 +92,17 @@ class Terminal_v(Text):
     y: int
     width: int
     height: int
-    
 
     def __init__(self, master=None, cnf={}, **kw):
         Text.__init__(self, master=master, cnf=cnf, **kw)
-        self.bind("<Key>", lambda e: self.ctrlEvent(e))
+        self.bind("<Key>", lambda e: self.__ctrlEvent(e))
         self.x = 0
         self.y = 0
         self.width = 0
         self.height = 0
 
 
-    def conf_pos(self, x: int, y: int, width: int, height: int):
+    def position(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -115,26 +114,26 @@ class Terminal_v(Text):
     def show(self):
         self.place(x=self.x, y=self.y, width=self.width, height=self.height)
 
-    def ctrlEvent(self, event) -> None:
+    def __ctrlEvent(self, event) -> None:
         if(12==event.state and event.keysym=='c' ):
             return
         else:
             return "break"
 
-    def printTerminal(text: str, terminal: Text, colored_text: str = 'none', color: str = '#FFFFFF') -> None:
-        terminal.insert(END, text + "\n")
-        terminal.see(END)
-        terminal.tag_config(color, background="#000000", foreground=color)
+    def printTerminal(self, text: str, colored_text: str = 'none', color: str = '#FFFFFF') -> None:
+        self.insert(END, text + "\n")
+        self.see(END)
+        self.tag_config(color, background="#000000", foreground=color)
         if color != 'none':
             if colored_text == '*':
                 colored_text = text
             pos = '1.0'
             while True:
-                idx = terminal.search(colored_text, pos, END)
+                idx = self.search(colored_text, pos, END)
                 if not idx:
                     break
                 pos = '{}+{}c'.format(idx, len(colored_text))
-                terminal.tag_add(color, idx, pos)
+                self.tag_add(color, idx, pos)
 
-
-        
+    def clearTerminal(self) -> None:
+        self.delete("1.0","end")

@@ -7,7 +7,7 @@ class lang_app:
     LANG_SYS: str
 
     def __init__(self, path: str = ".") -> None:
-        self.LANG_SYS: str = self.get_local_lang()
+        self.LANG_SYS: str = self.get_locale()
         try:
             self.lang = self.__read_lang(path +'/lang/'+self.LANG_SYS+'.yml')
             print("INFO : load lang")
@@ -27,5 +27,5 @@ class lang_app:
 
         return classique_dict
 
-    def get_local_lang(self) -> str:
+    def get_locale(self) -> str:
       return locale.getdefaultlocale()[0]

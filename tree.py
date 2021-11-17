@@ -15,7 +15,7 @@ Pyimport(folder_path='image').add_path()
 exe_path = Pyimport().get_execute_path()
 
 from conf import configTree
-from ui import Button_v, Label_v, Text_v
+from ui import Button_v, Label_v, Terminal_v
 from langages import lang_app
 
 if Pyimport().is_compile:
@@ -45,39 +45,15 @@ def doublon(file: str, path: str) -> str:
     
     return new_name
 
-# def ctrlEvent(event) -> str:
-#     if(12==event.state and event.keysym=='c' ):
-#         return
-#     else:
-#         return "break"
+def not_dev():
+    console1.printTerminal(text="This feature is not developed", color="#FF0AFF", colored_text="*")
 
-def printTerminal(text: str, terminal: Text, colored_text: str = 'none', color: str = '#FFFFFF') -> None:
-    terminal.insert(END, text + "\n")
-    terminal.see(END)
-    terminal.tag_config(color, background="#000000", foreground=color)
-    if color != 'none':
-        if colored_text == '*':
-            colored_text = text
-        pos = '1.0'
-        while True:
-            idx = terminal.search(colored_text, pos, END)
-            if not idx:
-                break
-            pos = '{}+{}c'.format(idx, len(colored_text))
-            terminal.tag_add(color, idx, pos)
-
-def not_dev(terminal: Text):
-    printTerminal(text="This feature is not developed", terminal=terminal, color="#FF0AFF", colored_text="*")
-
-def clearTerminal(terminal: Text) -> None:
-    terminal.delete("1.0","end")
-
-def export():
-    pathfile = filedialog.asksaveasfilename(defaultextension=".configTree" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree")])
+def exports():
+    pathfile = filedialog.asksaveasfilename(defaultextension=".configTree.yml" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree.yml")])
     shutil.copy(src="./config.yml", dst=pathfile)
 
 def imports():
-    pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree")])
+    pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree.yml")])
     os.remove("./config.yml")
     shutil.copy(src=pathfile, dst="./config.yml")
     windll.kernel32.SetFileAttributesW('./config.yml', 8198)
@@ -100,22 +76,22 @@ def sort():
 
                     try:
                         os.rename(str(file), path+'/'+str(file))
-                        printTerminal("OK: " + langage.lang['OK']['sorted'].format(file=str(file), path=path), console1, color='#00FF00', colored_text='OK')
+                        console1.printTerminal("OK: " + langage.lang['OK']['sorted'].format(file=str(file), path=path), color='#00FF00', colored_text='OK')
                         break
 
                     # For permission related errors
                     except PermissionError:
-                        printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), console1, color="#FF7F00", colored_text="WARNING")
+                        console1.printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), color="#FF7F00", colored_text="WARNING")
                         break
 
                     except FileExistsError:
                         new = doublon(str(file), path)
-                        printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), console1, color='#00FF00', colored_text='OK')
+                        console1.printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color='#00FF00', colored_text='OK')
                         break
 
                     # For other errors
                     except OSError as error:
-                        printTerminal('ERROR : ' + str(error), console1, color="#FF0000", colored_text="ERROR")
+                        console1.printTerminal('ERROR : ' + str(error), color="#FF0000", colored_text="ERROR")
                         print('ERROR : ' + str(error))
                         break
 
@@ -132,17 +108,17 @@ def sort():
 
                 try:
                     os.rename(str(file), './#Unsorted/'+str(file))
-                    printTerminal("OK: " + langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), console1, color='#00FF00', colored_text='OK')
+                    console1.printTerminal("OK: " + langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), color='#00FF00', colored_text='OK')
                     break
 
                 # For permission related errors
                 except PermissionError:
-                    printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), console1, color="#FF7F00", colored_text="WARNING")
+                    console1.printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), color="#FF7F00", colored_text="WARNING")
                     break
 
                 except FileExistsError:
                     new = doublon(str(file), path)
-                    printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), console1, color='#00FF00', colored_text='OK')
+                    console1.printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color='#00FF00', colored_text='OK')
                     break
 
                 # For other errors
@@ -188,45 +164,44 @@ image = image.resize((22, 22), Image.ANTIALIAS)
 option_image = ImageTk.PhotoImage(image)
 
 #LANG
-label_lang = Label_v(window, text="lang : " + langage.get_local_lang(), bg='#202020', fg='#909090')
-label_lang.conf_pos(x=268, y=470, width=64, height=32)
+label_lang = Label_v(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
+label_lang.position(x=268, y=470, width=64, height=32)
 label_lang.show()
 
 #BUTTON
 button_tree = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
-button_tree.conf_pos(x=260, y=0, width=80, height=24)
+button_tree.position(x=260, y=0, width=80, height=24)
 button_tree.show()
 
-button_clear = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: clearTerminal(console1))
-button_clear.conf_pos(x=260, y=24, width=80, height=24)
+button_clear = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
+button_clear.position(x=260, y=24, width=80, height=24)
 button_clear.show()
 
 button_option = Button_v(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
-button_option.conf_pos(x=2, y=474, width=24, height=24)
+button_option.position(x=2, y=474, width=24, height=24)
 button_option.show()
 
 button_edit = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'])
-button_edit.conf_pos(x=225, y=24, width=150, height=24)
+button_edit.position(x=225, y=24, width=150, height=24)
 button_edit.hide()
 
-button_export = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=export)
-button_export.conf_pos(x=225, y=48, width=150, height=24)
+button_export = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=exports)
+button_export.position(x=225, y=48, width=150, height=24)
 button_export.hide()
 
 button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=imports)
-button_import.conf_pos(x=225, y=72, width=150, height=24)
+button_import.position(x=225, y=72, width=150, height=24)
 button_import.hide()
 
 button_return = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
-button_return.conf_pos(x=225, y=120, width=150, height=24)
+button_return.position(x=225, y=120, width=150, height=24)
 button_return.hide()
 
 #CONSOLE
-console1 = Text_v(window, bg="#000000", fg="#FFFFFF")
-console1.bind("<Key>", lambda e: ctrlEvent(e))
-console1.conf_pos(x=0, y=48, width=600, height=424)
+console1 = Terminal_v(window, bg="#000000", fg="#FFFFFF")
+console1.position(x=0, y=48, width=600, height=424)
 console1.show()
 
-# console1.place_forget()
+#
 
 window.mainloop()
