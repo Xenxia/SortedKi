@@ -5,20 +5,21 @@ import os, pathlib, sys, ntpath, shutil
 from tkinter import *
 from tkinter import filedialog
 # from tkinter import ttk
-from ImportPyinstaller import Pyimport
+from ImportPyinstaller import Import_pyInst
 from PIL import Image, ImageTk
 
-Pyimport(folder_path='func').add_path()
-Pyimport(folder_path='lang').add_path()
-Pyimport(folder_path='image').add_path()
+importPyInst = Import_pyInst()
+importPyInst.add_path(folder_path='func')
+importPyInst.add_path(folder_path='lang')
+importPyInst.add_path(folder_path='image')
 
-exe_path = Pyimport().get_execute_path()
+exe_path = importPyInst.get_execute_path()
 
 from conf import configTree
-from ui import Button_v, Label_v, Terminal_v
+from ui import Button_v, Label_v, Terminal_v, Treeview_v
 from langages import lang_app
 
-if Pyimport().is_compile:
+if importPyInst.is_compiled:
     exe_file = os.path.realpath(sys.executable)
 else:
     exe_file = os.path.realpath(__file__)
@@ -166,20 +167,20 @@ option_image = ImageTk.PhotoImage(image)
 #LANG
 label_lang = Label_v(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
 label_lang.position(x=268, y=470, width=64, height=32)
-label_lang.show()
+label_lang.hide()
 
 #BUTTON
 button_tree = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
 button_tree.position(x=260, y=0, width=80, height=24)
-button_tree.show()
+button_tree.hide()
 
 button_clear = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
 button_clear.position(x=260, y=24, width=80, height=24)
-button_clear.show()
+button_clear.hide()
 
 button_option = Button_v(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
 button_option.position(x=2, y=474, width=24, height=24)
-button_option.show()
+button_option.hide()
 
 button_edit = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'])
 button_edit.position(x=225, y=24, width=150, height=24)
@@ -200,8 +201,33 @@ button_return.hide()
 #CONSOLE
 console1 = Terminal_v(window, bg="#000000", fg="#FFFFFF")
 console1.position(x=0, y=48, width=600, height=424)
-console1.show()
+console1.hide()
 
-#
+#tab config
+
+ihm = Treeview_v(window, bg="#555555")
+ihm.position(0, 0, 600, 500)
+ihm.setColumns(("Name profile", "Folder", "Extention"))
+
+for key in conf.CONFIG[1]['config_sort']:
+    folder: str = conf.CONFIG[1]['config_sort'][key]['path']
+    extention: list = conf.CONFIG[1]['config_sort'][key]['ext']
+
+    ihm.tree.insert(parent='', index=END, text="", values=(key, folder, '|'.join(extention)))
+
+ihm.show()
+
+def get_all_children():
+
+    for line in ihm.tree.get_children():
+        for value in ihm.tree.item(line)['values']:
+            print(value)
+
+    # return children
+
+
+button_saveAndReturn = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="return", command=get_all_children)
+button_saveAndReturn.position(x=2, y=474, width=56, height=24)
+button_saveAndReturn.show()
 
 window.mainloop()

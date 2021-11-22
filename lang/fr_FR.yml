@@ -5,7 +5,7 @@ ERROR:
 OK:
   sorted: le fichier "{file}" à été déplacé dans {path}.
   sorted_double: le fichier "{file}" à été renomé "{new_name}" et déplacé dans {path}.
-  unsorted: le fichier "{file}" n'a pas été trié, il à été déplacer dans {path}.
+  unsorted: le fichier "{file}" n'a pas été trié.
 
 UI:
   button_sort: Trié
