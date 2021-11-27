@@ -1,5 +1,7 @@
 import argparse
+import os, pathlib, shutil
 import PyInstaller.__main__
+import compileall
 
 parser = argparse.ArgumentParser(description="app to build Tree",
                                  allow_abbrev=False,
@@ -22,20 +24,33 @@ group.add_argument('-v', '--version', action='version', version="V1")
 
 args = parser.parse_args()
 
+compileall.compile_dir(dir="func", legacy=True, force=True)
+path = "./func/comp"
+
+if os.path.exists(path):
+    shutil.rmtree(path)
+
+os.mkdir(path)
+
+for file in pathlib.Path('./func').glob("*.pyc"):
+    os.rename(str(file), path+"/"+file.name)
+
 if args.Command_Name == "dev":
     PyInstaller.__main__.run([
         'tree.py',
         '--onefile',
         '--clean',
-        '--add-data=func;func',
+        '--add-data=func/comp;func',
         '--add-data=image;image',
         '--add-data=lang;lang',
         '--hidden-import=locale',
         '--hidden-import=ruamel.yaml',
         '--hidden-import=typing',
         '--hidden-import=ctypes',
-        '--hidden-import=collections',
         '--hidden-import=sys',
+        '--hidden-import=tkinter.ttk',
+        '--hidden-import=tkinter.filedialog',
+        '--hidden-import=tkinter',
         '--icon=image/tree.ico'
     ])
 
@@ -45,14 +60,16 @@ if args.Command_Name == "prod":
         '--onefile',
         '--clean',
         '--windowed',
-        '--add-data=func;func',
+        '--add-data=func/comp;func',
         '--add-data=image;image',
         '--add-data=lang;lang',
         '--hidden-import=locale',
         '--hidden-import=ruamel.yaml',
         '--hidden-import=typing',
         '--hidden-import=ctypes',
-        '--hidden-import=collections',
         '--hidden-import=sys',
+        '--hidden-import=tkinter.ttk',
+        '--hidden-import=tkinter.filedialog',
+        '--hidden-import=tkinter',
         '--icon=image/tree.ico'
     ])

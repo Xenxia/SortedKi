@@ -1,31 +1,22 @@
 config_sort:
-
-  exe:
-    path: Executable
-    ext: ['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
-
-  doc:
-    path: Document
-    ext: ['*.xlsx', '*.docx', '*.pptx', '*.pdf']
-
-  archive:
-    path: Archive
-    ext: ['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
-
-  music:
-    path: Music
-    ext: ['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
-
-  picture:
-    path: Image
-    ext: ['*.png', '*.jpeg', '*.bmp', '*.tiff', '*.gif']
-
-  video:
-    path: Video
-    ext: ['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
-
-unsorted: false
-
+    exe:
+        path: Executable
+        ext: ['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
+    doc:
+        path: Document
+        ext: ['*.xlsx', '*.docx', '*.pptx', '*.pdf']
+    archive:
+        path: Archive
+        ext: ['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
+    music:
+        path: Music
+        ext: ['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
+    picture:
+        path: Image
+        ext: ['*.png', '*.jpeg', '*.bmp', '*.tiff', '*.gif']
+    Video:
+        path: video
+        ext: ['*.mp4']
+unsorted: 'false'
 doNotSort: [none]
-
 lang: none

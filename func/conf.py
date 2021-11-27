@@ -1,85 +1,99 @@
 from ctypes import windll
-from typing import Any, Literal, Tuple, TypedDict
-from collections import OrderedDict
+from tkinter import filedialog
+from typing import Any, TypedDict
 from ruamel.yaml import YAML
-import os
+import os, stat, shutil
 
 class configTree():
-    CONFIG: Tuple[OrderedDict, TypedDict]
+    CONFIG: TypedDict
     __LANG: TypedDict
-    CONFIG_FILE_NAME = "config.yml"
-    DEFAULT_CONFIG = """
-    config_sort:
-
-        exe:
-            path: Executable
-            ext: ['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
-
-        doc:
-            path: Document
-            ext: ['*.xlsx', '*.docx', '*.pptx', '*.pdf']
-
-        archive:
-            path: Archive
-            ext: ['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
-
-        music:
-            path: Music
-            ext: ['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
-
-        picture:
-            path: Image
-            ext: ['*.png', '*.jpeg', '*.bmp', '*.tiff', '*.gif']
-
-        video:
-            path: Video
-            ext: ['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
-
-    unsorted: false
-
-    doNotSort: ['none']
-
-    lang: none
-    """
+    __HIDE_FILE: int = stat.FILE_ATTRIBUTE_HIDDEN+stat.FILE_ATTRIBUTE_SYSTEM
+    __SHOW_FILE: int = stat.FILE_ATTRIBUTE_NORMAL
+    __CONFIG_FILE_NAME = "config.yml"
+    __DEFAULT_CONFIG = {
+        "config_sort":{
+            "exe":{
+                "path": "Executable",
+                "ext":['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
+            },
+            "doc":{
+                "path": "Document",
+                "ext":['*.xlsx', '*.docx', '*.pptx', '*.pdf']
+            },
+            "archive":{
+                "path": "Archive",
+                "ext":['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
+            },
+            "music":{
+                "path": "Music",
+                "ext":['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
+            },
+            "picture":{
+                "path": "Image",
+                "ext":['*.png', '*.jpeg', '*.jpg','*.bmp', '*.tiff', '*.gif']
+            },
+            "video":{
+                "path": "Video",
+                "ext":['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
+            },
+        },
+        "unsorted": "false",
+        "doNotSort": ["none"],
+        "lang": "none"
+    }
 
     def __init__(self, lang: TypedDict) -> None:
         self.__LANG = lang
-        if not os.path.exists('config.yml'):
-            self.write_yaml(self.CONFIG_FILE_NAME, self.__load_literal(self.DEFAULT_CONFIG))
-            windll.kernel32.SetFileAttributesW('./config.yml', 8198)
-            if not os.path.exists(self.CONFIG_FILE_NAME):
+        if not os.path.exists(self.__CONFIG_FILE_NAME):
+            self.write_yaml(self.__CONFIG_FILE_NAME, self.__DEFAULT_CONFIG)
+            windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__HIDE_FILE)
+            if not os.path.exists(self.__CONFIG_FILE_NAME):
                 print(self.__LANG['ERROR']['create_config_file'])
 
     def loadConfig(self) -> None:
-        if os.path.exists('config.yml'):
-            self.CONFIG = self.read_yaml('./config.yml')
+        if os.path.exists(self.__CONFIG_FILE_NAME):
+            self.CONFIG = self.read_yaml(self.__CONFIG_FILE_NAME)
+
+    def saveConfig(self) -> None:
+        if os.path.exists(self.__CONFIG_FILE_NAME):
+            self.write_yaml(self.__CONFIG_FILE_NAME, self.CONFIG)
 
     def reloadConfig(self) -> None:
         self.CONFIG = None
         self.loadConfig()
 
+    def exportConfig(self) -> None:
+        pathfile = filedialog.asksaveasfilename(defaultextension=".configTree.yml" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree.yml")])
+        shutil.copy(src=self.__CONFIG_FILE_NAME, dst=pathfile)
+
+    def importConfig(self) -> None:
+        pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree.yml")])
+        if os.path.exists(self.__CONFIG_FILE_NAME):
+            os.remove(self.__CONFIG_FILE_NAME)
+        shutil.copy(src=pathfile, dst=self.__CONFIG_FILE_NAME)
+        windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__HIDE_FILE)
+        self.reloadConfig()
+
     def write_yaml(self, name_file: str, content: Any) -> None:
         yml = YAML()
-        yml.default_flow_style = False
+        yml.default_flow_style = None
         yml.width = 4096
-        yml.indent(mapping=2, sequence=2, offset=2)
+        yml.indent(mapping=4, sequence=0, offset=0)
+
+        windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__SHOW_FILE)
+
         with open(name_file, 'w') as file:
             yml.dump(content, file)
-            file.close()
-    
+
+        windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__HIDE_FILE)
         
-    def read_yaml(self, name_file: str) -> Tuple[OrderedDict, TypedDict]:
+    def read_yaml(self, name_file: str) -> TypedDict:
 
         with open(name_file, 'r', encoding='utf8') as file:
             classique_dict: TypedDict = YAML(typ="safe", pure=True).load(file)
-            file.close()
 
-        with open(name_file, 'r', encoding='utf8') as file:
-            OrderedDict_dict: OrderedDict = YAML().load(file)
-            file.close()
+        return classique_dict
 
-        return OrderedDict_dict, classique_dict
-
-    def __load_literal(self, literal: Literal) -> Any:
-        return YAML().load(literal)
+    # def __load_literal(self, literal: Literal) -> Any:
+    #     return YAML().load(literal)
 
