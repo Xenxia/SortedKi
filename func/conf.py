@@ -4,7 +4,10 @@ from typing import Any, TypedDict
 from ruamel.yaml import YAML
 import os, stat, shutil
 
+from logger import Logger
+
 class configTree():
+    log: Logger
     CONFIG: TypedDict
     __LANG: TypedDict
     __HIDE_FILE: int = stat.FILE_ATTRIBUTE_HIDDEN+stat.FILE_ATTRIBUTE_SYSTEM
@@ -37,34 +40,41 @@ class configTree():
                 "ext":['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
             },
         },
-        "unsorted": "false",
-        "doNotSort": ["none"],
-        "lang": "none"
+        "unsorted": False,
+        "doNotSort": [],
+        "lang": None
     }
 
-    def __init__(self, lang: TypedDict) -> None:
+    def __init__(self, log: Logger, lang: TypedDict) -> None:
+        self.log = log
         self.__LANG = lang
         if not os.path.exists(self.__CONFIG_FILE_NAME):
             self.write_yaml(self.__CONFIG_FILE_NAME, self.__DEFAULT_CONFIG)
             windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__HIDE_FILE)
+            self.log.info("Create config")
             if not os.path.exists(self.__CONFIG_FILE_NAME):
-                print(self.__LANG['ERROR']['create_config_file'])
+                self.log.error(self.__LANG['ERROR']['create_config_file'])
 
     def loadConfig(self) -> None:
         if os.path.exists(self.__CONFIG_FILE_NAME):
             self.CONFIG = self.read_yaml(self.__CONFIG_FILE_NAME)
+            self.log.info("Load config")
 
     def saveConfig(self) -> None:
         if os.path.exists(self.__CONFIG_FILE_NAME):
             self.write_yaml(self.__CONFIG_FILE_NAME, self.CONFIG)
+            self.log.info("Save config")
+
 
     def reloadConfig(self) -> None:
         self.CONFIG = None
         self.loadConfig()
+        self.log.info("Reload config")
 
     def exportConfig(self) -> None:
         pathfile = filedialog.asksaveasfilename(defaultextension=".configTree.yml" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree.yml")])
         shutil.copy(src=self.__CONFIG_FILE_NAME, dst=pathfile)
+        self.log.info("Exporting config")
 
     def importConfig(self) -> None:
         pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree.yml")])
@@ -73,6 +83,7 @@ class configTree():
         shutil.copy(src=pathfile, dst=self.__CONFIG_FILE_NAME)
         windll.kernel32.SetFileAttributesW(self.__CONFIG_FILE_NAME, self.__HIDE_FILE)
         self.reloadConfig()
+        self.log.debug("Importing config")
 
     def write_yaml(self, name_file: str, content: Any) -> None:
         yml = YAML()

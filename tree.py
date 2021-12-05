@@ -11,39 +11,47 @@ importPyInst.add_path(folder_path='func')
 importPyInst.add_path(folder_path='lang')
 importPyInst.add_path(folder_path='image')
 
-version = "0.0.1b"
+version = "0.0.2b"
 
 exe_path = importPyInst.get_execute_path()
 
 from conf import configTree
-from ui import Button_v, Label_v, Terminal_v, Treeview_v
+from ui import Button_x, Label_x, Terminal_x, Treeview_x
 from langages import lang_app
+from logger import INFO, Logger
+
+log = Logger(format="{time} | {levelname} : {msg}", levellog=INFO)
+log.customize(level=("[", "]"))
 
 if importPyInst.is_compiled:
     exe_file = os.path.realpath(sys.executable)
 else:
+    log.activColor(True)
     exe_file = os.path.realpath(__file__)
 
 exe_file = ntpath.basename(exe_file)
 
-langage = lang_app(path=exe_path)
+langage = lang_app(log, path=exe_path)
 
-conf = configTree(lang=langage.lang)
+conf = configTree(log, lang=langage.lang)
 conf.loadConfig()
 
 def doublon(file: str, path: str) -> str:
+
     fileName, fileExt = os.path.splitext(file)
 
-    num = 1
+    numWhile: int = 0
     while True:
-        new_name = fileName+'_'+str(num)+fileExt
-        new_path = path+'/'+new_name
+        if numWhile != 0:
+            new_name = new_name.replace(new_name[-2:], "_"+str(numWhile))
+        else:
+            new_name = fileName+'_'+str(numWhile)
+
+        new_path = path+'/'+new_name+fileExt
         if not os.path.exists(new_path):
             os.rename(fileName+fileExt, new_path)
             break
-
-        num += 1
-    
+        numWhile += 1
     return new_name
 
 def not_dev():
@@ -170,6 +178,11 @@ def edit():
 
         ihm.tree.insert(parent='', index=END, text="", values=(key, folder, '|'.join(extention)))
 
+    ihm.toggle_b.set_default_status(conf.CONFIG["unsorted"])
+    doNotSort = "|".join(conf.CONFIG["doNotSort"])
+    if not doNotSort == "":
+        ihm.doNotSort_box.delete(0, END)
+        ihm.doNotSort_box.insert(0, doNotSort)
 
     ihm.show()
     button_saveAndReturn.show()
@@ -190,44 +203,44 @@ image = image.resize((22, 22), Image.ANTIALIAS)
 option_image = ImageTk.PhotoImage(image)
 
 #LANG
-label_lang = Label_v(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
+label_lang = Label_x(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
 label_lang.position(x=259, y=570, width=82, height=32)
 label_lang.show()
 
 #VERSION
-label_version = Label_v(window, text="version : " + version, bg='#202020', fg='#909090')
-label_version.position(x=475, y=570, width=124, height=32)
-label_version.show()
+label_xersion = Label_x(window, text="version : " + version, bg='#202020', fg='#909090')
+label_xersion.position(x=475, y=570, width=124, height=32)
+label_xersion.show()
 
 #BUTTON
-button_tree = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
+button_tree = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
 button_tree.position(x=255, y=0, width=90, height=24)
 
-button_clear = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
+button_clear = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
 button_clear.position(x=255, y=24, width=90, height=24)
 
-button_option = Button_v(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
+button_option = Button_x(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
 button_option.position(x=2, y=574, width=24, height=24)
 
-button_edit = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
+button_edit = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
 button_edit.position(x=217.5, y=24, width=165, height=24)
 
-button_export = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
+button_export = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
 button_export.position(x=217.5, y=48, width=165, height=24)
 
-button_import = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
+button_import = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
 button_import.position(x=217.5, y=72, width=165, height=24)
 
-button_return = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
+button_return = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
 button_return.position(x=235, y=120, width=130, height=24)
 
 #CONSOLE
-console1 = Terminal_v(window, bg="#000000", fg="#FFFFFF")
+console1 = Terminal_x(window, bg="#000000", fg="#FFFFFF")
 console1.position(x=0, y=48, width=600, height=524)
 
 #tab config
 
-ihm = Treeview_v(window, bg="#202020")
+ihm = Treeview_x(window, bg="#202020")
 ihm.position(0, 0, 600, 500)
 ihm.setColumns(("Name profile", "Folder", "Extention"))
 ihm.propagate(False)
@@ -249,14 +262,20 @@ def get_all_children():
                     conf.CONFIG['config_sort'][key]['path'] = value
                 if i == 3:
                     conf.CONFIG['config_sort'][key]['ext'] = value.split("|")
-    
-    print("save")
+
+    conf.CONFIG["unsorted"] = ihm.toggle_b.get_status()
+    doNotSort2 = ihm.doNotSort_box.get()
+    if not doNotSort2 == "":
+        conf.CONFIG["doNotSort"] = doNotSort2.split("|")
+    else:
+        conf.CONFIG["doNotSort"] = []
+
     conf.saveConfig()
     option()
 
 
 
-button_saveAndReturn = Button_v(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
+button_saveAndReturn = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
 button_saveAndReturn.position(x=2, y=574, width=130, height=24)
 
 main()

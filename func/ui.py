@@ -1,10 +1,9 @@
-from os import execl
 from tkinter import Button, Entry, Frame, Label, Text
-from tkinter.constants import BOTH, BOTTOM, DISABLED, E, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, TOP, VERTICAL, W, X, Y
+from tkinter.constants import BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y
 from tkinter import ttk
 from typing import Tuple
 
-class Button_v(Button):
+class Button_x(Button):
 
     x: int
     y: int
@@ -36,7 +35,77 @@ class Button_v(Button):
     def enable(self):
         self['state'] = NORMAL
 
-class Label_v(Label):
+class Toggle_Button_x(Button):
+
+    x: int
+    y: int
+    width: int
+    height: int
+    text: Tuple = ("ON", "OFF")
+    color: Tuple = ("#00FF00", "#FF0000")
+    status: bool
+
+    def __init__(self, master=None, cnf={}, **kw):
+        Button.__init__(self, master=master, cnf=cnf, **kw, command=self.toggle)
+        self.status = True
+        self.reload()
+        self.x = 0
+        self.y = 0
+        self.width = 0
+        self.height = 0
+
+    def reload(self):
+        if self.status:
+            self.config(text=self.text[0])
+            self.config(fg=self.color[0])
+            self.status = True
+        else:
+            self.config(text=self.text[1])
+            self.config(fg=self.color[1])
+            self.status = False
+
+    def custom_toggle(self, text: Tuple = None, color: Tuple = None):
+        if text is not None: self.text = text
+        if color is not None: self.color = color
+        self.reload()
+
+    def set_default_status(self, status: bool):
+        self.status = status
+        self.reload()
+
+    def get_status(self) -> bool:
+        return self.status
+
+    def toggle(self):
+    
+        if self.config('text')[-1] == self.text[0]:
+            self.config(text=self.text[1])
+            self.config(fg=self.color[1])
+            self.status = False
+        else:
+            self.config(text=self.text[0])
+            self.config(fg=self.color[0])
+            self.status = True
+
+    def position(self, x: int, y: int, width: int, height: int):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def hide(self):
+        self.place_forget()
+
+    def show(self):
+        self.place(x=self.x, y=self.y, width=self.width, height=self.height)
+
+    def disable(self):
+        self['state'] = DISABLED
+
+    def enable(self):
+        self['state'] = NORMAL
+
+class Label_x(Label):
 
     x: int
     y: int
@@ -62,7 +131,7 @@ class Label_v(Label):
     def show(self):
         self.place(x=self.x, y=self.y, width=self.width, height=self.height)
 
-class Text_v(Text):
+class Text_x(Text):
 
     x: int
     y: int
@@ -89,7 +158,7 @@ class Text_v(Text):
     def show(self):
         self.place(x=self.x, y=self.y, width=self.width, height=self.height)
 
-class Terminal_v(Text):
+class Terminal_x(Text):
 
     x: int
     y: int
@@ -141,14 +210,14 @@ class Terminal_v(Text):
     def clearTerminal(self) -> None:
         self.delete("1.0","end")
 
-class Treeview_v(Frame):
+class Treeview_x(Frame):
     x: int
     y: int
     width: int
     height: int
     style: ttk.Style
     tree: ttk.Treeview
-    scroll_v: ttk.Scrollbar
+    scroll_x: ttk.Scrollbar
     scroll_h: ttk.Scrollbar
 
     def __init__(self, master=None, cnf={}, **kw):
@@ -177,22 +246,22 @@ class Treeview_v(Frame):
         tl = Label(self.frameBox, text="Extention ", bg="#202020", fg="#00ca00")
         tl.grid(row=2, column=0, sticky=W)
 
-        Unselect = Button_v(self.frameButton, text="Unselect", command=self.unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
+        Unselect = Button_x(self.frameButton, text="Unselect", command=self.unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
         Unselect.grid(column=5, row=0, padx=5)
 
-        move_up = Button_v(self.frameButton, text="⬆", command=self.up, bg="#555555", fg="#00ca00", activebackground="#555555")
+        move_up = Button_x(self.frameButton, text="⬆", command=self.up, bg="#555555", fg="#00ca00", activebackground="#555555")
         move_up.grid(column=4, row=0)
 
-        move_down = Button_v(self.frameButton, text="⬇", command=self.down, bg="#555555", fg="#00ca00", activebackground="#555555")
+        move_down = Button_x(self.frameButton, text="⬇", command=self.down, bg="#555555", fg="#00ca00", activebackground="#555555")
         move_down.grid(column=3, row=0)
 
-        remove = Button_v(self.frameButton, text="Delete", command=self.remove, bg="#555555", fg="#00ca00", activebackground="#555555")
+        remove = Button_x(self.frameButton, text="Delete", command=self.remove, bg="#555555", fg="#00ca00", activebackground="#555555")
         remove.grid(column=2, row=0, padx=5)
 
-        save = Button_v(self.frameButton, text="Save", command=self.save, bg="#555555", fg="#00ca00", activebackground="#555555")
+        save = Button_x(self.frameButton, text="Save", command=self.save, bg="#555555", fg="#00ca00", activebackground="#555555")
         save.grid(column=1, row=0, padx=(5, 0))
 
-        add = Button_v(self.frameButton, text="Add", command=self.add, bg="#555555", fg="#00ca00", activebackground="#555555")
+        add = Button_x(self.frameButton, text="Add", command=self.add, bg="#555555", fg="#00ca00", activebackground="#555555")
         add.grid(column=0, row=0)
 
         self.name_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
@@ -204,20 +273,33 @@ class Treeview_v(Frame):
         self.topping_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
         self.topping_box.grid(row=2, column=1, sticky=W)
 
-        self.scroll_v = ttk.Scrollbar(master=self.frameTreeview, orient=VERTICAL)
-        self.scroll_v.pack(side=RIGHT, fill=Y)
+        self.scroll_x = ttk.Scrollbar(master=self.frameTreeview, orient=VERTICAL)
+        self.scroll_x.pack(side=RIGHT, fill=Y)
 
         self.scroll_h = ttk.Scrollbar(master=self.frameTreeview, orient=HORIZONTAL)
         self.scroll_h.pack(side=BOTTOM, fill=X)
         
-        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_v.set, xscrollcommand=self.scroll_h.set, selectmode="browse")
+        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse")
         self.tree.bind("<ButtonRelease-1>", self.selected)
         self.tree.pack(fill=Y, expand=True)
 
-        self.scroll_v.config(command=self.tree.yview)
+        self.scroll_x.config(command=self.tree.yview)
         self.scroll_h.config(command=self.tree.xview)
 
         self.tree['columns'] = ("empty")
+
+        self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        self.doNotSort_box.grid(row=6, column=1, sticky=W, pady=(13, 0))
+
+        d1 = Label(self.frameBox, text="doNotSort", bg="#202020", fg="#00ca00")
+        d1.grid(row=6, column=0, sticky=W, pady=(20, 10))
+
+        self.toggle_b = Toggle_Button_x(self.frameBox, bg="#555555", activebackground="#555555", width=3)
+        self.toggle_b.custom_toggle(("✔", "✖"))
+        self.toggle_b.grid(column=1, row=7, sticky=W)
+
+        u1 = Label(self.frameBox, text="Unsorted", bg="#202020", fg="#00ca00")
+        u1.grid(row=7, column=0, sticky=W, )
 
     def styleInit(self):
         self.style = ttk.Style()
@@ -350,7 +432,7 @@ class Treeview_v(Frame):
         for row in reversed(rows):
             self.tree.move(row, self.tree.parent(row), self.tree.index(row)+1)
 
-class Frame_v(Frame):
+class Frame_x(Frame):
     x: int
     y: int
     width: int
@@ -375,7 +457,7 @@ class Frame_v(Frame):
     def show(self):
         self.place(x=self.x, y=self.y, width=self.width, height=self.height)
 
-class Entry_v(Entry):
+class Entry_x(Entry):
     x: int
     y: int
     width: int
