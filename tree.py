@@ -158,6 +158,7 @@ def main():
     button_import.hide()
     button_return.hide()
     button_moveToRoot.hide()
+    button_deleteConfig.hide()
 
     ihm.hide()
     button_saveAndReturn.hide()
@@ -174,6 +175,7 @@ def option():
     button_import.show()
     button_return.show()
     button_moveToRoot.show()
+    button_deleteConfig.show()
 
     ihm.hide()
     button_saveAndReturn.hide()
@@ -190,6 +192,7 @@ def edit():
     button_import.hide()
     button_return.hide()
     button_moveToRoot.hide()
+    button_deleteConfig.hide()
 
     for i in ihm.tree.get_children():
         ihm.tree.delete(i)
@@ -261,8 +264,11 @@ button_export.position(x=217.5, y=48, width=165, height=24)
 button_import = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
 button_import.position(x=217.5, y=72, width=165, height=24)
 
-button_moveToRoot = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Move to root", command=moveToRoot)
-button_moveToRoot.position(x=217.5, y=96, width=165, height=24)
+button_moveToRoot = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Move to root"+" !", command=moveToRoot)
+button_moveToRoot.position(x=217.5, y=124, width=165, height=24)
+
+button_deleteConfig = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=not_dev)
+button_deleteConfig.position(x=217.5, y=148, width=165, height=24)
 
 button_return = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
 button_return.position(x=235, y=200, width=130, height=24)
