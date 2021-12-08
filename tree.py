@@ -16,7 +16,7 @@ version = "0.0.2b"
 exe_path = importPyInst.get_execute_path()
 
 from conf import configTree
-from ui import Button_x, Label_x, Terminal_x, Treeview_x
+from ui import Button_x, Frame_x, Label_x, Terminal_x, Treeview_x
 from langages import lang_app
 from logger import INFO, Logger
 
@@ -230,9 +230,16 @@ label_lang.position(x=259, y=570, width=82, height=32)
 label_lang.show()
 
 #VERSION
-label_xersion = Label_x(window, text="version : " + version, bg='#202020', fg='#909090')
-label_xersion.position(x=475, y=570, width=124, height=32)
-label_xersion.show()
+frame_version = Frame_x(window, bg='#202020')
+frame_version.position(x=470, y=575, width=124, height=20)
+frame_version.propagate(False)
+frame_version.show()
+
+label_version_text = Label_x(frame_version, text=version, bg='#202020', fg='#009900')
+label_version_text.grid(row=0, column=1, sticky=W)
+
+label_version_text = Label_x(frame_version, text="version :", bg='#202020', fg='#909090')
+label_version_text.grid(row=0, column=0, sticky=W)
 
 #BUTTON
 button_tree = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
