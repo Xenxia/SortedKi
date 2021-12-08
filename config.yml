@@ -18,5 +18,5 @@ config_sort:
         path: Video
         ext: ['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
 unsorted: false
-doNotSort: []
+doNotSort: ['test.test', '*.pdf']
 lang: none

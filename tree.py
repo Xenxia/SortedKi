@@ -36,6 +36,19 @@ langage = lang_app(log, path=exe_path)
 conf = configTree(log, lang=langage.lang)
 conf.loadConfig()
 
+def moveToRoot():
+    for file_path in pathlib.Path('./').rglob("*.*"):
+        file_name = os.path.basename(file_path)
+        os.rename(str(file_path), './'+str(file_name))
+    log.info("Move to root")
+
+def notSort():
+    list_temp = []
+    for f in conf.CONFIG["doNotSort"]:
+        for file in pathlib.Path('./').glob(f):
+            list_temp.append(str(file))
+    return list_temp
+
 def doublon(file: str, path: str) -> str:
 
     fileName, fileExt = os.path.splitext(file)
@@ -45,7 +58,10 @@ def doublon(file: str, path: str) -> str:
         if numWhile != 0:
             new_name = new_name.replace(new_name[-2:], "_"+str(numWhile))
         else:
-            new_name = fileName+'_'+str(numWhile)
+            if fileName[-2]!="_":
+                new_name = fileName+'_'+str(numWhile)
+            else:
+                new_name = fileName.replace(fileName[-2:], "_"+str(numWhile+1))
 
         new_path = path+'/'+new_name+fileExt
         if not os.path.exists(new_path):
@@ -58,6 +74,9 @@ def not_dev():
     console1.printTerminal(text="This feature is not developed", color="#FF0AFF", colored_text="*")
 
 def sort():
+
+    doNotSort_l = notSort()
+
     for key in conf.CONFIG['config_sort']:
         for key2 in conf.CONFIG['config_sort'][key]['ext']:
             path = './'+conf.CONFIG['config_sort'][key]['path']
@@ -69,7 +88,7 @@ def sort():
 
                 while True:
 
-                    if str(file) in conf.CONFIG['doNotSort'] or str(file) == exe_file or str(file) == "config.yml":
+                    if str(file) in doNotSort_l or str(file) == exe_file or str(file) == "config.yml":
                         break
 
                     try:
@@ -90,7 +109,7 @@ def sort():
                     # For other errors
                     except OSError as error:
                         console1.printTerminal('ERROR : ' + str(error), color="#FF0000", colored_text="ERROR")
-                        print('ERROR : ' + str(error))
+                        log.error('ERROR : ' + str(error))
                         break
 
     if conf.CONFIG['unsorted'] == True :
@@ -101,7 +120,7 @@ def sort():
             
             while True:
 
-                if str(file) in conf.CONFIG['doNotSort'] or str(file) == exe_file or str(file) == "config.yml":
+                if str(file) in doNotSort_l or str(file) == exe_file or str(file) == "config.yml":
                     break
 
                 try:
@@ -121,25 +140,10 @@ def sort():
 
                 # For other errors
                 except OSError as error:
-                    print('ERROR ' + str(error))
+                    log.error('ERROR ' + str(error))
                     break
 
 # ? TK ------------------------------------------------------------------------------->
-
-def option():
-    console1.hide()
-    button_tree.hide()
-    button_clear.hide()
-    button_option.show()
-    button_option.disable()
-
-    button_edit.show()
-    button_export.show()
-    button_import.show()
-    button_return.show()
-
-    ihm.hide()
-    button_saveAndReturn.hide()
 
 def main():
     console1.show()
@@ -153,6 +157,23 @@ def main():
     button_export.hide()
     button_import.hide()
     button_return.hide()
+    button_moveToRoot.hide()
+
+    ihm.hide()
+    button_saveAndReturn.hide()
+
+def option():
+    console1.hide()
+    button_tree.hide()
+    button_clear.hide()
+    button_option.show()
+    button_option.disable()
+
+    button_edit.show()
+    button_export.show()
+    button_import.show()
+    button_return.show()
+    button_moveToRoot.show()
 
     ihm.hide()
     button_saveAndReturn.hide()
@@ -168,6 +189,7 @@ def edit():
     button_export.hide()
     button_import.hide()
     button_return.hide()
+    button_moveToRoot.hide()
 
     for i in ihm.tree.get_children():
         ihm.tree.delete(i)
@@ -222,6 +244,7 @@ button_clear.position(x=255, y=24, width=90, height=24)
 button_option = Button_x(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
 button_option.position(x=2, y=574, width=24, height=24)
 
+#option
 button_edit = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
 button_edit.position(x=217.5, y=24, width=165, height=24)
 
@@ -231,8 +254,11 @@ button_export.position(x=217.5, y=48, width=165, height=24)
 button_import = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
 button_import.position(x=217.5, y=72, width=165, height=24)
 
+button_moveToRoot = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Move to root", command=moveToRoot)
+button_moveToRoot.position(x=217.5, y=96, width=165, height=24)
+
 button_return = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
-button_return.position(x=235, y=120, width=130, height=24)
+button_return.position(x=235, y=200, width=130, height=24)
 
 #CONSOLE
 console1 = Terminal_x(window, bg="#000000", fg="#FFFFFF")
