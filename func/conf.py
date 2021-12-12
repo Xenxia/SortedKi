@@ -6,7 +6,7 @@ import os, stat, shutil
 
 from logger import Logger
 
-class configTree():
+class ConfigTree():
     log: Logger
     CONFIG: TypedDict
     __LANG: TypedDict

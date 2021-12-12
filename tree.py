@@ -5,6 +5,7 @@ from tkinter import *
 # from tkinter import ttk
 from ImportPyinstaller import Import_pyInst
 from PIL import Image, ImageTk
+import webbrowser
 
 importPyInst = Import_pyInst()
 importPyInst.add_path(folder_path='func')
@@ -15,10 +16,11 @@ version = "0.0.2b"
 
 exe_path = importPyInst.get_execute_path()
 
-from conf import configTree
+from conf import ConfigTree
 from ui import Button_x, Frame_x, Label_x, Terminal_x, Treeview_x
-from langages import lang_app
 from logger import INFO, Logger
+from langages import Lang_app
+from update import Update
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=INFO)
 log.customize(level=("[", "]"))
@@ -29,12 +31,17 @@ else:
     log.activColor(True)
     exe_file = os.path.realpath(__file__)
 
+
 exe_file = ntpath.basename(exe_file)
 
-langage = lang_app(log, path=exe_path)
+langage = Lang_app(log, path=exe_path)
+update = Update(log)
 
-conf = configTree(log, lang=langage.lang)
+conf = ConfigTree(log, lang=langage.lang)
 conf.loadConfig()
+
+def openWeb():
+    webbrowser.open('https://github.com/Xenxia/Tree/releases/latest')
 
 def moveToRoot():
     for file_path in pathlib.Path('./').rglob("*.*"):
@@ -151,7 +158,6 @@ def main():
     button_clear.show()
     button_option.show()
     button_option.enable()
-    
 
     button_edit.hide()
     button_export.hide()
@@ -238,8 +244,14 @@ frame_version.position(x=470, y=575, width=124, height=20)
 frame_version.propagate(False)
 frame_version.show()
 
-label_version_text = Label_x(frame_version, text=version, bg='#202020', fg='#009900')
-label_version_text.grid(row=0, column=1, sticky=W)
+last_version = update.get_version()
+
+label_version = Button_x(frame_version, bg="#202020", fg="#990000", bd=0, highlightthickness=0, disabledforeground="#009900", state=DISABLED, text=version)
+
+if last_version != None and last_version != version:
+    label_version.config(activebackground="#202020", state=NORMAL, command=openWeb)
+
+label_version.grid(row=0, column=1, pady=(1, 0))
 
 label_version_text = Label_x(frame_version, text="version :", bg='#202020', fg='#909090')
 label_version_text.grid(row=0, column=0, sticky=W)

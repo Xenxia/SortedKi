@@ -76,7 +76,6 @@ class Logger():
             return time.strftime(datefmt)
         else:
             return time.strftime(self.datefmt)
-            
 
     def __hex_to_rgb(self, value) -> Tuple[int, int, int]:
         value = value.lstrip('#')
@@ -157,7 +156,7 @@ class Logger():
             print(self.format.format(msg=styled_msg,
                                     context=styled_context,
                                     time=styled_color_time if self.onColor else styled_time, 
-                                    levelname= styled_color_level if self.onColor else styled_level+self.__space(levelT),
+                                    levelname= styled_color_level+self.__space(levelT) if self.onColor else styled_level+self.__space(levelT),
                                     user=styled_user))
 
         if self.writingFile:

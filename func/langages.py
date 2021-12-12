@@ -4,7 +4,7 @@ from ruamel.yaml import YAML
 
 from logger import Logger
 
-class lang_app:
+class Lang_app:
     lang: TypedDict
     LANG_SYS: str
     log: Logger

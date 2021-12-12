@@ -53,6 +53,8 @@ PyInstaller.__main__.run([
     '--hidden-import=tkinter.ttk',
     '--hidden-import=tkinter.filedialog',
     '--hidden-import=tkinter',
+    '--hidden-import=requests',
+    '--hidden-import=webbrowser',
     '--icon=image/tree.ico'
 ])
 print("\n========================================= END BUILD DEV ==========================================\n")
@@ -76,6 +78,8 @@ if not args.Command_Name == "dev":
         '--hidden-import=tkinter.ttk',
         '--hidden-import=tkinter.filedialog',
         '--hidden-import=tkinter',
+        '--hidden-import=requests',
+        '--hidden-import=webbrowser',
         '--icon=image/tree.ico'
     ])
     print("\n========================================= END BUILD PROD ==========================================\n")
