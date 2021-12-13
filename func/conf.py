@@ -15,27 +15,27 @@ class ConfigTree():
     __CONFIG_FILE_NAME = "config.yml"
     __DEFAULT_CONFIG = {
         "config_sort":{
-            "exe":{
-                "path": "Executable",
+            "Runtime":{
+                "path": "Runtime",
                 "ext":['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
             },
-            "doc":{
+            "Document":{
                 "path": "Document",
                 "ext":['*.xlsx', '*.docx', '*.pptx', '*.pdf']
             },
-            "archive":{
+            "Archive":{
                 "path": "Archive",
                 "ext":['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
             },
-            "music":{
+            "Music":{
                 "path": "Music",
                 "ext":['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
             },
-            "picture":{
-                "path": "Image",
+            "Picture":{
+                "path": "Picture",
                 "ext":['*.png', '*.jpeg', '*.jpg','*.bmp', '*.tiff', '*.gif']
             },
-            "video":{
+            "Video":{
                 "path": "Video",
                 "ext":['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
             },

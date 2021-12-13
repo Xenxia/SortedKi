@@ -1,5 +1,5 @@
 from tkinter import Button, Entry, Frame, Label, Text
-from tkinter.constants import BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y
+from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
 from tkinter import ttk
 from typing import Tuple
 
@@ -17,7 +17,7 @@ class Button_x(Button):
         self.width = 0
         self.height = 0
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -87,7 +87,7 @@ class Toggle_Button_x(Button):
             self.config(fg=self.color[0])
             self.status = True
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -119,7 +119,7 @@ class Label_x(Label):
         self.width = 0
         self.height = 0
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -146,7 +146,7 @@ class Text_x(Text):
         self.height = 0
 
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -173,8 +173,7 @@ class Terminal_x(Text):
         self.width = 0
         self.height = 0
 
-
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -279,9 +278,9 @@ class Treeview_x(Frame):
         self.scroll_h = ttk.Scrollbar(master=self.frameTreeview, orient=HORIZONTAL)
         self.scroll_h.pack(side=BOTTOM, fill=X)
         
-        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse")
+        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse", height=300)
         self.tree.bind("<ButtonRelease-1>", self.selected)
-        self.tree.pack(fill=Y, expand=True)
+        self.tree.pack(fill=BOTH, expand=False)
 
         self.scroll_x.config(command=self.tree.yview)
         self.scroll_h.config(command=self.tree.xview)
@@ -338,21 +337,32 @@ class Treeview_x(Frame):
         self.style.map('Treeview.Heading', background=[('selected', '#000000')])
         self.style.map('Treeview', background=[('selected', '#228B22')])
 
-    def position(self, x: int, y: int, width: int = None, height: int = None):
+    def posSize(self, x: int, y: int, width: int = None, height: int = None):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
 
-    def setColumns(self, columns: Tuple[str]):
+    def setColumns(self, columns: Tuple[str], size: Tuple[int] = None):
         self.tree['columns'] = columns
 
         self.tree.column("#0", width=0, stretch=NO)
         self.tree.heading("#0", text="")
 
-        for col in columns:
-            self.tree.column(col, anchor=W, minwidth=100)
-            self.tree.heading(col, text=col, )
+        end = columns[-1]
+
+        for index, col in enumerate(columns):
+            width = 100
+            stch = NO
+
+            if size != None and len(columns) == len(size):
+                width = size[index]
+
+            if end == col:
+                stch = YES
+
+            self.tree.column(col, anchor=W, width=width, stretch=stch)
+            self.tree.heading(col, text=col)
 
     def hide(self):
         self.place_forget()
@@ -383,7 +393,6 @@ class Treeview_x(Frame):
         except:
             print("not select")
         # Grab record values
-        
 
     def remove(self):
         try:
@@ -445,7 +454,7 @@ class Frame_x(Frame):
         self.width = 0
         self.height = 0
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width
@@ -470,7 +479,7 @@ class Entry_x(Entry):
         self.width = 0
         self.height = 0
 
-    def position(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int):
         self.x = x
         self.y = y
         self.width = width

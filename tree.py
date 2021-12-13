@@ -12,15 +12,15 @@ importPyInst.add_path(folder_path='func')
 importPyInst.add_path(folder_path='lang')
 importPyInst.add_path(folder_path='image')
 
-version = "0.0.2b"
+version = "0.0.1b"
 
 exe_path = importPyInst.get_execute_path()
 
-from conf import ConfigTree
-from ui import Button_x, Frame_x, Label_x, Terminal_x, Treeview_x
-from logger import INFO, Logger
-from langages import Lang_app
 from update import Update
+from conf import ConfigTree
+from langages import Lang_app
+from logger import INFO, Logger
+from ui import Button_x, Frame_x, Label_x, Terminal_x, Treeview_x
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=INFO)
 log.customize(level=("[", "]"))
@@ -31,10 +31,10 @@ else:
     log.activColor(True)
     exe_file = os.path.realpath(__file__)
 
-
 exe_file = ntpath.basename(exe_file)
 
 langage = Lang_app(log, path=exe_path)
+
 update = Update(log)
 
 conf = ConfigTree(log, lang=langage.lang)
@@ -218,8 +218,6 @@ def edit():
     ihm.show()
     button_saveAndReturn.show()
 
-    
-
 # main window
 window = Tk()
 window.title("Tree")
@@ -235,12 +233,12 @@ option_image = ImageTk.PhotoImage(image)
 
 #LANG
 label_lang = Label_x(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
-label_lang.position(x=259, y=570, width=82, height=32)
+label_lang.posSize(x=259, y=570, width=82, height=32)
 label_lang.show()
 
 #VERSION
 frame_version = Frame_x(window, bg='#202020')
-frame_version.position(x=470, y=575, width=124, height=20)
+frame_version.posSize(x=470, y=575, width=124, height=20)
 frame_version.propagate(False)
 frame_version.show()
 
@@ -258,44 +256,43 @@ label_version_text.grid(row=0, column=0, sticky=W)
 
 #BUTTON
 button_tree = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
-button_tree.position(x=255, y=0, width=90, height=24)
+button_tree.posSize(x=255, y=0, width=90, height=24)
 
 button_clear = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
-button_clear.position(x=255, y=24, width=90, height=24)
+button_clear.posSize(x=255, y=24, width=90, height=24)
 
 button_option = Button_x(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
-button_option.position(x=2, y=574, width=24, height=24)
+button_option.posSize(x=2, y=574, width=24, height=24)
 
 #option
 button_edit = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
-button_edit.position(x=217.5, y=24, width=165, height=24)
+button_edit.posSize(x=217.5, y=24, width=165, height=24)
 
 button_export = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
-button_export.position(x=217.5, y=48, width=165, height=24)
+button_export.posSize(x=217.5, y=48, width=165, height=24)
 
 button_import = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
-button_import.position(x=217.5, y=72, width=165, height=24)
+button_import.posSize(x=217.5, y=72, width=165, height=24)
 
 button_moveToRoot = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Move to root"+" !", command=moveToRoot)
-button_moveToRoot.position(x=217.5, y=124, width=165, height=24)
+button_moveToRoot.posSize(x=217.5, y=124, width=165, height=24)
 
 button_deleteConfig = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=not_dev)
-button_deleteConfig.position(x=217.5, y=148, width=165, height=24)
+button_deleteConfig.posSize(x=217.5, y=148, width=165, height=24)
 
 button_return = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
-button_return.position(x=235, y=200, width=130, height=24)
+button_return.posSize(x=235, y=200, width=130, height=24)
 
 #CONSOLE
 console1 = Terminal_x(window, bg="#000000", fg="#FFFFFF")
-console1.position(x=0, y=48, width=600, height=524)
+console1.posSize(x=0, y=48, width=600, height=524)
 
 #tab config
 
 ihm = Treeview_x(window, bg="#202020")
-ihm.position(0, 0, 600, 500)
-ihm.setColumns(("Name profile", "Folder", "Extention"))
+ihm.posSize(0, 0, 600, 500)
+ihm.setColumns(("Name profile", "Folder", "Extention"), (150, 150, 300))
 ihm.propagate(False)
-
 
 def get_all_children():
 
@@ -327,7 +324,7 @@ def get_all_children():
 
 
 button_saveAndReturn = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
-button_saveAndReturn.position(x=2, y=574, width=130, height=24)
+button_saveAndReturn.posSize(x=2, y=574, width=130, height=24)
 
 main()
 
