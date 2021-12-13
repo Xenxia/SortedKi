@@ -1,5 +1,5 @@
 from tkinter import Button, Entry, Frame, Label, Text
-from tkinter.constants import BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y
+from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
 from tkinter import ttk
 from typing import Tuple
 
@@ -279,9 +279,9 @@ class Treeview_x(Frame):
         self.scroll_h = ttk.Scrollbar(master=self.frameTreeview, orient=HORIZONTAL)
         self.scroll_h.pack(side=BOTTOM, fill=X)
         
-        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse")
+        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse", height=300)
         self.tree.bind("<ButtonRelease-1>", self.selected)
-        self.tree.pack(fill=Y, expand=True)
+        self.tree.pack(fill=BOTH, expand=False)
 
         self.scroll_x.config(command=self.tree.yview)
         self.scroll_h.config(command=self.tree.xview)
@@ -344,15 +344,26 @@ class Treeview_x(Frame):
         self.width = width
         self.height = height
 
-    def setColumns(self, columns: Tuple[str]):
+    def setColumns(self, columns: Tuple[str], size: Tuple[int] = None):
         self.tree['columns'] = columns
 
         self.tree.column("#0", width=0, stretch=NO)
         self.tree.heading("#0", text="")
 
-        for col in columns:
-            self.tree.column(col, anchor=W, minwidth=100)
-            self.tree.heading(col, text=col, )
+        end = columns[-1]
+
+        for index, col in enumerate(columns):
+            width = 100
+            stch = NO
+
+            if size != None and len(columns) == len(size):
+                width = size[index]
+
+            if end == col:
+                stch = YES
+
+            self.tree.column(col, anchor=W, width=width, stretch=stch)
+            self.tree.heading(col, text=col)
 
     def hide(self):
         self.place_forget()

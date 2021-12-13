@@ -218,8 +218,6 @@ def edit():
     ihm.show()
     button_saveAndReturn.show()
 
-    
-
 # main window
 window = Tk()
 window.title("Tree")
@@ -293,9 +291,8 @@ console1.position(x=0, y=48, width=600, height=524)
 
 ihm = Treeview_x(window, bg="#202020")
 ihm.position(0, 0, 600, 500)
-ihm.setColumns(("Name profile", "Folder", "Extention"))
+ihm.setColumns(("Name profile", "Folder", "Extention"), (100, 150, 300))
 ihm.propagate(False)
-
 
 def get_all_children():
 
