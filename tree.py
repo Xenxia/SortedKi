@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os, pathlib, sys, ntpath
-from pathlib import Path
 from tkinter import *
 # from tkinter import ttk
 from ImportPyinstaller import Import_pyInst
@@ -13,7 +12,9 @@ importPyInst.add_path(folder_path='func')
 importPyInst.add_path(folder_path='lang')
 importPyInst.add_path(folder_path='image')
 
-version = "0.0.1b"
+version = "0.0.2b"
+
+notSortList = ["config.yml", "desktop.ini"]
 
 exe_path = importPyInst.get_execute_path()
 
@@ -83,7 +84,7 @@ def not_dev():
 
 def sort():
 
-    doNotSort_l = notSort()
+    notSort_userConfig = notSort()
 
     for key in conf.CONFIG['config_sort']:
         for key2 in conf.CONFIG['config_sort'][key]['ext']:
@@ -96,7 +97,7 @@ def sort():
 
                 while True:
 
-                    if str(file) in doNotSort_l or str(file) == exe_file or str(file) == "config.yml":
+                    if str(file) in notSort_userConfig or str(file) == exe_file or str(file) in notSortList:
                         break
 
                     try:
@@ -128,7 +129,7 @@ def sort():
             
             while True:
 
-                if str(file) in doNotSort_l or str(file) == exe_file or str(file) == "config.yml":
+                if str(file) in notSort_userConfig or str(file) == exe_file or str(file) in notSortList:
                     break
 
                 try:
