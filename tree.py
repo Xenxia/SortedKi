@@ -22,7 +22,7 @@ from update import Update
 from conf import ConfigTree
 from langages import Lang_app
 from logger import INFO, Logger
-from ui import Button_x, Frame_x, Label_x, Terminal_x, Treeview_x
+from ui import Button_up, Frame_up, Label_up, Terminal_up, Treeview_up
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=INFO)
 log.customize(level=("[", "]"))
@@ -234,64 +234,64 @@ image = image.resize((22, 22), Image.ANTIALIAS)
 option_image = ImageTk.PhotoImage(image)
 
 #LANG
-label_lang = Label_x(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
+label_lang = Label_up(window, text="lang : " + langage.get_locale(), bg='#202020', fg='#909090')
 label_lang.posSize(x=259, y=570, width=82, height=32)
 label_lang.show()
 
 #VERSION
-frame_version = Frame_x(window, bg='#202020')
+frame_version = Frame_up(window, bg='#202020')
 frame_version.posSize(x=470, y=575, width=124, height=20)
 frame_version.propagate(False)
 frame_version.show()
 
 last_version = update.get_version()
 
-label_version = Button_x(frame_version, bg="#202020", fg="#990000", bd=0, highlightthickness=0, disabledforeground="#009900", state=DISABLED, text=version)
+label_version = Button_up(frame_version, bg="#202020", fg="#990000", bd=0, highlightthickness=0, disabledforeground="#009900", state=DISABLED, text=version)
 
 if last_version != None and last_version != version:
     label_version.config(activebackground="#202020", state=NORMAL, command=openWeb)
 
 label_version.grid(row=0, column=1, pady=(1, 0))
 
-label_version_text = Label_x(frame_version, text="version :", bg='#202020', fg='#909090')
+label_version_text = Label_up(frame_version, text="version :", bg='#202020', fg='#909090')
 label_version_text.grid(row=0, column=0, sticky=W)
 
-#BUTTON
-button_tree = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
+#main
+button_tree = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
 button_tree.posSize(x=255, y=0, width=90, height=24)
 
-button_clear = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
+button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
 button_clear.posSize(x=255, y=24, width=90, height=24)
 
-button_option = Button_x(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
+button_option = Button_up(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
 button_option.posSize(x=2, y=574, width=24, height=24)
 
 #option
-button_edit = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
+button_edit = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
 button_edit.posSize(x=217.5, y=24, width=165, height=24)
 
-button_export = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
+button_export = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
 button_export.posSize(x=217.5, y=48, width=165, height=24)
 
-button_import = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
+button_import = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_import'], command=conf.importConfig)
 button_import.posSize(x=217.5, y=72, width=165, height=24)
 
-button_moveToRoot = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Move to root"+" !", command=moveToRoot)
+button_moveToRoot = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Move to root"+" !", command=moveToRoot)
 button_moveToRoot.posSize(x=217.5, y=124, width=165, height=24)
 
-button_deleteConfig = Button_x(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=not_dev)
+button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=not_dev)
 button_deleteConfig.posSize(x=217.5, y=148, width=165, height=24)
 
-button_return = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
+button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
 button_return.posSize(x=235, y=200, width=130, height=24)
 
 #CONSOLE
-console1 = Terminal_x(window, bg="#000000", fg="#FFFFFF")
+console1 = Terminal_up(window, bg="#000000", fg="#FFFFFF")
 console1.posSize(x=0, y=48, width=600, height=524)
 
 #tab config
 
-ihm = Treeview_x(window, bg="#202020")
+ihm = Treeview_up(window, bg="#202020")
 ihm.posSize(0, 0, 600, 500)
 ihm.setColumns(("Name profile", "Folder", "Extention"), (150, 150, 300))
 ihm.propagate(False)
@@ -323,9 +323,7 @@ def get_all_children():
     conf.saveConfig()
     option()
 
-
-
-button_saveAndReturn = Button_x(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
+button_saveAndReturn = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
 button_saveAndReturn.posSize(x=2, y=574, width=130, height=24)
 
 main()
