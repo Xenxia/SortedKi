@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os, pathlib, sys, ntpath
+from pathlib import Path
 from tkinter import *
 # from tkinter import ttk
 from ImportPyinstaller import Import_pyInst
@@ -89,7 +90,7 @@ def sort():
             path = './'+conf.CONFIG['config_sort'][key]['path']
 
             if not os.path.exists(path):
-                os.mkdir(path)
+                os.makedirs(path, exist_ok=True)
 
             for file in pathlib.Path('./').glob(key2):
 

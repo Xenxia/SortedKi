@@ -16,7 +16,7 @@ class Update():
 
     def get_response(self) -> str:
         self.log.info("Get Version")
-        response = requests.get(self.__URL, timeout=1)
+        response = requests.get(self.__URL, timeout=2)
         if str(response.status_code) == "404":
             return None
         else:
