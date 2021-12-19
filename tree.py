@@ -97,7 +97,7 @@ def sort():
 
                 while True:
 
-                    if str(file) in notSort_userConfig or str(file) == exe_file or str(file) in notSortList:
+                    if str(file) in notSort_userConfig or str(file) in notSortList or str(file) == exe_file:
                         break
 
                     try:
@@ -230,7 +230,7 @@ window.resizable(0, 0)
 window.option_add("*font", 'Consolas 10 bold')
 
 image = Image.open(exe_path + '/image/option.png')
-image = image.resize((22, 22), Image.ANTIALIAS)
+image = image.resize((24, 24), Image.ANTIALIAS)
 option_image = ImageTk.PhotoImage(image)
 
 #LANG
