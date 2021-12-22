@@ -4,6 +4,7 @@ import os, pathlib, sys, ntpath
 from tkinter import *
 # from tkinter import ttk
 from ImportPyinstaller import Import_pyInst
+from threading import Thread
 from PIL import Image, ImageTk
 import webbrowser
 
@@ -21,10 +22,10 @@ exe_path = importPyInst.get_execute_path()
 from update import Update
 from conf import ConfigTree
 from langages import Lang_app
-from logger import INFO, Logger
-from ui import Button_up, Frame_up, Label_up, Terminal_up, Treeview_up
+from logger import DEBUG, Logger
+from ui import Button_up, Frame_up, Label_up, Terminal_ScrolledText_up, Treeview_up
 
-log = Logger(format="{time} | {levelname} : {msg}", levellog=INFO)
+log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
 
 if importPyInst.is_compiled:
@@ -58,33 +59,74 @@ def notSort():
             list_temp.append(str(file))
     return list_temp
 
-def doublon(file: str, path: str) -> str:
+def duplicate(file: str, path: str) -> str:
 
     fileName, fileExt = os.path.splitext(file)
 
-    numWhile: int = 0
-    while True:
-        if numWhile != 0:
-            new_name = new_name.replace(new_name[-2:], "_"+str(numWhile))
-        else:
-            if fileName[-2]!="_":
-                new_name = fileName+'_'+str(numWhile)
-            else:
-                new_name = fileName.replace(fileName[-2:], "_"+str(numWhile+1))
+    pathFile = f"{path}/{file}"
 
-        new_path = path+'/'+new_name+fileExt
-        if not os.path.exists(new_path):
-            os.rename(fileName+fileExt, new_path)
-            break
-        numWhile += 1
-    return new_name
+    numberDuplicate = 1
+    end = False
+    index = 0
+    forcePass = False
+
+    while os.path.exists(pathFile):
+
+        if fileName[-1] != "]" or forcePass:
+            newName = f"{fileName}_[{numberDuplicate}]"
+            numberDuplicate += 1
+        else:
+            if not end:
+                if "_[" in fileName and "]" in fileName:
+                    for i in range(12+4):
+                        i_N = (i*-1)
+                        if "_[" == fileName[i_N:(i_N+2)]:
+                            index = i
+                            end = True
+                            break
+                try:
+                    number = int(fileName[-(index-2):-1])
+                except ValueError:
+                    forcePass = True
+                    newName = fileName
+                fileNameNoNumber = fileName[0:-index]
+
+            if not forcePass:
+                newName = f"{fileNameNoNumber}_[{number+numberDuplicate}]"
+                numberDuplicate += 1
+
+        pathFile = f"{path}/{newName}{fileExt}"
+
+    os.rename(file, pathFile)
+    
+
+    # while True:
+        # if numWhile != 0:
+        #     new_name = new_name.replace(new_name[-2:], "_"+str(numWhile))
+        # else:
+        #     if fileName[-2]!="_":
+        #         new_name = fileName+'_'+str(numWhile)
+        #     else:
+        #         new_name = fileName.replace(fileName[-2:], "_"+str(numWhile+1))
+
+        # new_path = path+'/'+new_name+fileExt
+        # if not os.path.exists(new_path):
+        #     os.rename(fileName+fileExt, new_path)
+        #     break
+        # numWhile += 1
+
+    return newName+fileExt
 
 def not_dev():
-    console1.printTerminal(text="This feature is not developed", color="#FF0AFF", colored_text="*")
+    console1.printTerminal("This feature is not developed", color=["Purple"])
 
 def sort():
 
+    button_tree.disable()
+
     notSort_userConfig = notSort()
+
+    check: list = []
 
     for key in conf.CONFIG['config_sort']:
         for key2 in conf.CONFIG['config_sort'][key]['ext']:
@@ -95,62 +137,54 @@ def sort():
 
             for file in pathlib.Path('./').glob(key2):
 
-                while True:
+                if str(file) not in notSort_userConfig and str(file) not in notSortList and str(file) != exe_file:
 
-                    if str(file) in notSort_userConfig or str(file) in notSortList or str(file) == exe_file:
-                        break
-
+                    check.append(str(file))
                     try:
                         os.rename(str(file), path+'/'+str(file))
-                        console1.printTerminal("OK: " + langage.lang['OK']['sorted'].format(file=str(file), path=path), color='#00FF00', colored_text='OK')
-                        break
+                        console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file), path=path), color=["Green", None])
 
                     # For permission related errors
                     except PermissionError:
-                        console1.printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), color="#FF7F00", colored_text="WARNING")
-                        break
+                        console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
 
+                    # For File Exists errors
                     except FileExistsError:
-                        new = doublon(str(file), path)
-                        console1.printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color='#00FF00', colored_text='OK')
-                        break
+                        new = duplicate(str(file), path)
+                        console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
 
                     # For other errors
                     except OSError as error:
-                        console1.printTerminal('ERROR : ' + str(error), color="#FF0000", colored_text="ERROR")
-                        log.error('ERROR : ' + str(error))
-                        break
+                        console1.printTerminal("❌: ", str(error), color=["Red", None])
+                        log.error("❌: " + str(error))
 
     if conf.CONFIG['unsorted'] == True :
         if not os.path.exists('./#Unsorted'):
             os.mkdir('./#Unsorted')
         
         for file in pathlib.Path('./').glob('*.*'):
-            
-            while True:
 
-                if str(file) in notSort_userConfig or str(file) == exe_file or str(file) in notSortList:
-                    break
+            if str(file) not in notSort_userConfig and str(file) not in notSortList and str(file) not in check and str(file) != exe_file:
 
                 try:
                     os.rename(str(file), './#Unsorted/'+str(file))
-                    console1.printTerminal("OK: " + langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), color='#00FF00', colored_text='OK')
-                    break
+                    console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), color=["Green", None])
 
                 # For permission related errors
                 except PermissionError:
-                    console1.printTerminal("WARNING: " + langage.lang['ERROR']['permission_file'].format(file=str(file)), color="#FF7F00", colored_text="WARNING")
-                    break
+                    console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
 
+                # For File Exists errors
                 except FileExistsError:
-                    new = doublon(str(file), path)
-                    console1.printTerminal("OK: " + langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color='#00FF00', colored_text='OK')
-                    break
+                    new = duplicate(str(file), path)
+                    console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
 
                 # For other errors
                 except OSError as error:
-                    log.error('ERROR ' + str(error))
-                    break
+                    console1.printTerminal("❌: ", str(error), color=["Red", None])
+                    log.error("❌: " + str(error))
+    del check
+    button_tree.enable()
 
 # ? TK ------------------------------------------------------------------------------->
 
@@ -223,13 +257,13 @@ def edit():
 # main window
 window = Tk()
 window.title("Tree")
-window.iconbitmap(exe_path + "/image/tree.ico")
+window.iconbitmap(exe_path + "/img/tree.ico")
 window.config(background='#202020')
 window.geometry("600x600")
 window.resizable(0, 0)
 window.option_add("*font", 'Consolas 10 bold')
 
-image = Image.open(exe_path + '/image/option.png')
+image = Image.open(exe_path + '/img/option.png')
 image = image.resize((24, 24), Image.ANTIALIAS)
 option_image = ImageTk.PhotoImage(image)
 
@@ -257,7 +291,7 @@ label_version_text = Label_up(frame_version, text="version :", bg='#202020', fg=
 label_version_text.grid(row=0, column=0, sticky=W)
 
 #main
-button_tree = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=sort)
+button_tree = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_sort'], command=lambda: Thread(target=sort).start())
 button_tree.posSize(x=255, y=0, width=90, height=24)
 
 button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
@@ -286,7 +320,15 @@ button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="
 button_return.posSize(x=235, y=200, width=130, height=24)
 
 #CONSOLE
-console1 = Terminal_up(window, bg="#000000", fg="#FFFFFF")
+colorConsole = {
+    "Green": ["#000000", "#00ff00"],
+    "Blue": ["#000000", "#26abff"],
+    "Orange": ["#000000", "#ff7f00"],
+    "Red": ["#000000", "#ff0000"],
+    "Purple": ["#000000", "#ff0aff"]
+}
+console1 = Terminal_ScrolledText_up(window, bg="#000000", fg="#FFFFFF")
+console1.configTag(colorConsole)
 console1.posSize(x=0, y=48, width=600, height=524)
 
 #tab config

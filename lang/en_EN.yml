@@ -1,6 +1,6 @@
 ERROR:
   create_config_file: Error during the creation of the sorting configuration file
-  permission_file: The process cannot access the file because this file {file} is used by another process
+  permission_file: The process cannot access the file "{file}" because it is used by another process
 
 OK:
   sorted: The file "{file}" has been moved to {path}.
@@ -8,7 +8,7 @@ OK:
   unsorted: the file "{file}" has not been sorted.
 
 UI:
-  button_sort: Sort
+  button_sort: Sorted
   button_clear: Clear log
   button_edit: Edit settings
   button_export: Export settings

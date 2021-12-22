@@ -1,7 +1,32 @@
-from tkinter import Button, Entry, Frame, Label, Text, Widget
-from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
+from tkinter import Button, Entry, Frame, Grid, Label, Pack, Place, Text, Widget
+from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
 from tkinter import ttk
 from typing import Tuple
+
+class ScrolledText(Text):
+    def __init__(self, master=None, **kw):
+
+        self.frame = Frame(master)
+        self.vbar = ttk.Scrollbar(self.frame)
+        self.vbar.pack(side=RIGHT, fill=Y)
+
+        kw.update({'yscrollcommand': self.vbar.set})
+        Text.__init__(self, self.frame, **kw)
+        self.pack(side=LEFT, fill=BOTH, expand=True)
+        self.vbar['command'] = self.yview
+
+        # Copy geometry methods of self.frame without overriding Text
+        # methods -- hack!
+        text_meths = vars(Text).keys()
+        methods = vars(Pack).keys() | vars(Grid).keys() | vars(Place).keys()
+        methods = methods.difference(text_meths)
+
+        for m in methods:
+            if m[0] != '_' and m != 'config' and m != 'configure':
+                setattr(self, m, getattr(self.frame, m))
+
+    def __str__(self):
+        return str(self.frame)
 
 class Widget_up(Widget):
     x: int
@@ -99,10 +124,10 @@ class Text_up(Text, Widget_up):
         Text.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
 
-class Terminal_up(Text, Widget_up):
+class Terminal_ScrolledText_up(ScrolledText, Widget_up):
 
     def __init__(self, master=None, cnf={}, **kw):
-        Text.__init__(self, master=master, cnf=cnf, **kw)
+        ScrolledText.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
         self.bind("<Key>", lambda e: self.__ctrlEvent(e))
 
@@ -112,20 +137,17 @@ class Terminal_up(Text, Widget_up):
         else:
             return "break"
 
-    def printTerminal(self, text: str, colored_text: str = 'none', color: str = '#FFFFFF') -> None:
-        self.insert(END, text + "\n")
+    def configTag(self, tag: dict):
+        for key, value in tag.items():
+            self.tag_configure(key, background=value[0], foreground=value[1])
+
+    def printTerminal(self, *texts, color: list = None) -> None:
+        for index, text in enumerate(texts):
+            if text == texts[-1]:
+                self.insert(END, text+ "\n", color[index])
+            else:
+                self.insert(END, text, color[index])
         self.see(END)
-        self.tag_config(color, background="#000000", foreground=color)
-        if color != 'none':
-            if colored_text == '*':
-                colored_text = text
-            pos = '1.0'
-            while True:
-                idx = self.search(colored_text, pos, END)
-                if not idx:
-                    break
-                pos = '{}+{}c'.format(idx, len(colored_text))
-                self.tag_add(color, idx, pos)
 
     def clearTerminal(self) -> None:
         self.delete("1.0","end")

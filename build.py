@@ -43,7 +43,7 @@ PyInstaller.__main__.run([
     '--onefile',
     # '--clean',
     '--add-data=func/comp;func',
-    '--add-data=image;image',
+    '--add-data=img;img',
     '--add-data=lang;lang',
     '--hidden-import=locale',
     '--hidden-import=ruamel.yaml',
@@ -51,11 +51,12 @@ PyInstaller.__main__.run([
     '--hidden-import=ctypes',
     '--hidden-import=sys',
     '--hidden-import=tkinter.ttk',
+    '--hidden-import=tkinter.scrolledtext',
     '--hidden-import=tkinter.filedialog',
     '--hidden-import=tkinter',
     '--hidden-import=requests',
     '--hidden-import=webbrowser',
-    '--icon=image/tree.ico'
+    '--icon=img/tree.ico'
 ])
 print("\n========================================= END BUILD DEV ==========================================\n")
 
@@ -68,7 +69,7 @@ if not args.Command_Name == "dev":
         # '--clean',
         '--windowed',
         '--add-data=func/comp;func',
-        '--add-data=image;image',
+        '--add-data=img;img',
         '--add-data=lang;lang',
         '--hidden-import=locale',
         '--hidden-import=ruamel.yaml',
@@ -76,11 +77,12 @@ if not args.Command_Name == "dev":
         '--hidden-import=ctypes',
         '--hidden-import=sys',
         '--hidden-import=tkinter.ttk',
+        '--hidden-import=tkinter.scrolledtext',
         '--hidden-import=tkinter.filedialog',
         '--hidden-import=tkinter',
         '--hidden-import=requests',
         '--hidden-import=webbrowser',
-        '--icon=image/tree.ico'
+        '--icon=img/tree.ico'
     ])
     print("\n========================================= END BUILD PROD ==========================================\n")
 

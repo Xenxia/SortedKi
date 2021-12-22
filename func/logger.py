@@ -7,7 +7,7 @@ CRITICAL: int = 50
 ERROR: int = 40
 WARNING: int = 30
 INFO: int = 20
-DEBU: int = 10
+DEBUG: int = 10
 
 class Logger():
 
@@ -130,6 +130,10 @@ class Logger():
         if user is not None: self.logstyle["user"] = user
 
     def log(self, level: str, msg: str, context: str = ""):
+
+        msg = str(msg)
+        context = str(context)
+        level = str(level)
 
         levelT: Tuple = self.dictlevel[level]
 
