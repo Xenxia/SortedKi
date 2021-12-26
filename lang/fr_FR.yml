@@ -3,9 +3,10 @@ ERROR:
   permission_file: Le processus ne peut pas accéder au fichier "{file}" car il est utilisé par un autre processus.
 
 OK:
-  sorted: le fichier "{file}" à été déplacé dans {path}.
-  sorted_double: le fichier "{file}" à été renomé "{new_name}" et déplacé dans {path}.
+  sorted: le fichier "{file}" a été déplacé dans {path}.
+  sorted_double: le fichier "{file}" a été renommé "{new_name}" et déplacé dans {path}.
   unsorted: le fichier "{file}" n'a pas été trié.
+  sorted_double_unsorted: Le fichier "{file}" a été renommé "{new_name}" et n'a pas été trié.
 
 UI:
   button_sort: Trié

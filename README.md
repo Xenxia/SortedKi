@@ -3,10 +3,13 @@
     <h1 align="center">Tree</h1>
 </div>
 
-<p align="center" style="color:#ccffcc">
-    <strong>This software allows you to sort your files according to defined rules</strong><br><br>
+<div align="center">
+    <strong>This software allows you to sort your files according to defined rules</strong>
+    <br><br>
     <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_ex.png" />
-</p>
+    <br><br>
+    <h1><a href="https://github.com/Xenxia/Tree/releases/latest">Download</a></h1>
+</div>
 
 
 

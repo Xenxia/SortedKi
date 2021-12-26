@@ -13,7 +13,7 @@ importPyInst.add_path(folder_path='func')
 importPyInst.add_path(folder_path='lang')
 importPyInst.add_path(folder_path='image')
 
-version = "0.0.3b"
+version = "0.0.4b"
 
 notSortList = ["config.yml", "desktop.ini"]
 
@@ -168,7 +168,7 @@ def sort():
 
                 try:
                     os.rename(str(file), './#Unsorted/'+str(file))
-                    console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file), path="./#Unsorted"), color=["Green", None])
+                    console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file)), color=["Purple", None])
 
                 # For permission related errors
                 except PermissionError:
@@ -176,8 +176,8 @@ def sort():
 
                 # For File Exists errors
                 except FileExistsError:
-                    new = duplicate(str(file), path)
-                    console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
+                    new = duplicate(str(file), "./#Unsorted")
+                    console1.printTerminal("✔: ", langage.lang['OK']['sorted_double_unsorted'].format(file=str(file), new_name=new), color=["Purple2", None])
 
                 # For other errors
                 except OSError as error:
@@ -325,7 +325,8 @@ colorConsole = {
     "Blue": ["#000000", "#26abff"],
     "Orange": ["#000000", "#ff7f00"],
     "Red": ["#000000", "#ff0000"],
-    "Purple": ["#000000", "#ff0aff"]
+    "Purple": ["#000000", "#ff0aff"],
+    "Purple2": ["#000000", "#743DFF"]
 }
 console1 = Terminal_ScrolledText_up(window, bg="#000000", fg="#FFFFFF")
 console1.configTag(colorConsole)

@@ -6,6 +6,7 @@ OK:
   sorted: The file "{file}" has been moved to {path}.
   sorted_double: The file "{file}" has been renamed "{new_name}" and moved to {path}.
   unsorted: the file "{file}" has not been sorted.
+  sorted_double_unsorted: The file "{file}" has been renamed "{new_name}" and has not been sorted.
 
 UI:
   button_sort: Sorted
