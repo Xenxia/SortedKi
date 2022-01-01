@@ -9,9 +9,34 @@ OK:
   sorted_double_unsorted: Le fichier "{file}" a été renommé "{new_name}" et n'a pas été trié.
 
 UI:
-  button_sort: Trié
-  button_clear: Effacer log
-  button_edit: Editer configuration
-  button_export: Exporter configuration
-  button_import: Importer configuration
-  button_return: Retour
+  MAIN_MENU:
+    button_sort: Trié
+    button_clear: Effacer log
+    lang: Langue
+  
+  OPTION_MENU:
+    button_edit: Editer configuration
+    button_export: Exporter configuration
+    button_import: Importer configuration
+    button_return: Retour
+    button_move_root: "! Déplacer à la racine !"
+    button_delete_conf: "! Supprimer le fichier de configuration !"
+    message_change_lang: "Redémarrer l'application pour changer de langue"
+
+  EDIT_MENU:
+    title_edit: Editer la règle
+    title_add: Ajouter une règle
+    col_name_profil: Nom du profile
+    col_folder: Nom du dossier
+    col_extention: Règle
+    button_add: Ajouter
+    button_edit: Editer
+    button_apply: Appliquer
+    button_cancel: Annuler
+    button_delete: Suprimmer
+    button_unselect: Déselectionner
+    buton_return_save: Retour et sauvegarder
+    label_not_sort: Ne pas trié
+    label_unsorted: Non trié
+
+

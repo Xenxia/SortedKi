@@ -1,19 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 from typing import Any
-from func.ui import SCROLL_ALL, Custom_TitleBar_up, Tk_up, Toplevel_up, Treeview_up
+from func.ui import SCROLL_ALL, Tk_up, Toplevel_up, Treeview_up
 from PIL import Image, ImageTk, ImageDraw
 import json
 
-root = Tk_up()
+root = Tk()
 root.title('Codemy.com - TreeView')
 # root.iconbitmap('c:/gui/codemy.ico')
-root.overrideredirect(True)
+root.overrideredirect(False)
 
 root.geometry("500x900")
 style = ttk.Style(root)
 
-Custom_TitleBar_up(root)
+# Custom_TitleBar_up(root)
 
 
 title_bar = Frame(root, bg='black', relief='raised', bd=2)
@@ -121,12 +121,12 @@ my_tree.pack()
 # ]
 
 data = {
-    "1": {
+    "John": {
         "parent": None,
         "values": ["John", 1, "Pepperoni"]
     },
     "2": {
-        "parent": "1",
+        "parent": "John",
         "values": ["Mary", 2, "Cheese"]
     },
     "3": {
@@ -382,7 +382,7 @@ my_tree.bind("<ButtonRelease-1>", clicker)
 # Custom_TitleBar_up(root)
 
 root.update()
-root.run()
+root.mainloop()
 
 #==============================================================================================
 

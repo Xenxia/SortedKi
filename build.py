@@ -3,6 +3,8 @@ import os, pathlib, shutil
 import PyInstaller.__main__
 import compileall
 
+APP_NAME = "SortedTree"
+
 parser = argparse.ArgumentParser(description="app to build Tree",
                                  allow_abbrev=False,
                                  prog='Build',
@@ -39,7 +41,7 @@ for file in pathlib.Path('./func').glob("*.pyc"):
 print("\n=========================================== BUILD DEV ===========================================\n")
 PyInstaller.__main__.run([
     'tree.py',
-    '--name=Tree_dev',
+    f'--name={APP_NAME}_dev',
     '--onefile',
     # '--clean',
     '--add-data=func/comp;func',
@@ -64,7 +66,7 @@ if not args.Command_Name == "dev":
     print("=========================================== BUILD PROD ===========================================\n")
     PyInstaller.__main__.run([
         'tree.py',
-        '--name=Tree',
+        f'--name={APP_NAME}',
         '--onefile',
         # '--clean',
         '--windowed',

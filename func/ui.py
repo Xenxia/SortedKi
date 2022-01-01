@@ -1,7 +1,7 @@
 import tkinter
 import re as regex
 from ctypes import windll
-from tkinter import Tk, ttk
+from tkinter import IntVar, OptionMenu, StringVar, Tk, ttk
 from typing import Any, Literal, Tuple
 from tkinter import Button, Canvas, Entry, Frame, Grid, Label, Pack, Place, Text, Widget, Toplevel
 from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
@@ -10,21 +10,33 @@ SCROLL_X: str = "scroll_x"
 SCROLL_Y: str = "scroll_y"
 SCROLL_ALL: str = "scroll_all"
 
-def setAppWindow(mainWindow): # to display the window icon on the taskbar, 
+def setAppWindow(mainWindow, windows = None): # to display the window icon on the taskbar, 
                                # even when using root.overrideredirect(True)
     # Some WindowsOS styles, required for task bar integration
     GWL_EXSTYLE = -20
     WS_EX_APPWINDOW = 0x00040000
     WS_EX_TOOLWINDOW = 0x00000080
     # Magic
-    hwnd = windll.user32.GetParent(mainWindow.winfo_id())
+
+    hwnd: Any
+
+    if windows is None:
+        hwnd = windll.user32.GetParent(mainWindow.winfo_id())
+    else:
+        hwnd = windll.user32.GetParent(windows.winfo_id())
+
     stylew = windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
     stylew = stylew & ~WS_EX_TOOLWINDOW
     stylew = stylew | WS_EX_APPWINDOW
     res = windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
-   
-    mainWindow.wm_withdraw()
-    mainWindow.after(10, lambda: mainWindow.wm_deiconify())
+
+    if windows is None:
+        mainWindow.wm_withdraw()
+        mainWindow.after(10, lambda: mainWindow.wm_deiconify())
+    else:
+        windows.wm_withdraw()
+        windows.wm_deiconify()
+
 
 class Tk_up(Tk, Frame):
 
@@ -40,7 +52,7 @@ class Tk_up(Tk, Frame):
         'expandButton': True,
         'minimizeButton': True,
     }
-    title: str = "Tk_up"
+    title: str
     geometry: str
 
     # Size screen
@@ -199,7 +211,7 @@ class Widget_up(Widget):
         self.width = 0
         self.height = 0
 
-    def posSize(self, x: int, y: int, width: int, height: int):
+    def posSize(self, x: int, y: int, width: int, height: int = None):
         self.x = x
         self.y = y
         self.width = width
@@ -211,10 +223,21 @@ class Widget_up(Widget):
     def hide(self):
         self.place_forget()
 
-class Toplevel_up(Toplevel):
+class Toplevel_up(Toplevel, Frame):
 
-    def __init__(self, master=None, cnf={}, **kw):
+    __disableTitleBar: bool
+
+    # Component
+    __titleBar: Frame
+    top: Toplevel
+
+    def __init__(self, master=None, disableTitleBar:bool=False, cnf={}, **kw):
+
+        self.__disableTitleBar = disableTitleBar
+
+        
         Toplevel.__init__(self, master=master, cnf=cnf, **kw)
+        self.protocol("WM_DELETE_WINDOW", self.hide)
 
     def show(self):
         self.update()
@@ -222,6 +245,7 @@ class Toplevel_up(Toplevel):
 
     def hide(self):
         self.withdraw()
+
 
 # class Custom_TitleBar_up(Frame):
 
@@ -546,7 +570,7 @@ class Treeview_up(Frame, Widget_up):
     def getAllChildren(self) -> dict:
         childs_list = self.__getSubChildren(self.tree)
 
-        print(childs_list)
+        # print(childs_list)
         children_dict = {}
 
         for iid in childs_list:
@@ -570,6 +594,18 @@ class Treeview_up(Frame, Widget_up):
             children_dict[iid] = (temp_dict)
         
         return children_dict
+
+    def getAllParentItem(self, iidParent: str) -> list[str]:
+
+        parentList = []
+
+        while iidParent != '':
+            parentList.append(iidParent)
+            iidParent = self.tree.parent(iidParent)
+        return parentList
+
+    def getItem(self, iid: str) -> tuple | str:
+        return self.tree.item(iid)
 
     def setColumns(self, columns: list[str], size: list[int] = None) -> None:
 
@@ -623,6 +659,23 @@ class Entry_up(Entry, Widget_up):
 
 class Canvas_up(Canvas, Widget_up):
 
+
     def __init__(self, master=None, cnf={}, **kw) -> None:
+
         Canvas.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
+
+class OptionMenu_up(ttk.Combobox, Widget_up):
+
+    def __init__(self, master=None, style=None, type: str="str", default: int=None, list: Tuple | list=None, **kw) -> None:
+
+        type_var: StringVar | IntVar
+
+        if type == "str":
+            type_var = StringVar()
+        elif type == "int":
+            type_var = IntVar()
+
+        ttk.Combobox.__init__(self, master, values=list ,textvariable=type_var, state="readonly", **kw)
+        Widget_up.__init__(self)
+
