@@ -2,16 +2,15 @@
 
 import os, pathlib, sys, ntpath
 from tkinter import *
-# from tkinter import ttk
+from tkinter import ttk
 from ImportPyinstaller import Import_pyInst
+from PyThreadUp import ThreadUP
 from threading import Thread
 from PIL import Image, ImageTk
 import webbrowser
 
 importPyInst = Import_pyInst()
 importPyInst.add_path(folder_path='func')
-importPyInst.add_path(folder_path='lang')
-importPyInst.add_path(folder_path='image')
 
 version = "0.0.4b"
 
@@ -23,7 +22,7 @@ from update import Update
 from conf import ConfigTree
 from langages import Lang_app
 from logger import DEBUG, Logger
-from ui import Button_up, Frame_up, Label_up, Terminal_ScrolledText_up, Treeview_up
+from ui import SCROLL_ALL, Button_up, Frame_up, Label_up, Terminal_ScrolledText_up, Toggle_Button_up, Treeview_up, Widget_up
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
@@ -36,9 +35,11 @@ else:
 
 exe_file = ntpath.basename(exe_file)
 
-langage = Lang_app(log, path=exe_path)
+langage_task = ThreadUP(target=lambda: Lang_app(log, path=exe_path), returnValue=True).startTask()
+update_task = ThreadUP(target=Update, args=(log,), returnValue=True).startTask()
 
-update = Update(log)
+langage: Lang_app = langage_task.join()
+update: Update = update_task.join()
 
 conf = ConfigTree(log, lang=langage.lang)
 conf.loadConfig()
@@ -117,7 +118,7 @@ def duplicate(file: str, path: str) -> str:
 
     return newName+fileExt
 
-def not_dev():
+def notDev():
     console1.printTerminal("This feature is not developed", color=["Purple"])
 
 def sort():
@@ -188,7 +189,7 @@ def sort():
 
 # ? TK ------------------------------------------------------------------------------->
 
-def main():
+def mainUi():
     console1.show()
     button_tree.show()
     button_clear.show()
@@ -205,7 +206,7 @@ def main():
     ihm.hide()
     button_saveAndReturn.hide()
 
-def option():
+def optionUi():
     console1.hide()
     button_tree.hide()
     button_clear.hide()
@@ -222,7 +223,7 @@ def option():
     ihm.hide()
     button_saveAndReturn.hide()
 
-def edit():
+def editUi():
     console1.hide()
     button_tree.hide()
     button_clear.hide()
@@ -236,14 +237,14 @@ def edit():
     button_moveToRoot.hide()
     button_deleteConfig.hide()
 
-    for i in ihm.tree.get_children():
-        ihm.tree.delete(i)
+    for i in ihm.treeView.tree.get_children():
+        ihm.treeView.tree.delete(i)
 
     for key in conf.CONFIG['config_sort']:
         folder: str = conf.CONFIG['config_sort'][key]['path']
         extention: list = conf.CONFIG['config_sort'][key]['ext']
 
-        ihm.tree.insert(parent='', index=END, text="", values=(key, folder, '|'.join(extention)))
+        ihm.treeView.tree.insert(parent='', index=END, text="", values=(key, folder, '|'.join(extention)))
 
     ihm.toggle_b.set_default_status(conf.CONFIG["unsorted"])
     doNotSort = "|".join(conf.CONFIG["doNotSort"])
@@ -297,11 +298,11 @@ button_tree.posSize(x=255, y=0, width=90, height=24)
 button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_clear'], command=lambda: console1.clearTerminal())
 button_clear.posSize(x=255, y=24, width=90, height=24)
 
-button_option = Button_up(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=option)
+button_option = Button_up(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=optionUi)
 button_option.posSize(x=2, y=574, width=24, height=24)
 
 #option
-button_edit = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=edit)
+button_edit = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_edit'], command=editUi)
 button_edit.posSize(x=217.5, y=24, width=165, height=24)
 
 button_export = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_export'], command=conf.exportConfig)
@@ -313,10 +314,10 @@ button_import.posSize(x=217.5, y=72, width=165, height=24)
 button_moveToRoot = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Move to root"+" !", command=moveToRoot)
 button_moveToRoot.posSize(x=217.5, y=124, width=165, height=24)
 
-button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=not_dev)
+button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text="! "+"Delete config file"+" !", command=notDev)
 button_deleteConfig.posSize(x=217.5, y=148, width=165, height=24)
 
-button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=main)
+button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['button_return'], command=mainUi)
 button_return.posSize(x=235, y=200, width=130, height=24)
 
 #CONSOLE
@@ -334,19 +335,197 @@ console1.posSize(x=0, y=48, width=600, height=524)
 
 #tab config
 
-ihm = Treeview_up(window, bg="#202020")
+class IHM(Frame, Widget_up):
+
+    def __init__(self, master=None, cnf={}, **kw) -> None:
+        Frame.__init__(self, master=master, cnf=cnf, **kw)
+        Widget_up.__init__(self)
+
+        self.frameButton = Frame(self, bg="#202020")
+        self.frameButton.grid(row=1, column=0, sticky=W)
+
+        self.frameBox = Frame(self, bg="#202020", width=600)
+        self.frameBox.grid(row=2, column=0, sticky=W)
+        self.frameBox.propagate(False)
+
+        self.styleInit()
+
+        nl = Label(self.frameBox, text="Profile Name ", bg="#202020", fg="#00ca00")
+        nl.grid(row=0, column=0, sticky=W,)
+
+        il = Label(self.frameBox, text="Folder ", bg="#202020", fg="#00ca00")
+        il.grid(row=1, column=0, sticky=W)
+
+        tl = Label(self.frameBox, text="Extention ", bg="#202020", fg="#00ca00")
+        tl.grid(row=2, column=0, sticky=W)
+
+        Unselect = Button_up(self.frameButton, text="Unselect", command=self.unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
+        Unselect.grid(column=5, row=0, padx=5)
+
+        move_up = Button_up(self.frameButton, text="⬆", command=self.up, bg="#555555", fg="#00ca00", activebackground="#555555")
+        move_up.grid(column=4, row=0)
+
+        move_down = Button_up(self.frameButton, text="⬇", command=self.down, bg="#555555", fg="#00ca00", activebackground="#555555")
+        move_down.grid(column=3, row=0)
+
+        remove = Button_up(self.frameButton, text="Delete", command=self.remove, bg="#555555", fg="#00ca00", activebackground="#555555")
+        remove.grid(column=2, row=0, padx=5)
+
+        save = Button_up(self.frameButton, text="Save", command=self.save, bg="#555555", fg="#00ca00", activebackground="#555555")
+        save.grid(column=1, row=0, padx=(5, 0))
+
+        add = Button_up(self.frameButton, text="Add", command=self.add, bg="#555555", fg="#00ca00", activebackground="#555555")
+        add.grid(column=0, row=0)
+
+        self.name_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        self.name_box.grid(row=0, column=1, sticky=W)
+
+        self.id_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        self.id_box.grid(row=1, column=1, sticky=W)
+
+        self.topping_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        self.topping_box.grid(row=2, column=1, sticky=W)
+
+        self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        self.doNotSort_box.grid(row=6, column=1, sticky=W, pady=(13, 0))
+
+        d1 = Label(self.frameBox, text="doNotSort", bg="#202020", fg="#00ca00")
+        d1.grid(row=6, column=0, sticky=W, pady=(20, 10))
+
+        self.toggle_b = Toggle_Button_up(self.frameBox, bg="#555555", activebackground="#555555", width=3)
+        self.toggle_b.custom_toggle(("✔", "✖"))
+        self.toggle_b.grid(column=1, row=7, sticky=W)
+
+        self.treeView = Treeview_up(self, scroll=SCROLL_ALL , width=600, height=300)
+        self.treeView.tree.bind("<ButtonRelease-1>", self.selected)
+        self.treeView.grid(row=0, column=0, sticky=W)
+
+        u1 = Label(self.frameBox, text="Unsorted", bg="#202020", fg="#00ca00")
+        u1.grid(row=7, column=0, sticky=W, )
+
+    def styleInit(self):
+        self.style = ttk.Style()
+        self.style.theme_use("default")
+        self.style.configure("Treeview", 
+                background="#000000",
+                foreground="#ffffff",
+                rowheight=25,
+                fieldbackground="#000000",
+                bd=1
+                )
+
+        self.style.configure("Vertical.TScrollbar",
+                background="#323232",
+                arrowcolor="#ffffff",
+                bordercolor="#000000",
+                troughcolor='#252526',
+                foreground="#ff0000"
+                )
+
+        self.style.configure("Horizontal.TScrollbar",
+                background="#323232",
+                arrowcolor="#ffffff",
+                bordercolor="#000000",
+                troughcolor='#252526',
+                foreground="#ff0000"
+                )
+
+        self.style.configure("Treeview.Heading", 
+                background="black", 
+                foreground="white"
+                )
+
+        self.style.map("Vertical.TScrollbar", background=[('pressed', '#229922')])
+        self.style.map("Horizontal.TScrollbar", background=[('pressed', '#229922')])
+        self.style.map('Treeview.Heading', background=[('selected', '#000000')])
+        self.style.map('Treeview', background=[('selected', '#228B22')])
+
+        # event
+    def selected(self, event):
+        self.select()
+
+    def select(self):
+        # Clear entry boxes
+        self.name_box.delete(0, END)
+        self.id_box.delete(0, END)
+        self.topping_box.delete(0, END)
+
+        # Grab record number
+        try:
+            selected = self.treeView.tree.selection()[0]
+            values = self.treeView.tree.item(selected, 'values')
+
+            # output to entry boxes
+            self.name_box.insert(0, values[0])
+            self.id_box.insert(0, values[1])
+            self.topping_box.insert(0, values[2])
+
+        except:
+            print("not select")
+        # Grab record values
+
+    def remove(self):
+        try:
+            x = self.treeView.tree.selection()[0]
+            self.treeView.tree.delete(x)
+            self.unselect()
+        except:
+            print("not select")
+
+    def add(self):
+
+        name = self.name_box.get()
+        id = self.id_box.get()
+        topping = self.topping_box.get()
+
+        if name!="" and id!="" and topping!="":
+            self.treeView.tree.insert(parent='', index=END, text="", values=(self.name_box.get(), self.id_box.get(), self.topping_box.get()), tags=('evenrow',))
+            self.unselect()
+        else:
+            print("box empty")
+
+    def save(self):
+        try:
+            selected = self.treeView.tree.selection()[0]
+            self.treeView.tree.item(selected, text="", values=(self.name_box.get(), self.id_box.get(), self.topping_box.get()))
+            self.unselect()
+        except:
+            print("not select")
+
+    def unselect(self):
+        # Clear the boxes
+        self.name_box.delete(0, END)
+        self.id_box.delete(0, END)
+        self.topping_box.delete(0, END)
+        try:
+            self.treeView.tree.selection_remove(self.treeView.tree.selection()[0])
+        except:
+            print("not select")
+
+    def up(self):
+        rows = self.treeView.tree.selection()
+        for row in rows:
+            self.treeView.tree.move(row, self.treeView.tree.parent(row), self.treeView.tree.index(row)-1)
+
+    def down(self):
+        rows = self.treeView.tree.selection()
+        for row in reversed(rows):
+            self.treeView.tree.move(row, self.treeView.tree.parent(row), self.treeView.tree.index(row)+1)
+
+
+ihm = IHM(window, bg="#202020")
 ihm.posSize(0, 0, 600, 500)
-ihm.setColumns(("Name profile", "Folder", "Extention"), (150, 150, 300))
+ihm.treeView.setColumns(("Name profile", "Folder", "Extention"), (150, 150, 300))
 ihm.propagate(False)
 
-def get_all_children():
+def getConfig():
 
     conf.CONFIG['config_sort'] = {}
 
-    for line in ihm.tree.get_children():
+    for line in ihm.treeView.tree.get_children():
         i = 0
         key = ""
-        for value in ihm.tree.item(line)['values']:
+        for value in ihm.treeView.tree.item(line)['values']:
                 i += 1
                 if i == 1:
                     conf.CONFIG['config_sort'][value] = {}
@@ -364,11 +543,11 @@ def get_all_children():
         conf.CONFIG["doNotSort"] = []
 
     conf.saveConfig()
-    option()
+    optionUi()
 
-button_saveAndReturn = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=get_all_children)
+button_saveAndReturn = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text="Return And Save", command=getConfig)
 button_saveAndReturn.posSize(x=2, y=574, width=130, height=24)
 
-main()
+mainUi()
 
 window.mainloop()

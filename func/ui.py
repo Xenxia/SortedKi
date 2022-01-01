@@ -1,9 +1,168 @@
-from tkinter import Button, Entry, Frame, Grid, Label, Pack, Place, Text, Widget
+import tkinter
+import re as regex
+from ctypes import windll
+from tkinter import Tk, ttk
+from typing import Any, Literal, Tuple
+from tkinter import Button, Canvas, Entry, Frame, Grid, Label, Pack, Place, Text, Widget, Toplevel
 from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
-from tkinter import ttk
-from typing import Tuple
+
+SCROLL_X: str = "scroll_x"
+SCROLL_Y: str = "scroll_y"
+SCROLL_ALL: str = "scroll_all"
+
+def setAppWindow(mainWindow): # to display the window icon on the taskbar, 
+                               # even when using root.overrideredirect(True)
+    # Some WindowsOS styles, required for task bar integration
+    GWL_EXSTYLE = -20
+    WS_EX_APPWINDOW = 0x00040000
+    WS_EX_TOOLWINDOW = 0x00000080
+    # Magic
+    hwnd = windll.user32.GetParent(mainWindow.winfo_id())
+    stylew = windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+    stylew = stylew & ~WS_EX_TOOLWINDOW
+    stylew = stylew | WS_EX_APPWINDOW
+    res = windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+   
+    mainWindow.wm_withdraw()
+    mainWindow.after(10, lambda: mainWindow.wm_deiconify())
+
+class Tk_up(Tk, Frame):
+
+    titleBarComponent: list
+    funcRunAfter: list = []
+    customTitleBar: bool
+    root: Tk
+
+    # Title bar info
+    activeComp: dict = {
+        'titleBarTitle': True,
+        'closeButton': True,
+        'expandButton': True,
+        'minimizeButton': True,
+    }
+    title: str = "Tk_up"
+    geometry: str
+
+    # Size screen
+    rootHeigth: int
+    rootWidth: int
+
+    # Component
+    __titleBar: Frame
+
+    def __init__(self, customTitleBar:bool=False) -> None:
+        self.customTitleBar=customTitleBar
+
+        if customTitleBar:
+            self.root = Tk()
+            self.rootHeigth = self.root.winfo_screenheight()
+            self.rootWidth = self.root.winfo_screenwidth()
+            self.root.minimized = False
+            self.root.maximized = False
+            self.root.overrideredirect(True)
+            self.__titleBar = Frame(self.root, relief='raised', bd=0, highlightthickness=0)
+            self.titleBarTitle = Label_up(self.__titleBar, bd=0, fg='white', font=("helvetica", 10), highlightthickness=0)
+            self.closeButton = Button_up(self.__titleBar, text=' 🗙 ', command=self.root.destroy, font=("calibri", 11), bd=0, fg='white', highlightthickness=0)
+            self.expandButton = Button_up(self.__titleBar, text=' 🗖 ', bd=0, fg='white', font=("calibri", 11), highlightthickness=0)
+            self.minimizeButton = Button_up(self.__titleBar, text=' 🗕 ', bd=0, fg='white', font=("calibri", 11), highlightthickness=0)
+            self.titleBarComponent = [
+                self.__titleBar,
+                self.titleBarTitle,
+                self.minimizeButton,
+                self.closeButton,
+                self.expandButton
+            ]
+            self.runAfterMainloopStarted(lambda: setAppWindow(self.root))
+            Frame.__init__(self, master=self.root ,highlightthickness=0)
+        else:
+            Tk.__init__(self)
+            self.rootWidth = self.winfo_screenwidth()
+            self.rootHeigth = self.winfo_screenheight()
+
+    def __getPos(self, event):
+
+        if self.root.maximized == False:
+            
+            xwin = self.root.winfo_x()
+            ywin = self.root.winfo_y()
+            startx = event.x_root
+            starty = event.y_root
+
+            ywin = ywin - starty
+            xwin = xwin - startx
+
+            def move_window(event): # runs when window is dragged
+                self.root.config(cursor="fleur")
+                self.root.geometry(f'+{event.x_root + xwin}+{event.y_root + ywin}')
+
+
+            def release_window(event): # runs when window is released
+                self.root.config(cursor="arrow")
+                
+            self.__titleBar.bind('<B1-Motion>', move_window)
+            self.__titleBar.bind('<ButtonRelease-1>', release_window)
+            # title_bar_title.bind('<B1-Motion>', move_window)
+            # title_bar_title.bind('<ButtonRelease-1>', release_window)
+        else:
+            self.expandButton.config(text=" 🗖 ")
+            self.root.maximized = not self.root.maximized
+
+    def configWindows(self, title:str="Tk_Up", geometry:str="500x500", iconbitmap:str=None):
+
+        if regex.findall(r"\+center", geometry) != []:
+            gSizeW, gSizeH = geometry.split("+", 1)[0].split("x", 1)
+            rootH = round((self.rootHeigth/2)-(int(gSizeH)/2))
+            rootW = round((self.rootWidth/2)-(int(gSizeW)/2))
+            geometry = f'{gSizeW}x{gSizeH}+{rootW}+{rootH}'
+        
+        if self.customTitleBar:
+            self.titleBarTitle.configure(text=title)
+        
+            self.root.title(title)
+            self.root.geometry(geometry)
+
+            if iconbitmap is not None:
+                self.root.iconbitmap(iconbitmap)
+
+        else:
+            self.title(title)
+            self.geometry(geometry)
+            if iconbitmap is not None:
+                self.iconbitmap(iconbitmap)
+
+    def configTitleBar(self, color:str="#ffffff", active:dict[str, bool]=None, c_closeButton:dict=None):
+
+        if self.customTitleBar:
+
+            if active is not None:
+                self.activeComp.update(active)
+
+            for comp in self.titleBarComponent:
+                comp.configure(bg=color)
+
+    def runAfterMainloopStarted(self, func: Any):
+        self.funcRunAfter.append(func)
+
+    def run(self):
+        if self.customTitleBar:
+            self.__titleBar.bind('<Button-1>', self.__getPos)
+            self.__titleBar.pack(side="top", fill=X)
+            if self.activeComp['titleBarTitle']: self.titleBarTitle.pack(side=LEFT, padx=(10, 0))
+            if self.activeComp['closeButton']: self.closeButton.pack(side=RIGHT)
+            if self.activeComp['expandButton']: self.expandButton.pack(side=RIGHT)
+            if self.activeComp['minimizeButton']: self.minimizeButton.pack(side=RIGHT)
+            self.pack(expand=1, fill=BOTH)
+            for func in self.funcRunAfter:
+                self.root.after(10, func)
+            self.root.mainloop()
+        else:
+            if self.funcRunAfter == []:
+                for func in self.funcRunAfter:
+                    self.after(10, func)
+            self.mainloop()
 
 class ScrolledText(Text):
+
     def __init__(self, master=None, **kw):
 
         self.frame = Frame(master)
@@ -46,11 +205,41 @@ class Widget_up(Widget):
         self.width = width
         self.height = height
 
+    def show(self):
+        self.place(x=self.x, y=self.y, width=self.width, height=self.height)
+
     def hide(self):
         self.place_forget()
 
+class Toplevel_up(Toplevel):
+
+    def __init__(self, master=None, cnf={}, **kw):
+        Toplevel.__init__(self, master=master, cnf=cnf, **kw)
+
     def show(self):
-        self.place(x=self.x, y=self.y, width=self.width, height=self.height)
+        self.update()
+        self.deiconify()
+
+    def hide(self):
+        self.withdraw()
+
+# class Custom_TitleBar_up(Frame):
+
+#     # rootFrame: Frame
+#     titleBarFrame: Frame
+
+#     def __init__(self, master=None, cnf={}, **kw):
+#         self.titleBarFrame = Frame(master=master)
+#         Frame.__init__(self, master=master, cnf=cnf, **kw)
+#         if isinstance(master, Tk_up):
+#             master.runAfterMainloopStarted(lambda: setAppWindow(master))
+
+#         master.overrideredirect(True)
+
+#     def init(self):
+        
+
+    
 
 class Button_up(Button, Widget_up):
 
@@ -124,6 +313,12 @@ class Text_up(Text, Widget_up):
         Text.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
 
+class ScrolledText_up(ScrolledText, Widget_up):
+
+    def __init__(self, master=None, cnf={}, **kw) -> None:
+        ScrolledText.__init__(self, master=master, cnf=cnf, **kw)
+        Widget_up.__init__(self)
+
 class Terminal_ScrolledText_up(ScrolledText, Widget_up):
 
     def __init__(self, master=None, cnf={}, **kw):
@@ -152,145 +347,242 @@ class Terminal_ScrolledText_up(ScrolledText, Widget_up):
     def clearTerminal(self) -> None:
         self.delete("1.0","end")
 
-class Treeview_up(Frame):
-    x: int
-    y: int
-    width: int
-    height: int
-    style: ttk.Style
+class Treeview_up(Frame, Widget_up):
+    __count: int = 10
+    __iid: bool
+    __child: bool
     tree: ttk.Treeview
+    scroll_y: ttk.Scrollbar
     scroll_x: ttk.Scrollbar
-    scroll_h: ttk.Scrollbar
 
-    def __init__(self, master=None, cnf={}, **kw):
+    def __init__(self, master=None, scroll:str=None, iid:bool=False, child:bool=False, show="tree", cnf={}, **kw):
 
         Frame.__init__(self, master=master, cnf=cnf, **kw)
+        Widget_up.__init__(self)
 
-        self.frameTreeview = Frame(self, bg="#202020", width=600, height=300)
-        self.frameTreeview.grid(row=0, column=0, sticky=W)
-        self.frameTreeview.propagate(False)
+        self.propagate(False)
 
-        self.frameButton = Frame(self, bg="#202020")
-        self.frameButton.grid(row=1, column=0, sticky=W)
+        self.__child=child
+        self.__iid=iid
 
-        self.frameBox = Frame(self, bg="#202020", width=600)
-        self.frameBox.grid(row=2, column=0, sticky=W)
-        self.frameBox.propagate(False)
+        self.tree = ttk.Treeview(
+            master=self,
+            show=show,
+            selectmode="browse",
+            height=(kw["height"] if "height" in kw else None)
+        )
 
-        self.styleInit()
+        if scroll != None:
+            self.scroll_y = ttk.Scrollbar(master=self, orient=VERTICAL)
+            self.scroll_y.pack(side=RIGHT, fill=Y)
 
-        nl = Label(self.frameBox, text="Profile Name ", bg="#202020", fg="#00ca00")
-        nl.grid(row=0, column=0, sticky=W,)
+            self.scroll_x = ttk.Scrollbar(master=self, orient=HORIZONTAL)
+            self.scroll_x.pack(side=BOTTOM, fill=X)
 
-        il = Label(self.frameBox, text="Folder ", bg="#202020", fg="#00ca00")
-        il.grid(row=1, column=0, sticky=W)
+            if scroll == SCROLL_X:
+                self.scroll_x.config(command=self.tree.xview)
+                self.tree.configure(xscrollcommand=self.scroll_x.set)
+                self.scroll_y.destroy()
 
-        tl = Label(self.frameBox, text="Extention ", bg="#202020", fg="#00ca00")
-        tl.grid(row=2, column=0, sticky=W)
+            if scroll == SCROLL_Y:
+                self.scroll_y.config(command=self.tree.yview)
+                self.tree.configure(yscrollcommand=self.scroll_y.set)
+                self.scroll_x.destroy()
 
-        Unselect = Button_up(self.frameButton, text="Unselect", command=self.unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
-        Unselect.grid(column=5, row=0, padx=5)
+            if scroll == SCROLL_ALL:
+                self.scroll_x.config(command=self.tree.xview)
+                self.scroll_y.config(command=self.tree.yview)
 
-        move_up = Button_up(self.frameButton, text="⬆", command=self.up, bg="#555555", fg="#00ca00", activebackground="#555555")
-        move_up.grid(column=4, row=0)
+                self.tree.configure(xscrollcommand=self.scroll_x.set)
+                self.tree.configure(yscrollcommand=self.scroll_y.set)
 
-        move_down = Button_up(self.frameButton, text="⬇", command=self.down, bg="#555555", fg="#00ca00", activebackground="#555555")
-        move_down.grid(column=3, row=0)
-
-        remove = Button_up(self.frameButton, text="Delete", command=self.remove, bg="#555555", fg="#00ca00", activebackground="#555555")
-        remove.grid(column=2, row=0, padx=5)
-
-        save = Button_up(self.frameButton, text="Save", command=self.save, bg="#555555", fg="#00ca00", activebackground="#555555")
-        save.grid(column=1, row=0, padx=(5, 0))
-
-        add = Button_up(self.frameButton, text="Add", command=self.add, bg="#555555", fg="#00ca00", activebackground="#555555")
-        add.grid(column=0, row=0)
-
-        self.name_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
-        self.name_box.grid(row=0, column=1, sticky=W)
-
-        self.id_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
-        self.id_box.grid(row=1, column=1, sticky=W)
-
-        self.topping_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
-        self.topping_box.grid(row=2, column=1, sticky=W)
-
-        self.scroll_x = ttk.Scrollbar(master=self.frameTreeview, orient=VERTICAL)
-        self.scroll_x.pack(side=RIGHT, fill=Y)
-
-        self.scroll_h = ttk.Scrollbar(master=self.frameTreeview, orient=HORIZONTAL)
-        self.scroll_h.pack(side=BOTTOM, fill=X)
-        
-        self.tree = ttk.Treeview(master=self.frameTreeview, yscrollcommand=self.scroll_x.set, xscrollcommand=self.scroll_h.set, selectmode="browse", height=300)
-        self.tree.bind("<ButtonRelease-1>", self.selected)
-        self.tree.pack(fill=BOTH, expand=False)
-
-        self.scroll_x.config(command=self.tree.yview)
-        self.scroll_h.config(command=self.tree.xview)
+        self.tree.pack(fill=BOTH, expand=True)
 
         self.tree['columns'] = ("empty")
 
-        self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
-        self.doNotSort_box.grid(row=6, column=1, sticky=W, pady=(13, 0))
+    def __popItem(self, dict:dict, position=0):
 
-        d1 = Label(self.frameBox, text="doNotSort", bg="#202020", fg="#00ca00")
-        d1.grid(row=6, column=0, sticky=W, pady=(20, 10))
+        key = list(dict.keys())[position]
+        value = list(dict.values())[position]
 
-        self.toggle_b = Toggle_Button_up(self.frameBox, bg="#555555", activebackground="#555555", width=3)
-        self.toggle_b.custom_toggle(("✔", "✖"))
-        self.toggle_b.grid(column=1, row=7, sticky=W)
+        del dict[key]
 
-        u1 = Label(self.frameBox, text="Unsorted", bg="#202020", fg="#00ca00")
-        u1.grid(row=7, column=0, sticky=W, )
+        return (key, value), dict
 
-    def styleInit(self):
-        self.style = ttk.Style()
-        self.style.theme_use("default")
-        self.style.configure("Treeview", 
-                background="#000000",
-                foreground="#ffffff",
-                rowheight=25,
-                fieldbackground="#000000",
-                bd=1
-                )
+    def __getSubChildren(self, tree, item=""):
+        children: list = []
+        list_children = tree.get_children(item)
+        for child in list_children:
+            children.append(child)
+            children += self.__getSubChildren(tree, child)
+        return children
 
-        self.style.configure("Vertical.TScrollbar",
-                background="#323232",
-                arrowcolor="#ffffff",
-                bordercolor="#000000",
-                troughcolor='#252526',
-                foreground="#ff0000"
-                )
+    def bind(self, sequence:str|None= None, func=None, add:bool|Literal['', '+']|None=None) -> None:
+        self.tree.bind(sequence=sequence, func=func, add=add)
 
-        self.style.configure("Horizontal.TScrollbar",
-                background="#323232",
-                arrowcolor="#ffffff",
-                bordercolor="#000000",
-                troughcolor='#252526',
-                foreground="#ff0000"
-                )
+    def addElements(self, data:dict=None) -> bool:
 
-        self.style.configure("Treeview.Heading", 
-                background="black", 
-                foreground="white"
-                )
+        temp: dict = {}
 
-        self.style.map("Vertical.TScrollbar", background=[('pressed', '#229922')])
-        self.style.map("Horizontal.TScrollbar", background=[('pressed', '#229922')])
-        self.style.map('Treeview.Heading', background=[('selected', '#000000')])
-        self.style.map('Treeview', background=[('selected', '#228B22')])
+        while True:
+            
+            if len(data) == 0:
+                data = temp
+                temp = {}
+            
+            if (len(data) + len(temp)) == 0:
+                return True
 
-    def posSize(self, x: int, y: int, width: int = None, height: int = None):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+            while len(data) != 0:
+                
+                child, data = self.__popItem(data)
 
-    def setColumns(self, columns: Tuple[str], size: Tuple[int] = None):
-        self.tree['columns'] = columns
+                print(child)
 
-        self.tree.column("#0", width=0, stretch=NO)
-        self.tree.heading("#0", text="")
+                if child[1]["parent"] not in data:
+                    
+                    iid: str = child[0]
+                    parent: str = str(child[1]["parent"]) if child[1]["parent"] is not None else ""
+                    
+                    # Try Key values
+                    try:
+                        values: list | Tuple = child[1]["values"]
+                    except KeyError:
+                        print("values key")
+                    # Try Key text
+                    try:
+                        text: str = child[1]["text"]
+                    except KeyError:
+                        text = ""
+
+                    # Try Key image
+                    try: 
+                        image: Any = child[1]["image"] 
+                    except KeyError: 
+                        image = ""
+
+                    # Try Key open
+                    try:
+                        open: bool = child[1]["open"]
+                    except KeyError:
+                        open = False
+
+                    # Try Key tags
+                    try:
+                        tags: str = child[1]["tags"]
+                    except KeyError:
+                        tags = ""
+
+                    if self.__child:
+                        text = values.pop(0)
+
+                    try:
+                        self.tree.insert(
+                                parent=parent, 
+                                index=END,
+                                iid=iid,
+                                text=text, 
+                                values=values, 
+                                tags=tags, 
+                                image=image, 
+                                open=open
+                            )
+                    except tkinter.TclError:
+                        return False
+
+                    self.__count += 1
+                else:
+                    temp[child[0]] = child[1]
+
+    def addElement(self, parent:str="", index:int|Literal['end']=END, iid:str=None, id:str="", text:str="", image="", values:list=[], open:bool=False, tags:str|list[str]|Tuple[str, ...]="") -> bool:
+        if iid is None:
+            iid = self.__count
+
+        if self.__iid and iid is None:
+            iid=values[0]
+
+        if self.__child:
+            text=values.pop(0)
+
+        try:
+            self.tree.insert(parent=parent, index=index, iid=iid, text=text, image=image, values=values, open=open, tags=tags)
+            self.__count += 1
+        except tkinter.TclError as error:
+            return error
+        return True
+
+    def removeOneElement(self):
+        item = self.tree.selection()[0]
+        self.tree.delete(item)
+
+    def removeAllElement(self):
+        for record in self.tree.get_children():
+            self.tree.delete(record)
+
+    def removeSelectedElement(self):
+        item = self.tree.selection()[0]
+        self.tree.delete(item)
+
+    def editSelectedElement(self, text:str="", image="", values:list|Literal['']="", open:bool=False, tags:str|list[str]|tuple[str, ...]=""):
+        item = self.tree.focus()
+        self.tree.item(item, text=text, image=image, values=values, open=open, tags=tags)
+
+    def editElement(self, item:str, text:str="", image="", values:list|Literal['']="", open:bool=False, tags:str|list[str]|tuple[str, ...]="") -> None:
+        self.tree.item(item, text=text, image=image, values=values, open=open, tags=tags)
+
+    def getSelectedElement(self, option:str='values') -> Any:
+        item = self.tree.focus()
+
+        if self.__child and option == "values":
+            listValues: list = []
+            listValues.append(self.tree.item(item, "text"))
+            for value in self.tree.item(item, "values"):
+                listValues.append(value)
+            return listValues
+
+
+        return self.tree.item(item, option)
+
+    def getAllChildren(self) -> dict:
+        childs_list = self.__getSubChildren(self.tree)
+
+        print(childs_list)
+        children_dict = {}
+
+        for iid in childs_list:
+
+            temp_dict = {}
+
+            item = self.tree.item(iid)
+
+            temp_dict["values"] = item["values"]
+            temp_dict["text"] = item["text"]
+            temp_dict["image"] = item["image"]
+            temp_dict["open"] = item["open"]
+            temp_dict["tags"] = item["tags"]
+            temp_dict["parent"] = None
+
+            parentIID = self.tree.parent(iid)
+
+            if parentIID != "":
+                temp_dict["parent"] = parentIID
+            
+            children_dict[iid] = (temp_dict)
+        
+        return children_dict
+
+    def setColumns(self, columns: list[str], size: list[int] = None) -> None:
+
+        if self.__child:
+            firstColumn = columns.pop(0)
+            firstColumnSize = size.pop(0)
+            self.tree['columns'] = columns
+            self.tree.column("#0", width=firstColumnSize, stretch=NO)
+            self.tree.heading("#0", text=firstColumn)
+        else:
+            self.tree['columns'] = columns
+            self.tree.column("#0", width=0, stretch=NO)
+            self.tree.heading("#0", text="")
 
         end = columns[-1]
 
@@ -298,7 +590,7 @@ class Treeview_up(Frame):
             width = 100
             stch = NO
 
-            if size != None and len(columns) == len(size):
+            if size is not None and len(columns) == len(size):
                 width = size[index]
 
             if end == col:
@@ -307,81 +599,14 @@ class Treeview_up(Frame):
             self.tree.column(col, anchor=W, width=width, stretch=stch)
             self.tree.heading(col, text=col)
 
-    def hide(self):
-        self.place_forget()
-
-    def show(self):
-        self.place(x=self.x, y=self.y, width=self.width, height=self.height)
-
-    # event
-    def selected(self, event):
-        self.select()
-
-    def select(self):
-        # Clear entry boxes
-        self.name_box.delete(0, END)
-        self.id_box.delete(0, END)
-        self.topping_box.delete(0, END)
-
-        # Grab record number
-        try:
-            selected = self.tree.selection()[0]
-            values = self.tree.item(selected, 'values')
-
-            # output to entry boxes
-            self.name_box.insert(0, values[0])
-            self.id_box.insert(0, values[1])
-            self.topping_box.insert(0, values[2])
-
-        except:
-            print("not select")
-        # Grab record values
-
-    def remove(self):
-        try:
-            x = self.tree.selection()[0]
-            self.tree.delete(x)
-        except:
-            print("not select")
-
-    def add(self):
-
-        name = self.name_box.get()
-        id = self.id_box.get()
-        topping = self.topping_box.get()
-
-        if name!="" and id!="" and topping!="":
-            self.tree.insert(parent='', index=END, text="", values=(self.name_box.get(), self.id_box.get(), self.topping_box.get()), tags=('evenrow',))
-            self.unselect()
-        else:
-            print("box empty")
-
-    def save(self):
-        try:
-            selected = self.tree.selection()[0]
-            self.tree.item(selected, text="", values=(self.name_box.get(), self.id_box.get(), self.topping_box.get()))
-            self.unselect()
-        except:
-            print("not select")
-
-    def unselect(self):
-        # Clear the boxes
-        self.name_box.delete(0, END)
-        self.id_box.delete(0, END)
-        self.topping_box.delete(0, END)
-        try:
-            self.tree.selection_remove(self.tree.selection()[0])
-        except:
-            print("not select")
-
-    def up(self):
+    def moveUpSelectedElement(self) -> None:
         rows = self.tree.selection()
         for row in rows:
             self.tree.move(row, self.tree.parent(row), self.tree.index(row)-1)
 
-    def down(self):
+    def moveDownSelectedElement(self) -> None:
         rows = self.tree.selection()
-        for row in reversed(rows):
+        for row in rows:
             self.tree.move(row, self.tree.parent(row), self.tree.index(row)+1)
 
 class Frame_up(Frame, Widget_up):
@@ -396,3 +621,8 @@ class Entry_up(Entry, Widget_up):
         Entry.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
 
+class Canvas_up(Canvas, Widget_up):
+
+    def __init__(self, master=None, cnf={}, **kw) -> None:
+        Canvas.__init__(self, master=master, cnf=cnf, **kw)
+        Widget_up.__init__(self)

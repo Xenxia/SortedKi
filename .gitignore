@@ -8,3 +8,4 @@ dist/
 *.pfx
 *.txt
 *.yml
+!.drone.yml

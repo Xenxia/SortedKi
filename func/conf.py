@@ -16,26 +16,32 @@ class ConfigTree():
     __DEFAULT_CONFIG = {
         "config_sort":{
             "Runtime":{
+                "child": None,
                 "path": "Runtime",
                 "ext":['*.exe', '*.msi', '*.apk', '*.app', '*.gadget', '*.inf', '*.run', '*.vbs', '*.ws', '*.jar']
             },
             "Document":{
+                "child": None,
                 "path": "Document",
                 "ext":['*.xlsx', '*.docx', '*.pptx', '*.pdf']
             },
             "Archive":{
+                "child": None,
                 "path": "Archive",
                 "ext":['*.7z', '*.rar', '*.zip', '*.tar', '*.iso', '*.sbx', '*.gz']
             },
             "Music":{
+                "child": None,
                 "path": "Music",
                 "ext":['*.mp3', '*.ogg', '*.flac', '*.wav', '*.aac']
             },
             "Picture":{
+                "child": None,
                 "path": "Picture",
                 "ext":['*.png', '*.jpeg', '*.jpg','*.bmp', '*.tiff', '*.gif']
             },
             "Video":{
+                "child": None,
                 "path": "Video",
                 "ext":['*.mp4', '*.mkv', '*.mka', '*.mks', '*.avi', '*.wmv', '*.flv', '*.mov']
             },
