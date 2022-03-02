@@ -40,7 +40,7 @@ for file in pathlib.Path('./func').glob("*.pyc"):
 
 print("\n=========================================== BUILD DEV ===========================================\n")
 PyInstaller.__main__.run([
-    'tree.py',
+    f'{APP_NAME.lower()}.py',
     f'--name={APP_NAME}_dev',
     '--onefile',
     # '--clean',
@@ -65,7 +65,7 @@ print("\n========================================= END BUILD DEV ===============
 if not args.Command_Name == "dev":
     print("=========================================== BUILD PROD ===========================================\n")
     PyInstaller.__main__.run([
-        'tree.py',
+        f'{APP_NAME.lower()}.py',
         f'--name={APP_NAME}',
         '--onefile',
         # '--clean',

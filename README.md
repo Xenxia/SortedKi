@@ -1,22 +1,22 @@
 <div align="center">
-    <img width="100" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree.png" />
-    <h1 align="center">Tree</h1>
+    <img width="100" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree.png" />
+    <h1 align="center">SortedTree</h1>
 </div>
 
 <div align="center">
     <strong>This software allows you to sort your files according to defined rules</strong>
     <br><br>
-    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_ex.png" />
+    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_ex.png" />
     <br><br>
-    <h1><a href="https://github.com/Xenxia/Tree/releases/latest">Download</a></h1>
+    <h1><a href="https://github.com/Xenxia/SortedTree/releases/latest">Download</a></h1>
 </div>
 
 
-<div align="center">
+<!-- <div align="center">
 <details>
 <summary><strong>Main Menu</strong></summary>
 <br/>
-<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_main.png" />
+<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_main.png" />
 <div align="left">
 <br/>
     
@@ -35,7 +35,7 @@
 <details>
 <summary><strong>Option menu</strong></summary>
 <br/>
-<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_option.png" />
+<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_option.png" />
 <div align="left">
 <br/>
 
@@ -53,7 +53,7 @@
 <details>
 <summary><strong>Edit config menu</strong></summary>
 <br/>
-<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_config.png" />
+<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_config.png" />
 <div align="left">
 <br/>
 
@@ -75,10 +75,10 @@
 <br/>
 
 
-<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/Tree/master/assets/img/Tree_config_selected.png" />
+<img width="450" heigth="350" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_config_selected.png" />
 
 </details>
-</div>
+</div> -->
 
 ### TODO:
 
