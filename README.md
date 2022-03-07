@@ -81,5 +81,5 @@
 </div> -->
 
 <div align="center">
-    <a href="https://github.com/Xenxia/SortedTree/projects/1">DashBoard</a>
+    <h2><a href="https://github.com/Xenxia/SortedTree/projects/1">DashBoard</a></h2>
 </div>
