@@ -9,4 +9,4 @@ jobs:
         uses: peter-evans/create-or-update-project-card@v1
         with:
           project-name: SortedTree
-          column-name: Issue
+          column-name: issue
