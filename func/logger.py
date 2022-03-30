@@ -55,7 +55,7 @@ class Logger():
         if file_path is not None:
             self.writingFile = True
             self.file_path = file_path
-            self.__write("\n═════════════════════╣ "+self.__time()+" ╠═════════════════════")
+            self.__write(f"\n═════════════════════╣ {self.__time()} ╠═════════════════════")
 
         if levellog is not None:
             self.levellog = levellog

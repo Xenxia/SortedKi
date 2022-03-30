@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-from email.policy import default
-import os, pathlib, sys, ntpath
+import os, pathlib, sys, ntpath, shutil, webbrowser
 from time import sleep
 from tkinter import *
 from tkinter import ttk
@@ -9,12 +8,11 @@ from ImportPyinstaller import Import_pyInst
 from PyThreadUp import ThreadUP
 from threading import Thread
 from PIL import Image, ImageTk
-import webbrowser
 
 importPyInst = Import_pyInst()
 importPyInst.add_path(folder_path='func')
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 APP_NAME = "SortedTree"
 
 notSortList = ["config.yml", "desktop.ini"]
@@ -31,12 +29,12 @@ log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
 
 if importPyInst.is_compiled:
-    exe_file = os.path.realpath(sys.executable)
+    path_file = os.path.realpath(sys.executable)
 else:
     log.activColor(True)
-    exe_file = os.path.realpath(__file__)
+    path_file = os.path.realpath(__file__)
 
-exe_file = ntpath.basename(exe_file)
+exe_file = ntpath.basename(path_file)
 
 conf = ConfigTree(log)
 conf.loadConfig()
@@ -46,8 +44,6 @@ update_task = ThreadUP(target=Update, args=(log,), returnValue=True).startTask()
 
 langage: Lang_app = langage_task.join()
 update: Update = update_task.join()
-
-
 
 def openWeb():
     webbrowser.open(f'https://github.com/Xenxia/{APP_NAME}/releases/latest')
@@ -74,9 +70,14 @@ def import_conf():
         print('import')
 
 def moveToRoot():
-    for file_path in pathlib.Path('./').rglob("*.*"):
-        file_name = os.path.basename(file_path)
-        os.rename(str(file_path), './'+str(file_name))
+    for name_profile in conf.CONFIG['config_sort']:
+        for rule in ["*.*", "*"]:
+            path = conf.CONFIG['config_sort'][name_profile]['fullPath']
+
+            for file_path in pathlib.Path(path).rglob(rule):
+                file_name = os.path.basename(file_path)
+                if os.path.isfile(file_path):
+                    shutil.move(str(file_path), './'+str(file_name))
     log.info("Move to root")
 
 def deletConfig():
@@ -131,7 +132,7 @@ def duplicate(file: str, path: str) -> str:
 
         pathFile = f"{path}/{newName}{fileExt}"
 
-    os.rename(file, pathFile)
+    # os.rename(file, pathFile)
     
 
     # while True:
@@ -162,35 +163,74 @@ def sort():
 
     check: list = []
 
-    for key in conf.CONFIG['config_sort']:
-        for key2 in conf.CONFIG['config_sort'][key]['ext']:
-            path = f"./{conf.CONFIG['config_sort'][key]['fullPath']}"
+    for name_profile in conf.CONFIG['config_sort']:
+        for rule in conf.CONFIG['config_sort'][name_profile]['ext']:
+            path = conf.CONFIG['config_sort'][name_profile]['fullPath']
 
             if not os.path.exists(path):
                 os.makedirs(path, exist_ok=True)
 
-            for file in pathlib.Path('./').glob(key2):
+            if rule == "":
+                break
+
+            for file in pathlib.Path('./').glob(rule):
+
+                duplica = False
+                sort = False
+                permission = False
+                new = "new"
+                err = [False, "none"]
 
                 if str(file) not in notSort_userConfig and str(file) not in notSortList and str(file) != exe_file:
 
                     check.append(str(file))
-                    try:
-                        os.rename(str(file), path+'/'+str(file))
-                        console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file), path=path), color=["Green", None])
 
-                    # For permission related errors
-                    except PermissionError:
-                        console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
+                    if not os.path.exists(f"{path}/{file}"):
 
-                    # For File Exists errors
-                    except FileExistsError:
-                        new = duplicate(str(file), path)
-                        console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
+                        try:
+                            if os.path.isfile(file):
 
-                    # For other errors
-                    except OSError as error:
-                        console1.printTerminal("❌: ", str(error), color=["Red", None])
-                        log.error("❌: " + str(error))
+                                shutil.move(str(file), path+'/'+str(file))
+                                sort = True
+                            else:
+                                break
+
+                        # For permission related errors
+                        except PermissionError:
+                            permission = True
+
+                        # For other errors
+                        except OSError as error:
+                            err = [True, error]
+
+                    else:
+                        try:
+                            if os.path.isfile(file):
+                                new = duplicate(str(file), path)
+                                shutil.move(src = file, dst = path+'/'+str(new))
+                                sort, duplica = True, True
+                            else:
+                                break
+
+                        except PermissionError:
+                            permission = True
+                            
+                        # For other errors
+                        except OSError as error:
+                            err = [True, error]
+
+                if sort and not duplica:
+                    console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file), path=path), color=["Green", None])
+
+                if sort and duplica:
+                    console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
+
+                if permission:
+                    console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
+
+                if err[0]:
+                    console1.printTerminal("❌: ", str(err[1]), color=["Red", None])
+                    log.error("❌: " + str(error))
 
     if conf.CONFIG['unsorted'] == True :
         if not os.path.exists('./#Unsorted'):
@@ -320,9 +360,9 @@ def editMenu():
 
     addOrEdit.config(text=langage.lang['UI']['EDIT_MENU']['button_apply'])
 
-    name_box.delete(0, END)
-    id_box.delete(0, END)
-    topping_box.delete(0, END)
+    profile_box.delete(0, END)
+    folder_box.delete(0, END)
+    rule_box.delete(0, END)
 
     addOrEdit.config(command=edit)
 
@@ -331,9 +371,9 @@ def editMenu():
         # values = self.treeView.tree.item(selected, 'values')
 
         # output to entry boxes
-        name_box.insert(0, selected[0])
-        id_box.insert(0, selected[1])
-        topping_box.insert(0, selected[2])
+        profile_box.insert(0, selected[0])
+        folder_box.insert(0, selected[1])
+        rule_box.insert(0, selected[2])
         
 
         addEditWindow.show()
@@ -344,7 +384,7 @@ def editMenu():
 def edit():
     try:
         selected = ihm.treeView.tree.selection()[0]
-        ihm.treeView.tree.item(selected, text=name_box.get(), values=(id_box.get(), topping_box.get()))
+        ihm.treeView.tree.item(selected, text=profile_box.get(), values=(folder_box.get(), rule_box.get()))
         addEditWindow.hide()
     except:
         Thread(target=lambda: sendMessage(label_error_edit, "#ff3030", f"no items selected")).start()
@@ -354,36 +394,42 @@ def addMenu():
 
     addOrEdit.config(text=langage.lang['UI']['EDIT_MENU']['button_add'])
 
-    name_box.delete(0, END)
-    id_box.delete(0, END)
-    topping_box.delete(0, END)
+    profile_box.delete(0, END)
+    folder_box.delete(0, END)
+    rule_box.delete(0, END)
 
     addOrEdit.config(command=add)
 
     addEditWindow.show()
 
 def add():
-    name = name_box.get()
-    id = id_box.get()
-    topping = topping_box.get()
+    profile_name = profile_box.get()
+    folder = folder_box.get()
+    rule = rule_box.get()
 
     sellect = ""
 
     try:
         sellect = ihm.treeView.tree.selection()[0]
     except:
-        Thread(target=lambda: sendMessage(label_error_addEditWindow, "#ff3030", f"The profile {name} already exists")).start()
+        log.debug("No select")
 
-    if name!="" and id!="" and topping!="":
-        ihm.treeView.tree.insert(parent=sellect, index=END, iid=name_box.get(), text=name_box.get(), values=(id_box.get(), topping_box.get()), tags=('evenrow',))
-        unselect()
-        addEditWindow.hide()
+    if profile_name!="" and folder!="":
+        try:
+            ihm.treeView.tree.insert(parent=sellect, index=END, iid=profile_box.get(), text=profile_box.get(), values=(folder_box.get(), rule_box.get()), tags=('evenrow',))
+            unselect()
+            addEditWindow.hide()
+        except:
+            Thread(target=lambda: sendMessage(label_error_addEditWindow, "#ff3030", f"The profile {profile_name} already exists")).start()
+
     else:
-        print("box empty")
+        Thread(target=lambda: sendMessage(label_error_addEditWindow, "#ff3030", f"Profile name and Folder is required")).start()
+        log.debug("Profile name and Folder is required")
+
 
 # main window
 window = Tk_up()
-window.configWindows(title=APP_NAME, geometry="600x600+center", iconbitmap=f"{exe_path}/img/tree.ico")
+window.configWindows(title=f"{APP_NAME} | {ntpath.dirname(path_file)}", geometry="600x600+center", iconbitmap=f"{exe_path}/img/tree.ico")
 window.iconbitmap()
 window.config(background='#202020')
 window.geometry("600x600")
@@ -409,14 +455,14 @@ tl = Label(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_extention'],
 tl.grid(row=2, column=0, sticky=W)
 
 #Entry boxes
-name_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-name_box.grid(row=0, column=1, sticky=W)
+profile_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+profile_box.grid(row=0, column=1, sticky=W)
 
-id_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-id_box.grid(row=1, column=1, sticky=W)
+folder_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+folder_box.grid(row=1, column=1, sticky=W)
 
-topping_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-topping_box.grid(row=2, column=1, sticky=W)
+rule_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+rule_box.grid(row=2, column=1, sticky=W)
 
 buttonF = Frame_up(addEditWindow)
 
@@ -699,7 +745,11 @@ def getConfig():
             if index != 0:
                 fullPath += f"/{folder}"
             else:
-                fullPath += f"{folder}"
+                if folder[0] != "/" and folder[1] != ":":
+                    fullPath += f"./{folder}"
+                else:
+                    fullPath += f"{folder}"
+                
 
         conf.CONFIG['config_sort'][key]['fullPath'] = fullPath
         conf.CONFIG['config_sort'][key]['ext'] = value[1].split("|")

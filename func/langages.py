@@ -27,10 +27,10 @@ class Lang_app:
             if config['lang'] != None:
                 self.LANG_SYS = config["lang"]
                 
-            self.lang = self.__read_lang(path +f'/lang/{self.LANG_SYS}.yml')
+            self.lang = self.__read_lang(f"{path}/lang/{self.LANG_SYS}.yml")
             self.log.info("Load Language")
         except:
-            self.lang = self.__read_lang(path + '/lang/en_EN.yml')
+            self.lang = self.__read_lang(f"{path}/lang/en_EN.yml")
             self.log.error("The system language did not charge")
 
         for index, key in enumerate(LANG_AC.keys()):
