@@ -16,8 +16,24 @@ class Update():
 
     def get_response(self) -> str:
         self.log.info("Get Version")
-        response = requests.get(self.__URL, timeout=2)
-        if str(response.status_code) == "404":
-            return None
-        else:
+        try:
+            response = requests.get(self.__URL, timeout=2)
             return response.url.rsplit('/', 1)[-1]
+
+        except requests.exceptions.HTTPError:
+            self.log.error("HTTPerror")
+
+        except requests.exceptions.Timeout:
+            self.log.error("TimeOut")
+
+        except requests.exceptions.TooManyRedirects:
+            self.log.error("TooManyRedirects")
+
+        except requests.exceptions.ConnectionError:
+            self.log.error("ConnectionError")
+
+        except requests.exceptions.RequestException:
+            self.log.error("RequestException")
+
+        return "none"
+            

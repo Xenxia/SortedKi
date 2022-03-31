@@ -12,7 +12,7 @@ from PIL import Image, ImageTk
 importPyInst = Import_pyInst()
 importPyInst.add_path(folder_path='func')
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 APP_NAME = "SortedTree"
 
 notSortList = ["config.yml", "desktop.ini"]
@@ -23,7 +23,7 @@ from update import Update
 from conf import ConfigTree
 from langages import LANG_AC, Lang_app
 from logger import DEBUG, Logger
-from ui import SCROLL_ALL, Button_up, Frame_up, Label_up, OptionMenu_up, Terminal_ScrolledText_up, Tk_up, Toggle_Button_up, Toplevel_up, Treeview_up, Widget_up
+from ui import SCROLL_ALL, Button_up, Entry_up, Frame_up, Label_up, OptionMenu_up, Terminal_ScrolledText_up, Tk_up, Toggle_Button_up, Toplevel_up, Treeview_up, Widget_up
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
@@ -367,7 +367,7 @@ def editMenu():
     addOrEdit.config(command=edit)
 
     try:
-        selected = ihm.treeView.getSelectedElement()
+        selected = ihm.treeView.getItemSelectedElemnt()
         # values = self.treeView.tree.item(selected, 'values')
 
         # output to entry boxes
@@ -445,21 +445,21 @@ addEditWindow.resizable(0, 0)
 addEditWindow.hide()
 
 #Labels
-nl = Label(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_name_profil'], bg="#202020", fg="#00ca00")
-nl.grid(row=0, column=0, sticky=W)
+nl = Label_up(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_name_profil'], bg="#202020", fg="#00ca00")
+nl.gridPosSize(row=0, column=0, sticky=W).show()
 
-il = Label(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_folder'], bg="#202020", fg="#00ca00")
-il.grid(row=1, column=0, sticky=W)
+il = Label_up(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_folder'], bg="#202020", fg="#00ca00")
+il.gridPosSize(row=1, column=0, sticky=W).show()
 
-tl = Label(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_extention'], bg="#202020", fg="#00ca00")
-tl.grid(row=2, column=0, sticky=W)
+tl = Label_up(addEditWindow, text=langage.lang['UI']['EDIT_MENU']['col_extention'], bg="#202020", fg="#00ca00")
+tl.gridPosSize(row=2, column=0, sticky=W).show()
 
 #Entry boxes
-profile_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-profile_box.grid(row=0, column=1, sticky=W)
+profile_box = Entry_up(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+profile_box.gridPosSize(row=0, column=1, sticky=W).show()
 
-folder_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-folder_box.grid(row=1, column=1, sticky=W)
+folder_box = Entry_up(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+folder_box.gridPosSize(row=1, column=1, sticky=W).show()
 
 rule_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
 rule_box.grid(row=2, column=1, sticky=W)
@@ -570,30 +570,28 @@ option_image = ImageTk.PhotoImage(image)
 
 #LANG
 label_lang = Label_up(window, text=f"{langage.lang['UI']['MAIN_MENU']['lang']} : {langage.get_locale_ac()}", bg='#202020', fg='#909090')
-label_lang.posSize(x=238, y=570, width=124, height=32)
-label_lang.show()
+label_lang.placePosSize(x=238, y=570, width=124, height=32).show()
 
 #LABEL ERROR
 label_error_option = Label_up(window, text="", bg='#202020', fg='#202020')
-label_error_option.posSize(x=0, y=270, width=600, height=32)
+label_error_option.placePosSize(x=0, y=270, width=600, height=32)
 
 label_error_edit = Label_up(window, text="", bg='#202020', fg='#202020')
-label_error_edit.posSize(x=0, y=410, width=600, height=32)
+label_error_edit.placePosSize(x=0, y=410, width=600, height=32)
 
 label_error_addEditWindow = Label_up(addEditWindow, text="", bg='#202020', fg='#ffffff')
-label_error_addEditWindow.posSize(x=200, y=63, width=300, height=32)
+label_error_addEditWindow.placePosSize(x=200, y=63, width=300, height=32)
 
 #VERSION
 frame_version = Frame_up(window, bg='#202020')
-frame_version.posSize(x=470, y=575, width=124, height=20)
 frame_version.propagate(False)
-frame_version.show()
+frame_version.placePosSize(x=470, y=575, width=124, height=20).show()
 
 last_version = update.get_version()
 
 label_version = Button_up(frame_version, bg="#202020", fg="#990000", bd=0, highlightthickness=0, disabledforeground="#009900", state=DISABLED, text=VERSION)
 
-if last_version != None and last_version != VERSION:
+if last_version != "none" and last_version != VERSION:
     label_version.config(activebackground="#202020", state=NORMAL, command=openWeb)
 
 label_version.grid(row=0, column=1, pady=(1, 0))
@@ -603,38 +601,38 @@ label_version_text.grid(row=0, column=0, sticky=W)
 
 #main
 button_tree = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_sort'], command=lambda: Thread(target=sort).start())
-button_tree.posSize(x=255, y=0, width=90, height=24)
+button_tree.placePosSize(x=255, y=0, width=90, height=24)
 
 button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_clear'], command=lambda: console1.clearTerminal())
-button_clear.posSize(x=255, y=24, width=90, height=24)
+button_clear.placePosSize(x=255, y=24, width=90, height=24)
 
 button_option = Button_up(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=optionUi)
-button_option.posSize(x=2, y=574, width=24, height=24)
+button_option.placePosSize(x=2, y=574, width=24, height=24)
 
 #option
 button_edit = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_edit'], command=editUi)
-button_edit.posSize(x=210, y=24, width=180, height=24)
+button_edit.placePosSize(x=210, y=24, width=180, height=24)
 
 button_export = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_export'], command=export_conf)
-button_export.posSize(x=210, y=48, width=180, height=24)
+button_export.placePosSize(x=210, y=48, width=180, height=24)
 
 button_import = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_import'], command=import_conf)
-button_import.posSize(x=210, y=72, width=180, height=24)
+button_import.placePosSize(x=210, y=72, width=180, height=24)
 
 button_moveToRoot = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_move_root'], command=moveToRoot)
-button_moveToRoot.posSize(x=210, y=124, width=180, height=24)
+button_moveToRoot.placePosSize(x=210, y=124, width=180, height=24)
 
 button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", wraplength=180, activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_delete_conf'], command=deletConfig)
-button_deleteConfig.posSize(x=210, y=148, width=180)
+button_deleteConfig.placePosSize(x=210, y=148, width=180)
 
 combox_option_lang = OptionMenu_up(window, default=0, list=[LANG_AC[key] for key in LANG_AC.keys()], justify='center')
 combox_option_lang.current(langage.index)
 combox_option_lang.bind("<<ComboboxSelected>>", fixLang)
-combox_option_lang.posSize(x=235, y=210,width=130, height=24)
+combox_option_lang.placePosSize(x=235, y=210,width=130, height=24)
 combox_option_lang.show()
 
 button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_return'], command=mainUi)
-button_return.posSize(x=235, y=250, width=130, height=24)
+button_return.placePosSize(x=235, y=250, width=130, height=24)
 
 #CONSOLE
 colorConsole = {
@@ -647,7 +645,7 @@ colorConsole = {
 }
 console1 = Terminal_ScrolledText_up(window, bg="#000000", fg="#FFFFFF")
 console1.configTag(colorConsole)
-console1.posSize(x=0, y=48, width=600, height=524)
+console1.placePosSize(x=0, y=48, width=600, height=524)
 
 #tab config
 
@@ -706,14 +704,15 @@ class IHM(Frame, Widget_up):
 
         # event
     def selected(self, event):
-        self.edit.enable()
-        self.remove.enable()
-        self.unselect.enable()
-        self.move_up.enable()
-        self.move_down.enable()
+        if self.treeView.getSelectedElement():
+            self.edit.enable()
+            self.remove.enable()
+            self.unselect.enable()
+            self.move_up.enable()
+            self.move_down.enable()
 
 ihm = IHM(window, bg="#202020")
-ihm.posSize(0, 0, 600, 450)
+ihm.placePosSize(0, 0, 600, 450)
 ihm.treeView.setColumns([
         langage.lang['UI']['EDIT_MENU']['col_name_profil'],
         langage.lang['UI']['EDIT_MENU']['col_folder'],
@@ -767,7 +766,7 @@ def getConfig():
     optionUi()
 
 button_saveAndReturn = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['EDIT_MENU']['buton_return_save'], command=getConfig)
-button_saveAndReturn.posSize(x=2, y=574, width=180, height=24)
+button_saveAndReturn.placePosSize(x=2, y=574, width=180, height=24)
 
 mainUi()
 window.update()

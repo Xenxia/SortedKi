@@ -1,7 +1,7 @@
 import tkinter
 import re as regex
 from ctypes import windll
-from tkinter import IntVar, OptionMenu, StringVar, Tk, ttk
+from tkinter import IntVar, StringVar, Tk, ttk
 from typing import Any, Literal, Tuple
 from tkinter import Button, Canvas, Entry, Frame, Grid, Label, Pack, Place, Text, Widget, Toplevel
 from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
@@ -37,6 +37,33 @@ def setAppWindow(mainWindow, windows = None): # to display the window icon on th
         windows.wm_withdraw()
         windows.wm_deiconify()
 
+#CLASS
+
+class ScrolledText(Text):
+
+    def __init__(self, master=None, **kw):
+
+        self.frame = Frame(master)
+        self.vbar = ttk.Scrollbar(self.frame)
+        self.vbar.pack(side=RIGHT, fill=Y)
+
+        kw.update({'yscrollcommand': self.vbar.set})
+        Text.__init__(self, self.frame, **kw)
+        self.pack(side=LEFT, fill=BOTH, expand=True)
+        self.vbar['command'] = self.yview
+
+        # Copy geometry methods of self.frame without overriding Text
+        # methods -- hack!
+        text_meths = vars(Text).keys()
+        methods = vars(Pack).keys() | vars(Grid).keys() | vars(Place).keys()
+        methods = methods.difference(text_meths)
+
+        for m in methods:
+            if m[0] != '_' and m != 'config' and m != 'configure':
+                setattr(self, m, getattr(self.frame, m))
+
+    def __str__(self):
+        return str(self.frame)
 
 class Tk_up(Tk, Frame):
 
@@ -173,37 +200,21 @@ class Tk_up(Tk, Frame):
                     self.after(10, func)
             self.mainloop()
 
-class ScrolledText(Text):
-
-    def __init__(self, master=None, **kw):
-
-        self.frame = Frame(master)
-        self.vbar = ttk.Scrollbar(self.frame)
-        self.vbar.pack(side=RIGHT, fill=Y)
-
-        kw.update({'yscrollcommand': self.vbar.set})
-        Text.__init__(self, self.frame, **kw)
-        self.pack(side=LEFT, fill=BOTH, expand=True)
-        self.vbar['command'] = self.yview
-
-        # Copy geometry methods of self.frame without overriding Text
-        # methods -- hack!
-        text_meths = vars(Text).keys()
-        methods = vars(Pack).keys() | vars(Grid).keys() | vars(Place).keys()
-        methods = methods.difference(text_meths)
-
-        for m in methods:
-            if m[0] != '_' and m != 'config' and m != 'configure':
-                setattr(self, m, getattr(self.frame, m))
-
-    def __str__(self):
-        return str(self.frame)
-
 class Widget_up(Widget):
+
+    #Place
     x: int
     y: int
     width: int
     height: int
+
+    #Grid
+    row: int
+    column: int
+    sticky: str
+
+    #Sys
+    sysShowHide: str
 
     def __init__(self):
         self.x = 0
@@ -211,17 +222,42 @@ class Widget_up(Widget):
         self.width = 0
         self.height = 0
 
-    def posSize(self, x: int, y: int, width: int, height: int = None):
+    def placePosSize(self, x: int, y: int, width: int, height: int = None):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
 
+        self.sysShowHide = "place"
+
+        return self
+
+    def gridPosSize(self, row: int, column: int, sticky: str):
+        self.row = row
+        self.column = column
+        self.sticky = sticky
+
+        self.sysShowHide = "grid"
+
+        return self
+
     def show(self):
-        self.place(x=self.x, y=self.y, width=self.width, height=self.height)
+
+        if self.sysShowHide == "place":
+            self.place(x=self.x, y=self.y, width=self.width, height=self.height)
+        elif self.sysShowHide == "grid":
+            self.grid(row=self.row, column=self.column, sticky=self.sticky)
+        else:
+            raise ValueError
 
     def hide(self):
-        self.place_forget()
+        if self.sysShowHide == "place":
+            self.place_forget()
+        elif self.sysShowHide == "grid":
+            self.grid_forget()
+        else:
+            raise ValueError
+
 
 class Toplevel_up(Toplevel, Frame):
 
@@ -245,25 +281,6 @@ class Toplevel_up(Toplevel, Frame):
 
     def hide(self):
         self.withdraw()
-
-
-# class Custom_TitleBar_up(Frame):
-
-#     # rootFrame: Frame
-#     titleBarFrame: Frame
-
-#     def __init__(self, master=None, cnf={}, **kw):
-#         self.titleBarFrame = Frame(master=master)
-#         Frame.__init__(self, master=master, cnf=cnf, **kw)
-#         if isinstance(master, Tk_up):
-#             master.runAfterMainloopStarted(lambda: setAppWindow(master))
-
-#         master.overrideredirect(True)
-
-#     def init(self):
-        
-
-    
 
 class Button_up(Button, Widget_up):
 
@@ -554,7 +571,7 @@ class Treeview_up(Frame, Widget_up):
     def editElement(self, item:str, text:str="", image="", values:list|Literal['']="", open:bool=False, tags:str|list[str]|tuple[str, ...]="") -> None:
         self.tree.item(item, text=text, image=image, values=values, open=open, tags=tags)
 
-    def getSelectedElement(self, option:str='values') -> Any:
+    def getItemSelectedElemnt(self, option:str='values') -> Any:
         item = self.tree.focus()
 
         if self.__child and option == "values":
@@ -564,13 +581,14 @@ class Treeview_up(Frame, Widget_up):
                 listValues.append(value)
             return listValues
 
-
         return self.tree.item(item, option)
+
+    def getSelectedElement(self) -> tuple:
+        return self.tree.selection()
 
     def getAllChildren(self) -> dict:
         childs_list = self.__getSubChildren(self.tree)
 
-        # print(childs_list)
         children_dict = {}
 
         for iid in childs_list:
