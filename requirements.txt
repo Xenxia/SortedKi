@@ -1,0 +1,7 @@
+# ImportPyinstaller == 1.0.0
+# PyThreadUp == 1.0.0
+Pillow >= 8.4.0
+pyinstaller >= 4.7
+requests >= 2.26.0
+ruamel.yaml >= 0.17.17
+setuptools >= 58.1.0
