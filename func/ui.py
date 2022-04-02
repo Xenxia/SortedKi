@@ -1,10 +1,13 @@
-import tkinter
-import re as regex
-from ctypes import windll
+import tkinter, platform, re as regex
 from tkinter import IntVar, StringVar, Tk, ttk
 from typing import Any, Literal, Tuple
 from tkinter import Button, Canvas, Entry, Frame, Grid, Label, Pack, Place, Text, Widget, Toplevel
 from tkinter.constants import BOTH, BOTTOM, DISABLED, END, HORIZONTAL, LEFT, NO, NORMAL, RIGHT, VERTICAL, W, X, Y, YES
+
+PLATFORM_SYS = platform.system()
+
+if PLATFORM_SYS == "Windows":
+    from ctypes import windll
 
 SCROLL_X: str = "scroll_x"
 SCROLL_Y: str = "scroll_y"
@@ -111,7 +114,8 @@ class Tk_up(Tk, Frame):
                 self.closeButton,
                 self.expandButton
             ]
-            self.runAfterMainloopStarted(lambda: setAppWindow(self.root))
+            if PLATFORM_SYS == "Windows":
+                self.runAfterMainloopStarted(lambda: setAppWindow(self.root))
             Frame.__init__(self, master=self.root ,highlightthickness=0)
         else:
             Tk.__init__(self)
@@ -212,6 +216,8 @@ class Widget_up(Widget):
     row: int
     column: int
     sticky: str
+    pady: tuple
+    padx: tuple
 
     #Sys
     sysShowHide: str
@@ -232,10 +238,12 @@ class Widget_up(Widget):
 
         return self
 
-    def gridPosSize(self, row: int, column: int, sticky: str):
+    def gridPosSize(self, row: int, column: int, pady: tuple = None ,padx: tuple = None ,sticky: str = None):
         self.row = row
         self.column = column
         self.sticky = sticky
+        self.pady = pady
+        self.padx = padx
 
         self.sysShowHide = "grid"
 
@@ -246,9 +254,11 @@ class Widget_up(Widget):
         if self.sysShowHide == "place":
             self.place(x=self.x, y=self.y, width=self.width, height=self.height)
         elif self.sysShowHide == "grid":
-            self.grid(row=self.row, column=self.column, sticky=self.sticky)
+            self.grid(row=self.row, column=self.column, sticky=self.sticky, pady=self.pady, padx=self.padx)
         else:
             raise ValueError
+
+        return self
 
     def hide(self):
         if self.sysShowHide == "place":
@@ -257,6 +267,8 @@ class Widget_up(Widget):
             self.grid_forget()
         else:
             raise ValueError
+
+        return self
 
 
 class Toplevel_up(Toplevel, Frame):

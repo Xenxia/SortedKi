@@ -1,10 +1,13 @@
-from ctypes import windll
+import os, stat, shutil, platform
 from tkinter import filedialog
 from typing import Any, TypedDict
 from ruamel.yaml import YAML
-import os, stat, shutil
-
 from logger import Logger
+
+PLATFORM_SYS = platform.system()
+
+if PLATFORM_SYS == "Windows":
+    from ctypes import windll
 
 class ConfigTree():
     log: Logger
@@ -60,7 +63,10 @@ class ConfigTree():
         self.log = log
         if not os.path.exists(self.CONFIG_FILE_NAME):
             self.write_yaml(self.CONFIG_FILE_NAME, self.__DEFAULT_CONFIG)
-            windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
+
+            if PLATFORM_SYS == "Windows":
+                windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
+
             self.log.info("Create config")
             if not os.path.exists(self.CONFIG_FILE_NAME):
                 self.log.error("Error during the creation of the sorting configuration file")
@@ -93,7 +99,10 @@ class ConfigTree():
             if os.path.exists(self.CONFIG_FILE_NAME):
                 os.remove(self.CONFIG_FILE_NAME)
             shutil.copy(src=pathfile, dst=self.CONFIG_FILE_NAME)
-            windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
+
+            if PLATFORM_SYS == "Windows":
+                windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
+
             self.reloadConfig()
             self.log.debug("Importing config")
 
@@ -103,12 +112,14 @@ class ConfigTree():
         yml.width = 4096
         yml.indent(mapping=4, sequence=0, offset=0)
 
-        windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__SHOW_FILE)
+        if PLATFORM_SYS == "Windows":
+            windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__SHOW_FILE)
 
         with open(name_file, 'w') as file:
             yml.dump(content, file)
 
-        windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
+        if PLATFORM_SYS == "Windows":
+            windll.kernel32.SetFileAttributesW(self.CONFIG_FILE_NAME, self.__HIDE_FILE)
         
     def read_yaml(self, name_file: str) -> TypedDict:
 
@@ -116,7 +127,4 @@ class ConfigTree():
             classique_dict: TypedDict = YAML(typ="safe", pure=True).load(file)
 
         return classique_dict
-
-    # def __load_literal(self, literal: Literal) -> Any:
-    #     return YAML().load(literal)
 

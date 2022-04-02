@@ -1,9 +1,7 @@
 import locale
 from typing import TypedDict
 from ruamel.yaml import YAML
-
 from logger import Logger
-
 
 LANG_AC = {
     "fr_FR": "Français",

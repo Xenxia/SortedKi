@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, pathlib, sys, ntpath, shutil, webbrowser
+import os, pathlib, sys, ntpath, shutil, webbrowser, platform
 from time import sleep
 from tkinter import *
 from tkinter import ttk
@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 importPyInst = Import_pyInst()
 importPyInst.add_path(folder_path='func')
 
+PLATFORME_SYS = platform.system()
 VERSION = "1.1.1"
 APP_NAME = "SortedTree"
 
@@ -27,6 +28,8 @@ from ui import SCROLL_ALL, Button_up, Entry_up, Frame_up, Label_up, OptionMenu_u
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
+
+log.debug(f"OS : {PLATFORME_SYS}")
 
 if importPyInst.is_compiled:
     path_file = os.path.realpath(sys.executable)
@@ -416,7 +419,7 @@ def add():
 
     if profile_name!="" and folder!="":
         try:
-            ihm.treeView.tree.insert(parent=sellect, index=END, iid=profile_box.get(), text=profile_box.get(), values=(folder_box.get(), rule_box.get()), tags=('evenrow',))
+            ihm.treeView.tree.insert(parent=sellect, index=END, iid=profile_name, text=profile_name, values=(folder, rule), tags=('evenrow',))
             unselect()
             addEditWindow.hide()
         except:
@@ -461,18 +464,18 @@ profile_box.gridPosSize(row=0, column=1, sticky=W).show()
 folder_box = Entry_up(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
 folder_box.gridPosSize(row=1, column=1, sticky=W).show()
 
-rule_box = Entry(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
-rule_box.grid(row=2, column=1, sticky=W)
+rule_box = Entry_up(addEditWindow, width=71, bg="#555555", fg="#FFFFFF")
+rule_box.gridPosSize(row=2, column=1, sticky=W).show()
 
 buttonF = Frame_up(addEditWindow)
 
-addOrEdit = Button(buttonF, bg="#555555", fg="#00ca00", activebackground="#555555")
-addOrEdit.grid(row=0, column=0)
+addOrEdit = Button_up(buttonF, bg="#555555", fg="#00ca00", activebackground="#555555")
+addOrEdit.gridPosSize(row=0, column=0).show()
 
-cancel = Button(buttonF, text=langage.lang['UI']['EDIT_MENU']['button_cancel'], bg="#555555", fg="#00ca00", activebackground="#555555", command=addEditWindow.hide)
-cancel.grid(row=0, column=1)
+cancel = Button_up(buttonF, text=langage.lang['UI']['EDIT_MENU']['button_cancel'], bg="#555555", fg="#00ca00", activebackground="#555555", command=addEditWindow.hide)
+cancel.gridPosSize(row=0, column=1).show()
 
-buttonF.grid(row=3, column=1, sticky=W)
+buttonF.gridPosSize(row=3, column=1, sticky=W).show()
 
 #STYLE
 
@@ -594,10 +597,10 @@ label_version = Button_up(frame_version, bg="#202020", fg="#990000", bd=0, highl
 if last_version != "none" and last_version != VERSION:
     label_version.config(activebackground="#202020", state=NORMAL, command=openWeb)
 
-label_version.grid(row=0, column=1, pady=(1, 0))
+label_version.gridPosSize(row=0, column=1, pady=(1, 0)).show()
 
 label_version_text = Label_up(frame_version, text="version :", bg='#202020', fg='#909090')
-label_version_text.grid(row=0, column=0, sticky=W)
+label_version_text.gridPosSize(row=0, column=0, sticky=W).show()
 
 #main
 button_tree = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_sort'], command=lambda: Thread(target=sort).start())
@@ -628,8 +631,7 @@ button_deleteConfig.placePosSize(x=210, y=148, width=180)
 combox_option_lang = OptionMenu_up(window, default=0, list=[LANG_AC[key] for key in LANG_AC.keys()], justify='center')
 combox_option_lang.current(langage.index)
 combox_option_lang.bind("<<ComboboxSelected>>", fixLang)
-combox_option_lang.placePosSize(x=235, y=210,width=130, height=24)
-combox_option_lang.show()
+combox_option_lang.placePosSize(x=235, y=210,width=130, height=24).show()
 
 button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_return'], command=mainUi)
 button_return.placePosSize(x=235, y=250, width=130, height=24)
@@ -655,52 +657,47 @@ class IHM(Frame, Widget_up):
         Frame.__init__(self, master=master, cnf=cnf, **kw)
         Widget_up.__init__(self)
 
-        self.frameButton = Frame(self, bg="#202020")
-        self.frameButton.grid(row=1, column=0, sticky=W)
+        self.frameButton = Frame_up(self, bg="#202020")
+        self.frameButton.gridPosSize(row=1, column=0, sticky=W).show()
 
-        self.frameBox = Frame(self, bg="#202020", width=600)
-        self.frameBox.grid(row=2, column=0, sticky=W)
+        self.frameBox = Frame_up(self, bg="#202020", width=600)
+        self.frameBox.gridPosSize(row=2, column=0, sticky=W).show()
         self.frameBox.propagate(False)
         
         self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=600, height=300)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
-        self.treeView.grid(row=0, column=0, sticky=W)
+        self.treeView.gridPosSize(row=0, column=0, sticky=W).show()
 
         self.unselect = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_unselect'], command=unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
-        self.unselect.grid(column=5, row=0, padx=5)
-        self.unselect.disable()
+        self.unselect.gridPosSize(column=5, row=0, padx=5).show().disable()
 
         self.move_up = Button_up(self.frameButton, text="⬆", command=self.treeView.moveUpSelectedElement, bg="#555555", fg="#00ca00", activebackground="#555555")
-        self.move_up.grid(column=4, row=0)
-        self.move_up.disable()
+        self.move_up.gridPosSize(column=4, row=0).show().disable()
 
         self.move_down = Button_up(self.frameButton, text="⬇", command=self.treeView.moveDownSelectedElement, bg="#555555", fg="#00ca00", activebackground="#555555")
-        self.move_down.grid(column=3, row=0)
-        self.move_down.disable()
+        self.move_down.gridPosSize(column=3, row=0).show().disable()
 
         self.remove = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_delete'], command=delete, bg="#555555", fg="#00ca00", activebackground="#555555")
-        self.remove.grid(column=2, row=0, padx=5)
-        self.remove.disable()
+        self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
         self.edit = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_edit'], command=editMenu, bg="#555555", fg="#00ca00", activebackground="#555555")
-        self.edit.grid(column=1, row=0, padx=(5, 0))
-        self.edit.disable()
+        self.edit.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
         add = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_add'], command=addMenu, bg="#555555", fg="#00ca00", activebackground="#555555")
-        add.grid(column=0, row=0)
+        add.gridPosSize(column=0, row=0).show()
 
         self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
         self.doNotSort_box.grid(row=6, column=1, sticky=W, pady=(13, 0))
 
-        d1 = Label(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_not_sort'], bg="#202020", fg="#00ca00")
-        d1.grid(row=6, column=0, pady=(20, 10), padx=(5, 5))
+        d1 = Label_up(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_not_sort'], bg="#202020", fg="#00ca00")
+        d1.gridPosSize(row=6, column=0, pady=(20, 10), padx=(5, 5)).show()
 
         self.toggle_b = Toggle_Button_up(self.frameBox, bg="#555555", activebackground="#555555", width=3)
         self.toggle_b.custom_toggle(("✔", "✖"))
-        self.toggle_b.grid(column=1, row=7, sticky=W)
+        self.toggle_b.gridPosSize(column=1, row=7, sticky=W).show()
 
-        u1 = Label(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_unsorted'], bg="#202020", fg="#00ca00")
-        u1.grid(row=7, column=0, padx=(5, 5))
+        u1 = Label_up(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_unsorted'], bg="#202020", fg="#00ca00")
+        u1.gridPosSize(row=7, column=0, padx=(5, 5)).show()
 
         # event
     def selected(self, event):

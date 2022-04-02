@@ -1,5 +1,5 @@
-from datetime import datetime
 import getpass
+from datetime import datetime
 from typing import Tuple
 
 RESET = '\x1b[0m'

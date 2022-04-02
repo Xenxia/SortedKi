@@ -1,5 +1,4 @@
 import requests
-
 from logger import Logger
 
 class Update():
