@@ -628,7 +628,7 @@ button_moveToRoot.placePosSize(x=210, y=124, width=180, height=24)
 button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", wraplength=180, activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_delete_conf'], command=deletConfig)
 button_deleteConfig.placePosSize(x=210, y=148, width=180)
 
-combox_option_lang = OptionMenu_up(window, default=0, list=[LANG_AC[key] for key in LANG_AC.keys()], justify='center')
+combox_option_lang = OptionMenu_up(window, default=0, list=[key for key in LANG_AC.keys()], justify='center')
 combox_option_lang.current(langage.index)
 combox_option_lang.bind("<<ComboboxSelected>>", fixLang)
 combox_option_lang.placePosSize(x=235, y=210,width=130, height=24).show()
