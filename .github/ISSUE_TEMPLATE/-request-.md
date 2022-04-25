@@ -1,7 +1,7 @@
 ---
 name: "[Request]"
 about: Request
-title: "[Request]"
+title: "[Request] - "
 labels: request
 assignees: ''
 
