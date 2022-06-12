@@ -113,7 +113,7 @@ class Logger():
 
         if len_l <= self.space:
             len_l = self.space - len_l
-            for i in range(len_l):
+            for _ in range(len_l):
                 sp = sp + " "
 
         return sp
@@ -122,6 +122,13 @@ class Logger():
         if color: self.onColor = color
 
     def customize(self, message: Tuple = None, level: Tuple = None, context: Tuple = None, time: Tuple = None, user: Tuple = None):
+        '''
+        {msg} : message
+        {context} : context
+        {time} : date time
+        {levelname} : level
+        {user} : user
+        '''
 
         if level is not None: self.logstyle["level"] = level
         if message is not None: self.logstyle["msg"] = message

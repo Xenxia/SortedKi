@@ -27,16 +27,23 @@ group.add_argument('-v', '--version', action='version', version="V1")
 args = parser.parse_args()
 
 compileall.compile_dir(dir="func", legacy=True, force=True)
-path = "./func/comp"
+compileall.compile_dir(dir="page", legacy=True, force=True)
 
-if os.path.exists(path):
-    shutil.rmtree(path)
+path = ["./func", "./page"]
 
-os.mkdir(path)
+for p in path:
+    p = f"{p}/comp"
+    if os.path.exists(p):
+        shutil.rmtree(p)
+
+for p in path:
+    p = f"{p}/comp"
+    os.mkdir(p)
 
 # move file.pyc to ./comp
-for file in pathlib.Path('./func').glob("*.pyc"):
-    os.rename(str(file), path+"/"+file.name)
+for p in path:
+    for file in pathlib.Path(p).glob("*.pyc"):
+        os.rename(str(file), f"{p}/comp/{file.name}")
 
 print("\n=========================================== BUILD DEV ===========================================\n")
 PyInstaller.__main__.run([
@@ -45,6 +52,7 @@ PyInstaller.__main__.run([
     '--onefile',
     # '--clean',
     '--add-data=func/comp;func',
+    '--add-data=page/comp;page',
     '--add-data=img;img',
     '--add-data=lang;lang',
     '--hidden-import=locale',
@@ -58,6 +66,7 @@ PyInstaller.__main__.run([
     '--hidden-import=tkinter',
     '--hidden-import=requests',
     '--hidden-import=webbrowser',
+    '--hidden-import=tk_up',
     '--icon=img/tree.ico'
 ])
 print("\n========================================= END BUILD DEV ==========================================\n")
@@ -71,6 +80,7 @@ if not args.Command_Name == "dev":
         # '--clean',
         '--windowed',
         '--add-data=func/comp;func',
+        '--add-data=page/comp;page',
         '--add-data=img;img',
         '--add-data=lang;lang',
         '--hidden-import=locale',
@@ -84,9 +94,12 @@ if not args.Command_Name == "dev":
         '--hidden-import=tkinter',
         '--hidden-import=requests',
         '--hidden-import=webbrowser',
+        '--hidden-import=tk_up',
         '--icon=img/tree.ico'
     ])
     print("\n========================================= END BUILD PROD ==========================================\n")
 
-if os.path.exists(path):
-    shutil.rmtree(path)
+for p in path:
+    p = f"{p}/comp"
+    if os.path.exists(p):
+        shutil.rmtree(p)

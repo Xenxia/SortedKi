@@ -1,7 +1,7 @@
 import locale
 from typing import TypedDict
 from ruamel.yaml import YAML
-from logger import Logger
+from func.logger import Logger
 
 LANG_AC: dict[str, list] = {
     "Français": ["fr_FR"],
