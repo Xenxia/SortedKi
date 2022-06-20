@@ -7,20 +7,18 @@ from func.langages import Lang_app
 
 class menu_sort(Frame_up):
 
-    parameters: list
+    parameters_list: list
     manager_class: ManagerWidgets_up
 
-    def __init__(self, parameters: list, manager_class: ManagerWidgets_up, master=None, **kw):
-        self.parameters = parameters
+    def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
+        self.parameters_list = parameters_list.copy()
         self.manager_class = manager_class
 
-        langs: Lang_app = parameters[0]
-        log: Logger = parameters[2]
+        langs: Lang_app = parameters_list[0]
+        log: Logger = parameters_list[2]
 
-        Frame_up.__init__(self, master=master, **kw)
+        Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(3, weight=1)
         #command=lambda: Thread(target=sort).start()
 
         self.button_tree = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_sort'])
@@ -40,3 +38,11 @@ class menu_sort(Frame_up):
         self.console1 = Terminal_ScrolledText_up(self, borderwidth=0)
         self.console1.configTag(colorConsole)
         self.console1.placePosSize(0, 48, 700, 620).show()
+
+    def disable(self):
+        button: Button_up = self.parameters_list[3]
+        button.disable()
+
+    def enable(self):
+        button: Button_up = self.parameters_list[3]
+        button.enable()

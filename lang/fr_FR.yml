@@ -15,9 +15,10 @@ UI:
     lang: Langue
   
   OPTION_MENU:
-    button_edit: Editer configuration
-    button_export: Exporter configuration
-    button_import: Importer configuration
+    frame_config: Configuration
+    button_edit: Editer
+    button_export: Exporter
+    button_import: Importer
     button_return: Retour
     button_move_root: "! Déplacer à la racine !"
     button_delete_conf: "! Supprimer le fichier de configuration !"
@@ -35,7 +36,8 @@ UI:
     button_cancel: Annuler
     button_delete: Suprimmer
     button_unselect: Déselectionner
-    buton_return_save: Retour et sauvegarder
+    button_return_save: Retour et sauvegarder
+    button_return: Retour
     label_not_sort: Ne pas trié
     label_unsorted: Non trié
 

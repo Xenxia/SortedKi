@@ -56,26 +56,21 @@ update: Update = update_task.join()
 def openWeb():
     webbrowser.open(f'https://github.com/Xenxia/{APP_NAME}/releases/latest')
 
-def sendMessage(label: Label_up, color: str, message: str, time: int=7):
-    label.config(fg=color, text=message)
-    label.show()
-    sleep(time)
-    label.config(fg="#202020", text="")
-    label.hide()
 
-def export_conf():
-    try:
-        conf.exportConfig()
-        Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Exporter")).start()
-    except:
-        print('export')
 
-def import_conf():
-    try:
-        conf.importConfig()
-        Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Importer")).start()
-    except:
-        print('import')
+# def export_conf():
+#     try:
+#         conf.exportConfig()
+#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Exporter")).start()
+#     except:
+#         print('export')
+
+# def import_conf():
+#     try:
+#         conf.importConfig()
+#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Importer")).start()
+#     except:
+#         print('import')
 
 def moveToRoot():
     for name_profile in conf.CONFIG['config_sort']:
@@ -88,12 +83,12 @@ def moveToRoot():
                     shutil.move(str(file_path), './'+str(file_name))
     log.info("Move to root")
 
-def deletConfig():
-    try:
-        os.remove(f"./{conf.CONFIG_FILE_NAME}")
-        Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config file delete")).start()
-    except:
-        Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Error")).start()
+# def deletConfig():
+#     try:
+#         os.remove(f"./{conf.CONFIG_FILE_NAME}")
+#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config file delete")).start()
+#     except:
+#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Error")).start()
 
 def notSort():
     list_temp = []
@@ -161,7 +156,7 @@ def duplicate(file: str, path: str) -> str:
     return newName+fileExt
 
 def notDev():
-    console1.printTerminal("This feature is not developed", color=["Purple"])
+    main_menu_w.console1.printTerminal("This feature is not developed", color=["Purple"])
 
 def sort():
 
@@ -270,59 +265,10 @@ def sort():
 
 # # ? TK ------------------------------------------------------------------------------->
 
-# def mainUi():
-#     console1.show()
-#     button_tree.show()
-#     button_clear.show()
-#     button_option.show()
-#     button_option.enable()
 
-#     button_edit.hide()
-#     button_export.hide()
-#     button_import.hide()
-#     button_return.hide()
-#     button_moveToRoot.hide()
-#     button_deleteConfig.hide()
-
-#     ihm.hide()
-#     button_saveAndReturn.hide()
-
-# #Option
-# def optionUi():
-#     console1.hide()
-#     button_tree.hide()
-#     button_clear.hide()
-#     button_option.show()
-#     button_option.disable()
-
-#     button_edit.show()
-#     button_export.show()
-#     button_import.show()
-#     button_return.show()
-#     button_moveToRoot.show()
-#     button_deleteConfig.show()
-
-#     ihm.hide()
-#     button_saveAndReturn.hide()
-
-# def fixLang(event):
-#     conf.CONFIG["lang"] = langage.get_local_ac_from_name_lang(combox_option_lang.get())
-#     conf.saveConfig()
-#     Thread(target=lambda: sendMessage(label_error_option, "#00ca00", langage.lang['UI']['OPTION_MENU']['message_change_lang'], 3)).start()
 
 # #Edit
 # def editUi():
-#     console1.hide()
-#     button_tree.hide()
-#     button_clear.hide()
-#     button_option.hide()
-
-#     button_edit.hide()
-#     button_export.hide()
-#     button_import.hide()
-#     button_return.hide()
-#     button_moveToRoot.hide()
-#     button_deleteConfig.hide()
 
 #     for i in ihm.treeView.tree.get_children():
 #         ihm.treeView.tree.delete(i)
@@ -361,78 +307,7 @@ def sort():
 #     ihm.treeView.removeSelectedElement()
 #     unselect()
 
-# #Toplevel menu
-# def editMenu():
 
-#     addEditWindow.title(langage.lang['UI']['EDIT_MENU']['title_edit'])
-
-#     addOrEdit.config(text=langage.lang['UI']['EDIT_MENU']['button_apply'])
-
-#     profile_box.delete(0, END)
-#     folder_box.delete(0, END)
-#     rule_box.delete(0, END)
-
-#     addOrEdit.config(command=edit)
-
-#     try:
-#         selected = ihm.treeView.getItemSelectedElemnt()
-#         # values = self.treeView.tree.item(selected, 'values')
-
-#         # output to entry boxes
-#         profile_box.insert(0, selected[0])
-#         folder_box.insert(0, selected[1])
-#         rule_box.insert(0, selected[2])
-        
-
-#         addEditWindow.show()
-
-#     except:
-#         print("not select")
-
-# def edit():
-#     try:
-#         selected = ihm.treeView.tree.selection()[0]
-#         ihm.treeView.tree.item(selected, text=profile_box.get(), values=(folder_box.get(), rule_box.get()))
-#         addEditWindow.hide()
-#     except:
-#         Thread(target=lambda: sendMessage(label_error_edit, "#ff3030", f"no items selected")).start()
-
-# def addMenu():
-#     addEditWindow.title(langage.lang['UI']['EDIT_MENU']['title_add'])
-
-#     addOrEdit.config(text=langage.lang['UI']['EDIT_MENU']['button_add'])
-
-#     profile_box.delete(0, END)
-#     folder_box.delete(0, END)
-#     rule_box.delete(0, END)
-
-#     addOrEdit.config(command=add)
-
-#     addEditWindow.show()
-
-# def add():
-#     profile_name = profile_box.get()
-#     folder = folder_box.get()
-#     rule = rule_box.get()
-
-#     sellect = ""
-
-#     try:
-#         sellect = ihm.treeView.tree.selection()[0]
-#     except:
-#         log.debug("No select")
-
-#     if profile_name!="" and folder!="":
-#         try:
-#             ihm.treeView.tree.insert(parent=sellect, index=END, iid=profile_name, text=profile_name, values=(folder, rule), tags=('evenrow',))
-#             unselect()
-#             addEditWindow.hide()
-#         except:
-#             Thread(target=lambda: sendMessage(label_error_addEditWindow, "#ff3030", f"The profile {profile_name} already exists")).start()
-
-#     else:
-#         Thread(target=lambda: sendMessage(label_error_addEditWindow, "#ff3030", f"Profile name and Folder is required")).start()
-#         log.debug("Profile name and Folder is required")
 
 
 # main window
@@ -446,15 +321,13 @@ window.configWindows(title=f"{APP_NAME} | {ntpath.dirname(path_file)}", geometry
 window.resizable(0, 0)
 # window.option_add("*font", 'Consolas 10 bold')
 # window.columnconfigure(0, weight=1)
-# window.rowconfigure(0, weight=1)
+# window.rowconfigure(2, weight=1)
 
 # theme = ManagerThemes(window).setTheme("azure", themes="dark")
 
-main_frame = ManagerWidgets_up(master=window, asset_folder=f"{exe_path}/page", parameters=[langage, conf, log], width=700, height=670)
+main_frame = ManagerWidgets_up(master=window, asset_folder=f"{exe_path}/page", parameters_list=[langage, conf, log], parameters_dict={"exe_path": exe_path}, width=700, height=670)
 main_frame.showWidget("menu_sort")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
-
-log.debug(main_frame.class_widget)
 
 main_menu_w: menu_sort = main_frame.getClassWidget("menu_sort")
 main_menu_w.button_tree.configure(command=sort)
@@ -462,7 +335,7 @@ main_menu_w.button_tree.configure(command=sort)
 
 footer = Frame_up(master=window, width=700, height=30)
 # footer.propagate(False)
-footer.gridPosSize(1, 0, sticky=(E, W, S, N)).show()
+footer.gridPosSize(1, 0, sticky=(S)).show()
 # footer.columnconfigure(3, weight=1)
 # footer.rowconfigure(0, weight=1)
 # style = ttk.Style(window)
@@ -536,13 +409,13 @@ footer.gridPosSize(1, 0, sticky=(E, W, S, N)).show()
 #             'children': [('Treeitem.text', {'side': 'left', 'sticky': ''})]})]})]
 #         )
 
-# image = Image.open(exe_path + '/img/option.png')
-# image = image.resize((24, 24), Image.ANTIALIAS)
-# option_image = ImageTk.PhotoImage(image)
+image = Image.open(exe_path + '/img/option.png')
+# image = image.resize((32, 32), Image.ANTIALIAS)
+option_image = ImageTk.PhotoImage(image)
 
 #LANG
 label_lang = Label_up(footer, text=f"{langage.lang['UI']['MAIN_MENU']['lang']} : {langage.get_locale_ac()}")
-label_lang.placePosSize(x=350, y=16, width=124, height=32, anchor="center").show()
+label_lang.placePosSize(x=350, y=16, width=95, height=32, anchor="center").show()
 
 # #LABEL ERROR
 # label_error_option = Label_up(window, text="", bg='#202020', fg='#202020')
@@ -558,7 +431,7 @@ label_lang.placePosSize(x=350, y=16, width=124, height=32, anchor="center").show
 frame_version = Frame_up(master=footer, borderwidth=0)
 # frame_version.propagate(False)
 # frame_version.grid_propagate(False)
-frame_version.placePosSize(x=630, y=18.5, width=124, height=32, anchor="center").show()
+frame_version.placePosSize(x=650, y=18.5, width=124, height=32, anchor="center").show()
 
 last_version = update.get_version()
 
@@ -578,161 +451,12 @@ if last_version != "none" and last_version != VERSION:
 # button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_clear'], command=lambda: console1.clearTerminal())
 # button_clear.placePosSize(x=255, y=24, width=90, height=24)
 
-# button_option = Button_up(window, bg="#202020", fg="#202020", bd=0, highlightthickness=0, activebackground="#202020", image=option_image, command=optionUi)
-# button_option.placePosSize(x=2, y=574, width=24, height=24)
-
-# #option
-# button_edit = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_edit'], command=editUi)
-# button_edit.placePosSize(x=210, y=24, width=180, height=24)
-
-# button_export = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_export'], command=export_conf)
-# button_export.placePosSize(x=210, y=48, width=180, height=24)
-
-# button_import = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_import'], command=import_conf)
-# button_import.placePosSize(x=210, y=72, width=180, height=24)
-
-# button_moveToRoot = Button_up(window, bg="#555555", fg="#ff3030", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_move_root'], command=moveToRoot)
-# button_moveToRoot.placePosSize(x=210, y=124, width=180, height=24)
-
-# button_deleteConfig = Button_up(window, bg="#555555", fg="#ff3030", wraplength=180, activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_delete_conf'], command=deletConfig)
-# button_deleteConfig.placePosSize(x=210, y=148, width=180)
-
-# combox_option_lang = OptionMenu_up(window, default=0, list=[key for key in LANG_AC.keys()], justify='center')
-# combox_option_lang.current(langage.index)
-# combox_option_lang.bind("<<ComboboxSelected>>", fixLang)
-# combox_option_lang.placePosSize(x=235, y=210,width=130, height=24).show()
-
-# button_return = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['OPTION_MENU']['button_return'], command=mainUi)
-# button_return.placePosSize(x=235, y=250, width=130, height=24)
-
-# #CONSOLE
-# colorConsole = {
-#     "Green": ["#000000", "#00ff00"],
-#     "Blue": ["#000000", "#26abff"],
-#     "Orange": ["#000000", "#ff7f00"],
-#     "Red": ["#000000", "#ff0000"],
-#     "Purple": ["#000000", "#ff0aff"],
-#     "Purple2": ["#000000", "#743DFF"]
-# }
-# console1 = Terminal_ScrolledText_up(window, bg="#000000", fg="#FFFFFF")
-# console1.configTag(colorConsole)
-# console1.placePosSize(x=0, y=48, width=600, height=524)
-
-# #tab config
-
-# class IHM(Frame, Widget_up):
-
-#     def __init__(self, master=None, cnf={}, **kw) -> None:
-#         Frame.__init__(self, master=master, cnf=cnf, **kw)
-#         Widget_up.__init__(self)
-
-#         self.frameButton = Frame_up(self, bg="#202020")
-#         self.frameButton.gridPosSize(row=1, column=0, sticky=W).show()
-
-#         self.frameBox = Frame_up(self, bg="#202020", width=600)
-#         self.frameBox.gridPosSize(row=2, column=0, sticky=W).show()
-#         self.frameBox.propagate(False)
-        
-#         self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=600, height=300)
-#         self.treeView.bind("<ButtonRelease-1>", self.selected)
-#         self.treeView.gridPosSize(row=0, column=0, sticky=W).show()
-
-#         self.unselect = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_unselect'], command=unselect, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         self.unselect.gridPosSize(column=5, row=0, padx=5).show().disable()
-
-#         self.move_up = Button_up(self.frameButton, text="⬆", command=self.treeView.moveUpSelectedElement, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         self.move_up.gridPosSize(column=4, row=0).show().disable()
-
-#         self.move_down = Button_up(self.frameButton, text="⬇", command=self.treeView.moveDownSelectedElement, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         self.move_down.gridPosSize(column=3, row=0).show().disable()
-
-#         self.remove = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_delete'], command=delete, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
-
-#         self.edit = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_edit'], command=editMenu, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         self.edit.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
-
-#         add = Button_up(self.frameButton, text=langage.lang['UI']['EDIT_MENU']['button_add'], command=addMenu, bg="#555555", fg="#00ca00", activebackground="#555555")
-#         add.gridPosSize(column=0, row=0).show()
-
-#         self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
-#         self.doNotSort_box.grid(row=6, column=1, sticky=W, pady=(13, 0))
-
-#         d1 = Label_up(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_not_sort'], bg="#202020", fg="#00ca00")
-#         d1.gridPosSize(row=6, column=0, pady=(20, 10), padx=(5, 5)).show()
-
-#         self.toggle_b = Toggle_Button_up(self.frameBox, bg="#555555", activebackground="#555555", width=3)
-#         self.toggle_b.custom_toggle(("✔", "✖"))
-#         self.toggle_b.gridPosSize(column=1, row=7, sticky=W).show()
-
-#         u1 = Label_up(self.frameBox, text=langage.lang['UI']['EDIT_MENU']['label_unsorted'], bg="#202020", fg="#00ca00")
-#         u1.gridPosSize(row=7, column=0, padx=(5, 5)).show()
-
-#         # event
-#     def selected(self, event):
-#         if self.treeView.getSelectedElement():
-#             self.edit.enable()
-#             self.remove.enable()
-#             self.unselect.enable()
-#             self.move_up.enable()
-#             self.move_down.enable()
-
-# ihm = IHM(window, bg="#202020")
-# ihm.placePosSize(0, 0, 600, 450)
-# ihm.treeView.setColumns([
-#         langage.lang['UI']['EDIT_MENU']['col_name_profil'],
-#         langage.lang['UI']['EDIT_MENU']['col_folder'],
-#         langage.lang['UI']['EDIT_MENU']['col_extention']
-#     ], 
-#     [150, 150, 300]
-# )
-# ihm.propagate(False)
-
-# def getConfig():
-
-#     conf.CONFIG['config_sort'] = {}
-
-#     for iid in ihm.treeView.getAllChildren().items():
-#         key = ""
-#         fullPath = ""
-
-#         conf.CONFIG['config_sort'][iid[0]] = {}
-#         key = iid[0]
-
-#         value = iid[1]['values']
-    
-#         conf.CONFIG['config_sort'][key]['parent'] = iid[1]['parent']
-#         conf.CONFIG['config_sort'][key]['folder'] = value[0]
-#         for index, parent in enumerate(ihm.treeView.getAllParentItem(key)[::-1]):
-
-#             folder = ihm.treeView.getItem(parent)["values"][0]
-            
-#             if index != 0:
-#                 fullPath += f"/{folder}"
-#             else:
-#                 if folder[0] != "/" and folder[1] != ":":
-#                     fullPath += f"./{folder}"
-#                 else:
-#                     fullPath += f"{folder}"
-                
-
-#         conf.CONFIG['config_sort'][key]['fullPath'] = fullPath
-#         conf.CONFIG['config_sort'][key]['ext'] = value[1].split("|")
+button_option = Button_up(master=footer, image=option_image, command=lambda: main_frame.showWidget("menu_option"))
+button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").show()
 
 
+main_frame.addParametersInOneWidget("menu_sort", parameter_list=button_option)
 
-#     conf.CONFIG["unsorted"] = ihm.toggle_b.get_status()
-#     doNotSort2 = ihm.doNotSort_box.get()
-#     if not doNotSort2 == "":
-#         conf.CONFIG["doNotSort"] = doNotSort2.split("|")
-#     else:
-#         conf.CONFIG["doNotSort"] = []
-
-#     conf.saveConfig()
-#     optionUi()
-
-# button_saveAndReturn = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['EDIT_MENU']['buton_return_save'], command=getConfig)
-# button_saveAndReturn.placePosSize(x=2, y=574, width=180, height=24)
 
 # mainUi()
 window.update()
