@@ -11,25 +11,25 @@ from PIL import Image, ImageTk
 from tk_up.widgets import SCROLL_ALL, Button_up, Entry_up, Frame_up, Label_up, OptionMenu_up, Terminal_ScrolledText_up, Tk_up, Toggle_Button_up, Toplevel_up, Treeview_up, Widget_up
 from tk_up.managerThemes import ManagerThemes
 from tk_up.managerWidgets import ManagerWidgets_up
+from page.menu_option import menu_option
 from page.menu_sort import menu_sort
-
-
-importPyInst = Import_pyInst()
-importPyInst.add_path(folder_path='func')
-importPyInst.add_path(folder_path='page')
 
 PLATFORME_SYS = platform.system()
 VERSION = "1.1.1"
 APP_NAME = "SortedTree"
 
-notSortList = ["config.yml", "desktop.ini"]
-
-exe_path = importPyInst.get_execute_path()
+importPyInst = Import_pyInst()
+importPyInst.add_path(folder_path='func')
+importPyInst.add_path(folder_path='page')
 
 from update import Update
 from conf import ConfigTree
 from langages import LANG_AC, Lang_app
 from logger import DEBUG, INFO, Logger
+
+notSortList = ["config.yml", "desktop.ini"]
+
+exe_path = importPyInst.get_execute_path()
 
 log = Logger(format="{time} | {levelname} : {msg}", levellog=DEBUG)
 log.customize(level=("[", "]"))
@@ -40,11 +40,13 @@ else:
     log.activColor(True)
     path_file = os.path.realpath(__file__)
 
+path_dir_exe = ntpath.dirname(path_file)
+
 log.debug(f"OS : {PLATFORME_SYS}")
 
 exe_file = ntpath.basename(path_file)
 
-conf = ConfigTree(log)
+conf = ConfigTree(log, path_dir_exe)
 conf.loadConfig()
 
 langage_task = ThreadUP(target=lambda: Lang_app(log, conf.CONFIG, path=exe_path), returnValue=True).startTask()
@@ -55,22 +57,6 @@ update: Update = update_task.join()
 
 def openWeb():
     webbrowser.open(f'https://github.com/Xenxia/{APP_NAME}/releases/latest')
-
-
-
-# def export_conf():
-#     try:
-#         conf.exportConfig()
-#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Exporter")).start()
-#     except:
-#         print('export')
-
-# def import_conf():
-#     try:
-#         conf.importConfig()
-#         Thread(target=lambda: sendMessage(label_error_option, "#00ff00", "Config Importer")).start()
-#     except:
-#         print('import')
 
 def moveToRoot():
     for name_profile in conf.CONFIG['config_sort']:
@@ -158,7 +144,9 @@ def duplicate(file: str, path: str) -> str:
 def notDev():
     main_menu_w.console1.printTerminal("This feature is not developed", color=["Purple"])
 
-def sort():
+
+# function Sorting
+def sortMain():
 
     main_menu_w.button_tree.disable()
 
@@ -167,101 +155,224 @@ def sort():
     check: list = []
 
     for name_profile in conf.CONFIG['config_sort']:
-        for rule in conf.CONFIG['config_sort'][name_profile]['ext']:
-            path = conf.CONFIG['config_sort'][name_profile]['fullPath']
 
-            if not os.path.exists(path):
-                os.makedirs(path, exist_ok=True)
+        if conf.CONFIG['config_sort'][name_profile]['disable']:
+            break
+
+        for rule in conf.CONFIG['config_sort'][name_profile]['rule']:
+            config_path: str = conf.CONFIG['config_sort'][name_profile]['fullPath']
+            pathStatic: bool = conf.CONFIG['config_sort'][name_profile]['pathStatic']
+
+
+            parent_path = path_dir_exe
+
+            if not os.path.exists(f"{path_dir_exe}/{config_path}"):
+                os.makedirs(f"{path_dir_exe}/{config_path}", exist_ok=True)
 
             if rule == "":
                 break
 
-            for file in pathlib.Path('./').glob(rule):
+            sort(rule, notSort_userConfig, check, config_path, parent_path, pathStatic)
 
-                duplica = False
-                sort = False
-                permission = False
-                new = "new"
-                err = [False, "none"]
+            # for file in pathlib.Path(path_dir_exe).glob(rule):
 
-                if str(file) not in notSort_userConfig and str(file) not in notSortList and str(file) != exe_file:
+            #     file_name = ntpath.basename(file)
+            #     file_futur_path = f"{path_dir_exe}/{config_path}/{file_name}"
 
-                    check.append(str(file))
+            #     log.debug(file)
+            #     log.debug(file_name)
+            #     log.debug(file_futur_path)
 
-                    if not os.path.exists(f"{path}/{file}"):
+            #     duplica = False
+            #     sort = False
+            #     permission = False
+            #     new = "new"
+            #     err = [False, "none"]
 
-                        try:
-                            if os.path.isfile(file):
+            #     if str(file_name) not in notSort_userConfig and str(file_name) not in notSortList and str(file_name) != exe_file:
 
-                                shutil.move(str(file), path+'/'+str(file))
-                                sort = True
-                            else:
-                                break
+            #         check.append(str(file_name))
 
-                        # For permission related errors
-                        except PermissionError:
-                            permission = True
+            #         if not os.path.exists(file_futur_path):
 
-                        # For other errors
-                        except OSError as error:
-                            err = [True, error]
+            #             try:
+            #                 if os.path.isfile(file_name):
 
-                    else:
-                        try:
-                            if os.path.isfile(file):
-                                new = duplicate(str(file), path)
-                                shutil.move(src = file, dst = path+'/'+str(new))
-                                sort, duplica = True, True
-                            else:
-                                break
+            #                     shutil.move(str(file_name), file_futur_path)
+            #                     sort = True
+            #                 else:
+            #                     break
 
-                        except PermissionError:
-                            permission = True
+            #             # For permission related errors
+            #             except PermissionError:
+            #                 permission = True
+
+            #             # For other errors
+            #             except OSError as error:
+            #                 err = [True, error]
+
+            #         else:
+            #             try:
+            #                 if os.path.isfile(file_name):
+            #                     new = duplicate(str(file_name), f"{path_dir_exe}/{config_path}")
+            #                     shutil.move(src = file_name, dst = f"{path_dir_exe}/{config_path}/{str(new)}")
+            #                     sort, duplica = True, True
+            #                 else:
+            #                     break
+
+            #             except PermissionError:
+            #                 permission = True
                             
-                        # For other errors
-                        except OSError as error:
-                            err = [True, error]
+            #             # For other errors
+            #             except OSError as error:
+            #                 err = [True, error]
 
-                if sort and not duplica:
-                    main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file), path=path), color=["Green", None])
+            #     if sort and not duplica:
+            #         main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file_name), path=config_path), color=["Green", None])
 
-                if sort and duplica:
-                    main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file), new_name=new, path=path), color=["Blue", None])
+            #     if sort and duplica:
+            #         main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file_name), new_name=new, path=config_path), color=["Blue", None])
 
-                if permission:
-                    main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
+            #     if permission:
+            #         main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file_name)), color=["Orange", None])
 
-                if err[0]:
-                    main_menu_w.console1.printTerminal("❌: ", str(err[1]), color=["Red", None])
-                    log.error("❌: " + str(error))
+            #     if err[0]:
+            #         main_menu_w.console1.printTerminal("❌: ", str(err[1]), color=["Red", None])
+            #         log.error("❌: " + str(err[1]))
 
     if conf.CONFIG['unsorted'] == True :
-        if not os.path.exists('./#Unsorted'):
-            os.mkdir('./#Unsorted')
-        
-        for file in pathlib.Path('./').glob('*.*'):
+        if not os.path.exists(f"{path_dir_exe}/#Unsorted"):
+            os.mkdir(f"{path_dir_exe}/#Unsorted")
 
-            if str(file) not in notSort_userConfig and str(file) not in notSortList and str(file) not in check and str(file) != exe_file:
+        sort_unsorted(notSort_userConfig, check)
+        
+        # for file_path in pathlib.Path(path_dir_exe).glob('*.*'):
+
+        #     file_name = ntpath.basename(file_path)
+
+        #     if str(file_name) not in notSort_userConfig and str(file_name) not in notSortList and str(file_name) not in check and str(file_name) != exe_file:
+
+        #         try:
+        #             os.rename(str(file_name), f"{path_dir_exe}/#Unsorted/{str(file_name)}")
+        #             main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file_name)), color=["Purple", None])
+
+        #         # For permission related errors
+        #         except PermissionError:
+        #             main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file_name)), color=["Orange", None])
+
+        #         # For File Exists errors
+        #         except FileExistsError:
+        #             new = duplicate(str(file_name), f"{path_dir_exe}/#Unsorted")
+        #             main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double_unsorted'].format(file=str(file_name), new_name=new), color=["Purple2", None])
+
+        #         # For other errors
+        #         except OSError as error:
+        #             main_menu_w.console1.printTerminal("❌: ", str(error), color=["Red", None])
+        #             log.error("❌: " + str(error))
+
+    main_menu_w.button_tree.enable()
+
+def sort(rule: str, notSort_userConfig: list, check: list, config_path: str, search_path: str, static_path: bool):
+
+    # log.debug(rule)
+
+    for file in pathlib.Path(search_path).glob(rule):
+
+        file_name = ntpath.basename(file)
+
+        parent_path = f"{search_path}/{config_path}"
+
+        file_futur_path = f"{parent_path}/{file_name}"
+
+        if static_path:
+            parent_path = f"{config_path}"
+            file_futur_path = f"{config_path}/{file_name}"
+
+        log.debug(file)
+        log.debug(file_name)
+        log.debug(file_futur_path)
+
+        duplica = False
+        sort = False
+        permission = False
+        new = "new"
+        err = [False, "none"]
+
+        if str(file_name) not in notSort_userConfig and str(file_name) not in notSortList and str(file_name) != exe_file:
+
+            check.append(str(file_name))
+
+            if not os.path.exists(file_futur_path):
 
                 try:
-                    os.rename(str(file), './#Unsorted/'+str(file))
-                    main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file)), color=["Purple", None])
+                    if os.path.isfile(file_name):
+
+                        shutil.move(str(file_name), file_futur_path)
+                        sort = True
+                    else:
+                        break
 
                 # For permission related errors
                 except PermissionError:
-                    main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file)), color=["Orange", None])
-
-                # For File Exists errors
-                except FileExistsError:
-                    new = duplicate(str(file), "./#Unsorted")
-                    main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double_unsorted'].format(file=str(file), new_name=new), color=["Purple2", None])
+                    permission = True
 
                 # For other errors
                 except OSError as error:
-                    main_menu_w.console1.printTerminal("❌: ", str(error), color=["Red", None])
-                    log.error("❌: " + str(error))
-    del check
-    main_menu_w.button_tree.enable()
+                    err = [True, error]
+
+            else:
+                try:
+                    if os.path.isfile(file_name):
+                        new = duplicate(str(file_name), f"{parent_path}")
+                        shutil.move(src = file_name, dst = f"{parent_path}/{new}")
+                        sort, duplica = True, True
+                    else:
+                        break
+
+                except PermissionError:
+                    permission = True
+                    
+                # For other errors
+                except OSError as error:
+                    err = [True, error]
+
+        if sort and not duplica:
+            main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted'].format(file=str(file_name), path=config_path), color=["Green", None])
+
+        if sort and duplica:
+            main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double'].format(file=str(file_name), new_name=new, path=config_path), color=["Blue", None])
+
+        if permission:
+            main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file_name)), color=["Orange", None])
+
+        if err[0]:
+            main_menu_w.console1.printTerminal("❌: ", str(err[1]), color=["Red", None])
+            log.error("❌: " + str(err[1]))
+
+def sort_unsorted(notSort_userConfig, check):
+    for file_path in pathlib.Path(path_dir_exe).glob('*.*'):
+
+        file_name = ntpath.basename(file_path)
+
+        if str(file_name) not in notSort_userConfig and str(file_name) not in notSortList and str(file_name) not in check and str(file_name) != exe_file:
+
+            try:
+                os.rename(str(file_name), f"{path_dir_exe}/#Unsorted/{str(file_name)}")
+                main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['unsorted'].format(file=str(file_name)), color=["Purple", None])
+
+            # For permission related errors
+            except PermissionError:
+                main_menu_w.console1.printTerminal("⚠: ", langage.lang['ERROR']['permission_file'].format(file=str(file_name)), color=["Orange", None])
+
+            # For File Exists errors
+            except FileExistsError:
+                new = duplicate(str(file_name), f"{path_dir_exe}/#Unsorted")
+                main_menu_w.console1.printTerminal("✔: ", langage.lang['OK']['sorted_double_unsorted'].format(file=str(file_name), new_name=new), color=["Purple2", None])
+
+            # For other errors
+            except OSError as error:
+                main_menu_w.console1.printTerminal("❌: ", str(error), color=["Red", None])
+                log.error("❌: " + str(error))
 
 # # ? TK ------------------------------------------------------------------------------->
 
@@ -313,7 +424,7 @@ def sort():
 # main window
 window = Tk_up()
 
-window.configWindows(title=f"{APP_NAME} | {ntpath.dirname(path_file)}", geometry="700x700+center", iconbitmap=f"{exe_path}/img/tree.ico")
+window.configWindows(title=f"{APP_NAME} | {path_dir_exe}", geometry="700x700+center", iconbitmap=f"{exe_path}/img/tree.ico")
 
 # window.iconbitmap()
 # window.config(background='#202020')
@@ -325,12 +436,20 @@ window.resizable(0, 0)
 
 # theme = ManagerThemes(window).setTheme("azure", themes="dark")
 
-main_frame = ManagerWidgets_up(master=window, asset_folder=f"{exe_path}/page", parameters_list=[langage, conf, log], parameters_dict={"exe_path": exe_path}, width=700, height=670)
+param_d = {
+    "exe_path": exe_path,
+    "sort_func": sortMain,
+    }
+
+main_frame = ManagerWidgets_up(master=window, asset_folder=f"{exe_path}/page", parameters_list=[langage, conf, log], parameters_dict=param_d, width=700, height=670)
 main_frame.showWidget("menu_sort")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
 main_menu_w: menu_sort = main_frame.getClassWidget("menu_sort")
-main_menu_w.button_tree.configure(command=sort)
+main_menu_w.button_tree.configure(command=sortMain)
+menu_option_w: menu_option = main_frame.getClassWidget("menu_option")
+menu_option_w.button_moovToRoot.configure(command=moveToRoot)
+
 
 
 footer = Frame_up(master=window, width=700, height=30)

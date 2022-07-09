@@ -8,10 +8,12 @@ from func.langages import Lang_app
 class menu_sort(Frame_up):
 
     parameters_list: list
+    parameters_dict: dict
     manager_class: ManagerWidgets_up
 
     def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
         self.parameters_list = parameters_list.copy()
+        self.parameters_dict = parameters_dict.copy()
         self.manager_class = manager_class
 
         langs: Lang_app = parameters_list[0]

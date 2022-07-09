@@ -57,8 +57,8 @@ class menu_option(Frame_up):
         self.frame_function_warning.columnconfigure(0, weight=1)
         self.frame_function_warning.rowconfigure(3, weight=1)
 
-        self.button_export = Button_up(self.frame_function_warning, text="Move to root")
-        self.button_export.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
+        self.button_moovToRoot = Button_up(self.frame_function_warning, text="Move to root")
+        self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
 
         # Lang
         self.frame_lang = LabelFrame_up(self, text="lang")

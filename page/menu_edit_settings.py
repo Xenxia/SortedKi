@@ -46,6 +46,12 @@ class menu_edit_settings(Frame_up):
             ], 
             [150, 150, 300]
         )
+        self.treeView.setTags((
+            {
+            "name": "disable",
+            "bg": "#FF0000",
+            },
+        ))
 
         self.unselect_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_unselect'], width=10, command=self.unselect)
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
@@ -139,13 +145,13 @@ class menu_edit_settings(Frame_up):
 
         for key in self.config.CONFIG['config_sort']:
             folder: str = self.config.CONFIG['config_sort'][key]['folder']
-            extention: list = self.config.CONFIG['config_sort'][key]['ext']
+            rule: list = self.config.CONFIG['config_sort'][key]['ext']
             parent: str | None = self.config.CONFIG['config_sort'][key]['parent']
 
             parent = parent if parent is not None else ''
 
-            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(extention)))
-            self.treeView.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(extention)])
+            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
+            self.treeView.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(rule)])
 
         self.toggle_b.set_default_status(self.config.CONFIG["unsorted"])
         doNotSort = "|".join(self.config.CONFIG["doNotSort"])
@@ -259,11 +265,19 @@ class menu_edit_settings(Frame_up):
         for iid in self.treeView.getAllChildren().items():
             key = ""
             fullPath = ""
+            pathStatic = False
 
             self.config.CONFIG['config_sort'][iid[0]] = {}
             key = iid[0]
 
             value = iid[1]['values']
+            tags = iid[1]['tags']
+
+            self.config.CONFIG['config_sort'][key]['disable'] = False
+
+            if 'disable' in tags:
+                self.config.CONFIG['config_sort'][key]['disable'] = True
+
         
             self.config.CONFIG['config_sort'][key]['parent'] = iid[1]['parent']
             self.config.CONFIG['config_sort'][key]['folder'] = value[0]
@@ -275,12 +289,14 @@ class menu_edit_settings(Frame_up):
                     fullPath += f"/{folder}"
                 else:
                     if folder[0] != "/" and folder[1] != ":":
-                        fullPath += f"./{folder}"
+                        fullPath += f"{folder}"
                     else:
                         fullPath += f"{folder}"
+                        pathStatic = True
 
             self.config.CONFIG['config_sort'][key]['fullPath'] = fullPath
-            self.config.CONFIG['config_sort'][key]['ext'] = value[1].split("|")
+            self.config.CONFIG['config_sort'][key]['rule'] = value[1].split("|")
+            self.config.CONFIG['config_sort'][key]['pathStatic'] = pathStatic
 
         self.config.CONFIG["unsorted"] = self.toggle_b.get_status()
         doNotSort2 = self.doNotSort_box.get()
@@ -299,13 +315,18 @@ class menu_edit_settings(Frame_up):
 
         for key in self.config.CONFIG['config_sort']:
             folder: str = self.config.CONFIG['config_sort'][key]['folder']
-            extention: list = self.config.CONFIG['config_sort'][key]['ext']
+            rule: list = self.config.CONFIG['config_sort'][key]['rule']
             parent: str | None = self.config.CONFIG['config_sort'][key]['parent']
+
+            tag = ""
+
+            if self.config.CONFIG['config_sort'][key]['disable']:
+                tag = "disable"
 
             parent = parent if parent is not None else ''
 
-            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(extention)))
-            self.treeView.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(extention)])
+            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
+            self.treeView.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(rule)], tags=tag)
 
         self.toggle_b.set_default_status(self.config.CONFIG["unsorted"])
         doNotSort = "|".join(self.config.CONFIG["doNotSort"])
