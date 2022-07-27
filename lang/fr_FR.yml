@@ -20,8 +20,8 @@ UI:
     button_export: Exporter
     button_import: Importer
     button_return: Retour
-    button_move_root: "! Déplacer à la racine !"
-    button_delete_conf: "! Supprimer le fichier de configuration !"
+    button_move_root: "! Déplacer à\n la racine !"
+    button_delete_conf: "! Supprimer la\n configuration !"
     message_change_lang: "Redémarrer l'application pour changer de langue"
 
   EDIT_MENU:
@@ -36,7 +36,7 @@ UI:
     button_cancel: Annuler
     button_delete: Suprimmer
     button_unselect: Déselectionner
-    button_return_save: Retour et sauvegarder
+    button_return_save: Sauvegarder
     button_return: Retour
     label_not_sort: Ne pas trié
     label_unsorted: Non trié

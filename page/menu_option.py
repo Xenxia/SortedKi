@@ -35,47 +35,47 @@ class menu_option(Frame_up):
 
         # Settings
         self.frame_config = LabelFrame_up(self, text=self.langs.lang['UI']['OPTION_MENU']['frame_config'])
-        self.frame_config.placePosSize(350, 100, 120, 128, anchor="center").show()
+        self.frame_config.placePosSize(350, 100, 120, 140, anchor="center").show()
         self.frame_config.columnconfigure(0, weight=1)
-        self.frame_config.rowconfigure(4, weight=1)
+        self.frame_config.rowconfigure(3, weight=1)
 
         self.button_export = Button_up(self.frame_config, text=self.langs.lang['UI']['OPTION_MENU']['button_export'], command=self.export_conf)
-        self.button_export.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
+        self.button_export.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(6,0)).show()
 
         self.button_import = Button_up(self.frame_config, text=self.langs.lang['UI']['OPTION_MENU']['button_import'], command=self.import_conf)
-        self.button_import.gridPosSize(row=1, column=0, sticky=(E, W, S, N)).show()
+        self.button_import.gridPosSize(row=1, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         self.button_edit = Button_up(self.frame_config, text=self.langs.lang['UI']['OPTION_MENU']['button_edit'], command=lambda: self.manager_class.showWidget("menu_edit_settings"))
-        self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
+        self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_delete = Button_up(self.frame_config, text="Delete")
-        self.button_delete.gridPosSize(row=3, column=0, sticky=(E, W, S, N)).show()
+        self.button_delete = Button_up(self.frame_config, text=self.langs.lang['UI']['OPTION_MENU']['button_delete_conf'], style="fgred.TButton")
+        self.button_delete.gridPosSize(row=3, column=0, sticky=(E, W, S, N), pady=(3,10)).show()
 
         # Warning
         self.frame_function_warning = LabelFrame_up(self, text="Warning")
-        self.frame_function_warning.placePosSize(350, 250, 120, 46, anchor="center").show()
+        self.frame_function_warning.placePosSize(350, 220, 120, 70, anchor="center").show()
         self.frame_function_warning.columnconfigure(0, weight=1)
-        self.frame_function_warning.rowconfigure(3, weight=1)
+        self.frame_function_warning.rowconfigure(0, weight=1)
 
-        self.button_moovToRoot = Button_up(self.frame_function_warning, text="Move to root")
-        self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
+        self.button_moovToRoot = Button_up(self.frame_function_warning, text=self.langs.lang['UI']['OPTION_MENU']['button_move_root'], style="fgred.TButton")
+        self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,10)).show()
 
         # Lang
         self.frame_lang = LabelFrame_up(self, text="lang")
-        self.frame_lang.placePosSize(350, 300, 120, 42, anchor="center").show()
+        self.frame_lang.placePosSize(350, 300, 120, 51, anchor="center").show()
         self.frame_lang.columnconfigure(0, weight=1)
-        self.frame_lang.rowconfigure(3, weight=1)
+        # self.frame_lang.rowconfigure(3, weight=1)
 
         self.combox_option_lang = OptionMenu_up(self.frame_lang, default=0, list=[key for key in LANG_AC.keys()], justify='center')
         self.combox_option_lang.current(self.langs.index)
         self.combox_option_lang.bind("<<ComboboxSelected>>", self.fixLang)
-        self.combox_option_lang.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
+        self.combox_option_lang.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,0)).show()
 
         # Other
         self.button_return = Button_up(self, text=self.langs.lang['UI']['OPTION_MENU']['button_return'], command=lambda: manager_class.showWidget("menu_sort"))
         self.button_return.placePosSize(350, 400, 120, 24, anchor="center").show()
 
-        self.label_error_option = Label_up(self, text="test", anchor="center")
+        self.label_error_option = Label_up(self, text="", wraplength=300, justify="center")
         self.label_error_option.placePosSize(350, 500, 300, 32, anchor="center").show()
 
     def disable(self):

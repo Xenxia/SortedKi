@@ -14,7 +14,6 @@ UI:
     button_clear: Clear log
     lang: language
 
-
   OPTION_MENU:
     frame_config: Settings
     button_edit: Edit
@@ -37,7 +36,7 @@ UI:
     button_cancel: Cancel
     button_delete: Delete
     button_unselect: Deselect
-    button_return_save: Return and save
+    button_return_save: Save
     button_return: Return
     label_not_sort: Do not sort
     label_unsorted: Unsorted

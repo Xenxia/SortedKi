@@ -1,6 +1,7 @@
 
+from threading import Thread
 from tkinter import E, W, S, N
-from tk_up.widgets import Frame_up, Button_up, Terminal_ScrolledText_up
+from tk_up.widgets import Frame_up, Button_up, Terminal_ScrolledText_up, Separator_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from func.logger import Logger
 from func.langages import Lang_app
@@ -13,7 +14,7 @@ class menu_sort(Frame_up):
 
     def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
         self.parameters_list = parameters_list.copy()
-        self.parameters_dict = parameters_dict.copy()
+        self.parameters_dict = parameters_dict
         self.manager_class = manager_class
 
         langs: Lang_app = parameters_list[0]
@@ -23,11 +24,14 @@ class menu_sort(Frame_up):
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
         #command=lambda: Thread(target=sort).start()
 
-        self.button_tree = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_sort'])
-        self.button_tree.placePosSize(350, 12, 80, 24, anchor="center").show()
+        self.button_tree = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_sort'], command=lambda: Thread(target=self.parameters_dict["sort_func"]).start())
+        self.button_tree.placePosSize(350, 12, 86, 24, anchor="center").show()
 
         self.button_clear = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_clear'])
-        self.button_clear.placePosSize(350, 36, 80, 24, anchor="center").show()
+        self.button_clear.placePosSize(350, 38, 86, 24, anchor="center").show()
+
+        self.sep = Separator_up(self).placePosSize(0, 52, 700, 0).show()
+        self.sep2 = Separator_up(self).placePosSize(0, 669, 700, 0).show()
 
         colorConsole = {
             "Green": ["", "#00ff00"],
@@ -39,7 +43,7 @@ class menu_sort(Frame_up):
         }
         self.console1 = Terminal_ScrolledText_up(self, borderwidth=0)
         self.console1.configTag(colorConsole)
-        self.console1.placePosSize(0, 48, 700, 620).show()
+        self.console1.placePosSize(0, 53, 700, 615).show()
 
     def disable(self):
         button: Button_up = self.parameters_list[3]

@@ -1,8 +1,9 @@
 from threading import Thread
-from tkinter import END, W, E, N, S, Entry
+from tkinter import END, W, E, N, S
+from tkinter.ttk import Style
 from tk_up.widgets import Frame_up
 from tk_up.managerWidgets import ManagerWidgets_up
-from tk_up.widgets import SCROLL_ALL, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up
+from tk_up.widgets import SCROLL_Y, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up, LabelFrame_up, Separator_up
 
 from func.langages import Lang_app
 from func.logger import Logger
@@ -18,7 +19,7 @@ class menu_edit_settings(Frame_up):
 
     def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master, kw={"width":0, "height":0}):
         self.parameters_list = parameters_list.copy()
-        self.parameters_dict = parameters_dict.copy()
+        self.parameters_dict = parameters_dict
         self.manager_class = manager_class
 
         self.langs: Lang_app = parameters_list[0]
@@ -27,33 +28,41 @@ class menu_edit_settings(Frame_up):
 
         # Use 'self' in your widget
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
-        self.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).grid_propagate(False)
+        self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
 
         self.frameButton = Frame_up(self)
-        self.frameButton.gridPosSize(row=1, column=0, sticky=(E, W, S, N)).show()
+        self.frameButton.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
 
         self.frameBox = Frame_up(self, width=700)
-        self.frameBox.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
-        # self.frameBox.propagate(False)
+        self.frameBox.gridPosSize(row=3, column=0, sticky=(E, W, S, N)).show()
+        self.frameBox.propagate(False)
         
-        self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=700, height=400)
+        self.treeView = Treeview_up(self, scroll=SCROLL_Y, iid=True, child=True, show="tree headings", width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
         self.treeView.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
-        self.treeView.setColumns([
+        self.treeView.setColumns(
+            columns=[
                 self.langs.lang['UI']['EDIT_MENU']['col_name_profil'],
                 self.langs.lang['UI']['EDIT_MENU']['col_folder'],
                 self.langs.lang['UI']['EDIT_MENU']['col_extention']
             ], 
-            [150, 150, 300]
+            size=[150, 150, 300]
         )
         self.treeView.setTags((
             {
-            "name": "disable",
-            "bg": "#FF0000",
+            "name": "Disable",
+            "fg": "#AA0000",
+            },
+            {
+            "name": "SysDisable",
+            "bg": "#AA0000",
             },
         ))
 
-        self.unselect_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_unselect'], width=10, command=self.unselect)
+        self.sep = Separator_up(self).gridPosSize(row=1, column=0, sticky=(E, W), pady=(2,2)).show()
+
+
+        self.unselect_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_unselect'], width=15, command=self.unselect)
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
         self.move_up = Button_up(self.frameButton, text="⬆", command=self.treeView.moveUpSelectedElement, width=3)
@@ -71,72 +80,80 @@ class menu_edit_settings(Frame_up):
         add_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_add'], width=10, command=self.addMenu)
         add_button.gridPosSize(column=0, row=0).show()
 
-        self.doNotSort_box = Entry(self.frameBox, width=71, bg="#555555", fg="#FFFFFF")
+        d1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_not_sort'], anchor=W)
+        d1.gridPosSize(row=0, column=0, pady=(20, 10), padx=(5, 10)).show()
+
+        self.doNotSort_box = Entry_up(self.frameBox, width=80)
         self.doNotSort_box.grid(row=0, column=1, sticky=W, pady=(13, 0))
 
-        d1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_not_sort'])
-        d1.gridPosSize(row=0, column=0, pady=(20, 10), padx=(5, 5)).show()
+        u1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_unsorted'], justify="right")
+        u1.gridPosSize(row=1, column=0, padx=(5, 10)).show()
 
         self.toggle_b = Toggle_Button_up(self.frameBox, width=3)
-        self.toggle_b.custom_toggle(("✔", "✖"))
+        self.toggle_b.custom_toggle(("✔", "✖"), ("fggreen.TButton", "fgred.TButton"))
         self.toggle_b.gridPosSize(column=1, row=1, sticky=W).show()
 
-        u1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_unsorted'])
-        u1.gridPosSize(row=1, column=0, padx=(5, 5)).show()
+        # self.back = Button_up(self.frameBox, text="back", width=10, command=lambda: self.manager_class.showWidget("menu_option"))
+        # self.back.gridPosSize(column=0, row=2, padx=(5, 0), pady=(50, 0)).show()
 
-        self.back = Button_up(self.frameBox, text="back", width=10, command=lambda: self.manager_class.showWidget("menu_option"))
-        self.back.gridPosSize(column=0, row=2, padx=(5, 0), pady=(50, 0)).show()
+        # return
+        self.frame_return = LabelFrame_up(self, text="-")
+        self.frame_return.placePosSize(350, 570, 120, 80, anchor="center").show()
+        self.frame_return.columnconfigure(0, weight=1)
+        self.frame_return.rowconfigure(2, weight=1)
+        self.frame_return.propagate(True)
 
-        self.button_saveAndReturn = Button_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['button_return_save'], command=self.saveDataInTree)
-        self.button_saveAndReturn.gridPosSize(column=0, row=2, padx=(5, 0), pady=(50, 0)).show()
+        self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return_save'], command=self.saveDataInTree)
+        self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_return = Button_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['button_return'], command=lambda: self.manager_class.showWidget("menu_option"))
-        self.button_return.gridPosSize(column=1, row=2, padx=(0, 0), pady=(50, 0)).show()
+        self.button_return = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return'], command=lambda: self.manager_class.showWidget("menu_option"))
+        self.button_return.gridPosSize(column=0, row=2, sticky=(E, W, N), pady=(3,0)).show()
 
-        self.label_error_edit = Label_up(self.frameBox, text="test")
-        self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
+        # self.label_error_edit = Label_up(self.frameBox, text="test")
+        # self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
 
         # TopLevel
 
-        self.addEditWindow = Toplevel_up(master)
-        self.addEditWindow.geometry("600x95")
-        self.addEditWindow.iconbitmap(f"{self.parameters_dict['exe_path']}/img/tree.ico")
-        self.addEditWindow.config(background='#202020')
+        self.addEditWindow = Toplevel_up(self.parameters_dict["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.parameters_dict['exe_path']}/img/tree.ico")
+        self.addEditWindow.config(background='#000000')
         self.addEditWindow.resizable(0, 0)
         self.addEditWindow.hide()
 
         #Labels
         nl = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_name_profil'])
-        nl.gridPosSize(row=0, column=0, sticky=W).show()
+        nl.gridPosSize(row=0, column=0, sticky=W, padx=(5,5)).show()
 
         il = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_folder'])
-        il.gridPosSize(row=1, column=0, sticky=W).show()
+        il.gridPosSize(row=1, column=0, sticky=W, padx=(5,5)).show()
 
         tl = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_extention'])
-        tl.gridPosSize(row=2, column=0, sticky=W).show()
+        tl.gridPosSize(row=2, column=0, sticky=W, padx=(5,5)).show()
 
         #Entry boxes
-        self.profile_box = Entry_up(self.addEditWindow, width=71)
+        self.profile_box = Entry_up(self.addEditWindow, width=80, takefocus=True)
         self.profile_box.gridPosSize(row=0, column=1, sticky=W).show()
 
-        self.folder_box = Entry_up(self.addEditWindow, width=71)
+        self.folder_box = Entry_up(self.addEditWindow, width=80)
         self.folder_box.gridPosSize(row=1, column=1, sticky=W).show()
 
-        self.rule_box = Entry_up(self.addEditWindow, width=71)
+        self.rule_box = Entry_up(self.addEditWindow, width=80)
         self.rule_box.gridPosSize(row=2, column=1, sticky=W).show()
 
         buttonF = Frame_up(self.addEditWindow)
 
         self.addOrEdit = Button_up(buttonF)
-        self.addOrEdit.gridPosSize(row=0, column=0).show()
+        self.addOrEdit.gridPosSize(row=0, column=0, padx=(0,3)).show()
 
         self.cancel = Button_up(buttonF, text=self.langs.lang['UI']['EDIT_MENU']['button_cancel'], command=self.addEditWindow.hide)
         self.cancel.gridPosSize(row=0, column=1).show()
 
-        buttonF.gridPosSize(row=3, column=1, sticky=W).show()
+        buttonF.gridPosSize(row=3, column=1, sticky=W, pady=(5,0)).show()
 
         self.label_error_addEditWindow = Label_up(self.addEditWindow, text="")
         self.label_error_addEditWindow.placePosSize(x=200, y=63, width=300, height=32)
+
+        # self.frameV = Frame_up(self, style="B.TFrame")
+        # self.frameV.placePosSize(350, 400, 120, 80, anchor="center").show()
 
     def editUi(self):
 
@@ -275,7 +292,7 @@ class menu_edit_settings(Frame_up):
 
             self.config.CONFIG['config_sort'][key]['disable'] = False
 
-            if 'disable' in tags:
+            if 'Disable' in tags:
                 self.config.CONFIG['config_sort'][key]['disable'] = True
 
         
@@ -321,7 +338,7 @@ class menu_edit_settings(Frame_up):
             tag = ""
 
             if self.config.CONFIG['config_sort'][key]['disable']:
-                tag = "disable"
+                tag = "Disable"
 
             parent = parent if parent is not None else ''
 
