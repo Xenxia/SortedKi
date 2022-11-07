@@ -29,19 +29,19 @@ args = parser.parse_args()
 compileall.compile_dir(dir="func", legacy=True, force=True)
 compileall.compile_dir(dir="page", legacy=True, force=True)
 
-path = ["./func", "./page"]
+path_comp = ["./func", "./page"]
 
-for p in path:
+for p in path_comp:
     p = f"{p}/comp"
     if os.path.exists(p):
         shutil.rmtree(p)
 
-for p in path:
+for p in path_comp:
     p = f"{p}/comp"
     os.mkdir(p)
 
 # move file.pyc to ./comp
-for p in path:
+for p in path_comp:
     for file in pathlib.Path(p).glob("*.pyc"):
         os.rename(str(file), f"{p}/comp/{file.name}")
 
@@ -101,7 +101,7 @@ if not args.Command_Name == "dev":
     ])
     print("\n========================================= END BUILD PROD ==========================================\n")
 
-for p in path:
+for p in path_comp:
     p = f"{p}/comp"
     if os.path.exists(p):
         shutil.rmtree(p)

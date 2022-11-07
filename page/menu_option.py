@@ -1,13 +1,14 @@
-from threading import Thread
-
 from tkinter import E, W, S, N
 from tk_up.widgets import Frame_up, Button_up, LabelFrame_up, Label_up, OptionMenu_up
 from tk_up.managerWidgets import ManagerWidgets_up
+from PyThreadUp import ThreadManager
+
 
 from func.logger import Logger
 from func.langages import LANG_AC, Lang_app
 from func.conf import ConfigTree
 from func.function import sendMessage
+
 
 
 class menu_option(Frame_up):
@@ -23,7 +24,10 @@ class menu_option(Frame_up):
 
     def __init__(self, parameters_list: list,  parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
         self.parameters_list = parameters_list.copy()
+        self.parameters_dict = parameters_dict
         self.manager_class = manager_class
+
+        self.tm: ThreadManager = self.parameters_dict["tm"]
 
         self.langs: Lang_app = parameters_list[0]
         self.config: ConfigTree = parameters_list[1]
@@ -78,26 +82,30 @@ class menu_option(Frame_up):
         self.label_error_option = Label_up(self, text="", wraplength=300, justify="center")
         self.label_error_option.placePosSize(350, 500, 300, 32, anchor="center").show()
 
+        self.tm.thread("confExport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Exporter"))
+        self.tm.thread("confImport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Importer"))
+        self.tm.thread("lang", target=lambda: sendMessage(self.label_error_option, "#00ca00", self.langs.lang['UI']['OPTION_MENU']['message_change_lang'], 3))
+
     def disable(self):
         pass
 
     def export_conf(self):
         try:
             self.config.exportConfig()
-            Thread(target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Exporter")).start()
+            self.tm.start("confExport")
         except:
             print('export')
 
     def import_conf(self):
         try:
             self.config.importConfig()
-            Thread(target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Importer")).start()
+            self.tm.start("confImport")
         except:
             print('import')
 
     def fixLang(self, event):
         self.config.CONFIG["lang"] = self.langs.get_local_ac_from_name_lang(self.combox_option_lang.get())
         self.config.saveConfig()
-        Thread(target=lambda: sendMessage(self.label_error_option, "#00ca00", self.langs.lang['UI']['OPTION_MENU']['message_change_lang'], 3)).start()
+        self.tm.start("lang")
 
     

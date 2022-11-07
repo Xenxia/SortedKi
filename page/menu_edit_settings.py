@@ -1,9 +1,9 @@
 from threading import Thread
 from tkinter import END, W, E, N, S
-from tkinter.ttk import Style
 from tk_up.widgets import Frame_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from tk_up.widgets import SCROLL_Y, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up, LabelFrame_up, Separator_up
+from PyThreadUp import ThreadManager
 
 from func.langages import Lang_app
 from func.logger import Logger
@@ -22,6 +22,7 @@ class menu_edit_settings(Frame_up):
         self.parameters_dict = parameters_dict
         self.manager_class = manager_class
 
+        self.tm: ThreadManager = self.parameters_dict["tm"]
         self.langs: Lang_app = parameters_list[0]
         self.config: ConfigTree = parameters_list[1]
         self.log: Logger = parameters_list[2]
@@ -152,8 +153,9 @@ class menu_edit_settings(Frame_up):
         self.label_error_addEditWindow = Label_up(self.addEditWindow, text="")
         self.label_error_addEditWindow.placePosSize(x=200, y=63, width=300, height=32)
 
-        # self.frameV = Frame_up(self, style="B.TFrame")
-        # self.frameV.placePosSize(350, 400, 120, 80, anchor="center").show()
+        self.tm.thread("noItemSelectError", target=lambda: sendMessage(self.label_error_addEditWindow, "#ff3030", f"no items selected"))
+        self.tm.thread("profilNameExist", target=sendMessage)
+        self.tm.thread("requireProfileNameFolder", target=lambda: sendMessage(self.label_error_addEditWindow, "#ff3030", f"Profile name and Folder is required"))
 
     def editUi(self):
 
@@ -227,7 +229,7 @@ class menu_edit_settings(Frame_up):
             self.treeView.tree.item(selected, text=self.profile_box.get(), values=(self.folder_box.get(), self.rule_box.get()))
             self.addEditWindow.hide()
         except:
-            Thread(target=lambda: sendMessage(self.label_error_edit, "#ff3030", f"no items selected")).start()
+            self.tm.start("noItemSelectError")
 
     def addMenu(self):
         self.addEditWindow.title(self.langs.lang['UI']['EDIT_MENU']['title_add'])
@@ -260,10 +262,10 @@ class menu_edit_settings(Frame_up):
                 self.unselect()
                 self.addEditWindow.hide()
             except:
-                Thread(target=lambda: sendMessage(self.label_error_addEditWindow, "#ff3030", f"The profile {profile_name} already exists")).start()
+                self.tm.set_args("profilNameExist", (self.label_error_addEditWindow, "#ff3030", f"The profile {profile_name} already exists")).start("profilNameExist")
 
         else:
-            Thread(target=lambda: sendMessage(self.label_error_addEditWindow, "#ff3030", f"Profile name and Folder is required")).start()
+            self.tm.start("requireProfileNameFolder")
             self.log.debug("Profile name and Folder is required")
 #------------------------------------------------------------------------
 
