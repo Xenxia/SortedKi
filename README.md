@@ -6,7 +6,7 @@
 <div align="center">
     <strong>This software allows you to sort your files according to defined rules</strong>
     <br><br>
-    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree_ex.png" />
+    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedTree/main/assets/img/SortedTree_ex.png" />
     <br><br>
     <h1><a href="https://github.com/Xenxia/SortedTree/releases/latest">Download</a></h1>
 </div>
