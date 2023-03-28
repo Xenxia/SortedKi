@@ -9,6 +9,7 @@
     <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedTree/main/assets/img/SortedTree_ex.png" />
     <br><br>
     <h1><a href="https://github.com/Xenxia/SortedTree/releases/latest">Download</a></h1>
+    <h1><a href="https://xenxia.github.io/SortedTree/">Convert config file</a></h1>
 </div>
 
 
