@@ -30,13 +30,14 @@ class menu_edit_settings(Frame_up):
         # Use 'self' in your widget
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
+        self.grid_propagate(False)
 
         self.frameButton = Frame_up(self)
         self.frameButton.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
 
         self.frameBox = Frame_up(self, width=700)
         self.frameBox.gridPosSize(row=3, column=0, sticky=(E, W, S, N)).show()
-        self.frameBox.propagate(False)
+        # self.frameBox.propagate(False)
         
         self.treeView = Treeview_up(self, scroll=SCROLL_Y, iid=True, child=True, show="tree headings", width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
@@ -78,6 +79,14 @@ class menu_edit_settings(Frame_up):
         self.edit_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_edit'], width=10, command=self.editMenu)
         self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
+        self.onOffRule_button = Toggle_Button_up(self.frameButton, width=12)
+        self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
+        self.onOffRule_button.custom_toggle((
+                                        self.langs.lang['UI']['EDIT_MENU']['button_onOff_rule'][1], 
+                                        self.langs.lang['UI']['EDIT_MENU']['button_onOff_rule'][0]
+                                    ), ("fggreen.TButton", "fgred.TButton"))
+        self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
+
         add_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_add'], width=10, command=self.addMenu)
         add_button.gridPosSize(column=0, row=0).show()
 
@@ -102,7 +111,7 @@ class menu_edit_settings(Frame_up):
         self.frame_return.placePosSize(350, 570, 120, 80, anchor="center").show()
         self.frame_return.columnconfigure(0, weight=1)
         self.frame_return.rowconfigure(2, weight=1)
-        self.frame_return.propagate(True)
+        self.frame_return.grid_propagate(False)
 
         self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return_save'], command=self.saveDataInTree)
         self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W, S, N), pady=(3,0)).show()
@@ -110,8 +119,8 @@ class menu_edit_settings(Frame_up):
         self.button_return = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return'], command=lambda: self.manager_class.showWidget("menu_option"))
         self.button_return.gridPosSize(column=0, row=2, sticky=(E, W, N), pady=(3,0)).show()
 
-        # self.label_error_edit = Label_up(self.frameBox, text="test")
-        # self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
+        self.label_error_edit = Label_up(self.frameBox, text="")
+        self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
 
         # TopLevel
 
@@ -191,6 +200,7 @@ class menu_edit_settings(Frame_up):
             self.unselect_button.disable()
             self.move_up.disable()
             self.move_down.disable()
+            self.onOffRule_button.disable()
             self.treeView.tree.selection_remove(self.treeView.tree.selection()[0])
         except:
             print("not select")
@@ -271,11 +281,32 @@ class menu_edit_settings(Frame_up):
 
     def selected(self, event):
         if self.treeView.getSelectedElement():
+
+            tags = self.treeView.getItemSelectedElemnt("tags")
+            if tags == None:
+                self.onOffRule_button.set_status(True, True)
+            elif tags[0] == "Disable":
+                self.onOffRule_button.set_status(False, True)
+
+
             self.edit_button.enable()
             self.remove.enable()
             self.unselect_button.enable()
             self.move_up.enable()
             self.move_down.enable()
+            self.onOffRule_button.enable()
+
+    def onOffRule(self):
+        # print(self.treeView.getItemSelectedElemnt("tags"))
+
+        tags = self.treeView.getItemSelectedElemnt("tags")
+        if tags == None:
+            self.treeView.editSelectedElement(tags="Disable")
+        elif tags[0] == "Disable":
+            self.treeView.editSelectedElement(tags="")
+            # self.treeView.update()
+
+
 
     def saveDataInTree(self):
 

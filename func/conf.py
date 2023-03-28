@@ -66,7 +66,7 @@ class ConfigTree():
                 "pathStatic": False,
             },
         },
-        "version_config_file": 1.0,
+        "version_config_file": "2.0",
         "search_folder": [],
         "unsorted": False,
         "doNotSort": [],
