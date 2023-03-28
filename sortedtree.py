@@ -361,7 +361,7 @@ label_version_text.gridPosSize(row=0, column=0, sticky=W).show()
 label_version = Button_up(frame_version, state=DISABLED, text=VERSION, width=7, style="version.TButton")
 label_version.gridPosSize(row=0, column=1, pady=(0, 0)).show()
 
-if last_version != "none" and last_version != "1.1.1":
+if last_version != "none" and last_version != VERSION:
     label_version.config(state=NORMAL, command=openWeb)
 
 # #main
