@@ -14,12 +14,12 @@ UI:
     button_clear: Clear log
     lang: language
 
-
   OPTION_MENU:
-    button_edit: Edit settings
-    button_export: Export settings
-    button_import: Import settings
-    button_return: Back
+    frame_config: Settings
+    button_edit: Edit
+    button_export: Export
+    button_import: Import
+    button_return: Return
     button_move_root: "! Move to root !"
     button_delete_conf: "! Delete config file !"
     message_change_lang: "Restart the application to change the language"
@@ -36,6 +36,8 @@ UI:
     button_cancel: Cancel
     button_delete: Delete
     button_unselect: Deselect
-    buton_return_save: Return and save
+    button_onOff_rule: [Disable, Enable]
+    button_return_save: Save
+    button_return: Return
     label_not_sort: Do not sort
     label_unsorted: Unsorted
