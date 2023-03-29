@@ -29,9 +29,18 @@ document.querySelector("form").addEventListener("submit", async (event) => {
         console.log(e);
     }
 
-    console.log(newConfig);
-})
 
+    const yml = jsyaml.dump(newConfig, {
+        "indent": 4,
+        "noRefs": true,
+        "condenseFlow": true
+
+    })
+
+    console.log(yml);
+
+    saveAndDownload(yml, file.name.replace(".configTree.yml", ""));
+})
 
 /**
  * 
@@ -69,6 +78,30 @@ function _100to200(config) {
     return j
 
 }
+
+/**
+ * 
+ * @param {object} content
+ * @param {string} fileName
+ * @returns {}
+ */
+function saveAndDownload(content, fileName) {
+    const extention = ".configTree.yml"
+    const link = document.querySelector("a")
+
+    
+
+    let formBlob = new Blob([content], { type: 'text/plain' });
+
+    link.href = window.URL.createObjectURL(formBlob);
+    link.text = `⤓ Download : ${fileName}${extention}`
+    link.download = `${fileName}${extention}`
+}
+
+// document.getElementById("Test").addEventListener("click", (event) => {
+//     console.log("test");
+//     saveAndDownload("test", "oui")
+// })
 
 
 

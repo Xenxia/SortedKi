@@ -3,13 +3,10 @@ from tk_up.widgets import Frame_up, Button_up, LabelFrame_up, Label_up, OptionMe
 from tk_up.managerWidgets import ManagerWidgets_up
 from PyThreadUp import ThreadManager
 
-
 from func.logger import Logger
 from func.langages import LANG_AC, Lang_app
 from func.conf import ConfigTree
 from func.function import sendMessage
-
-
 
 class menu_option(Frame_up):
 

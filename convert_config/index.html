@@ -8,16 +8,23 @@
     <title>Convertor config file</title>
 </head>
 <body>
-    <form>
-        <input type="file" name="config file" id="1">
-        <button type="submit" id="btn_convert">Convert</button>
-        <select name="version" id="vfile">
-            <option value="100to200">1.0.0 > 2.0.0</option>
-        </select>
-    </form>
-    
+    <div>
+        <form>
+            <input type="file" accept=".configTree.yml" name="config file" id="1">
+            <br>
+            <span>Select version conversion</span>
+            <select name="version" id="vfile">
+                <option value="100to200">1.0.0 to 2.0.0</option>
+            </select>
+            <button type="submit" id="btn_convert">Convert !!</button>
+        </form>
+       
+        <a href=""></a>
+        
+        <!-- <button type="submit" id="Test">Test</button> -->
+        
+    </div>
     <script src="./asset/js/module/yaml.js" defer></script>
     <script type="module" src="./asset/js/index.js" defer></script>
-
 </body>
 </html>
