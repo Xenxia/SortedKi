@@ -1,3 +1,5 @@
+LONG_LANG: "Français"
+
 ERROR:
   create_config_file: Erreur durant la création du fichier de configuration de trie.
   permission_file: Le processus ne peut pas accéder au fichier "{file}" car il est utilisé par un autre processus.
@@ -36,6 +38,7 @@ UI:
     button_cancel: Annuler
     button_delete: Suprimmer
     button_unselect: Déselectionner
+    button_onOff_rule: [Désactiver, Activé]
     button_return_save: Sauvegarder
     button_return: Retour
     label_not_sort: Ne pas trié

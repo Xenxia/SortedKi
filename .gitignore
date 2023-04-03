@@ -9,3 +9,7 @@ dist/
 *.txt
 *.yml
 !.drone.yml
+*.csr
+*.key
+*.bat
+*.crt

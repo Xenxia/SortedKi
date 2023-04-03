@@ -1,6 +1,7 @@
+LONG_LANG: "English"
+
 ERROR:
   permission_file: The process cannot access the file "{file}" because it is used by another process
-
 
 OK:
   sorted: The file "{file}" has been moved to {path}.
@@ -36,6 +37,7 @@ UI:
     button_cancel: Cancel
     button_delete: Delete
     button_unselect: Deselect
+    button_onOff_rule: [Disable, Enable]
     button_return_save: Save
     button_return: Return
     label_not_sort: Do not sort

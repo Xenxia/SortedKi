@@ -2,7 +2,7 @@ import os, stat, shutil, platform
 from tkinter import filedialog
 from typing import Any, TypedDict
 from ruamel.yaml import YAML
-from func.logger import Logger
+from Pylogger import Logger
 
 PLATFORM_SYS = platform.system()
 
@@ -66,7 +66,7 @@ class ConfigTree():
                 "pathStatic": False,
             },
         },
-        "version_config_file": 1.0,
+        "version_config_file": "2.0",
         "search_folder": [],
         "unsorted": False,
         "doNotSort": [],

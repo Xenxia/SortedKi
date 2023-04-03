@@ -1,5 +1,5 @@
 import requests
-from logger import Logger
+from Pylogger import Logger
 
 class Update():
     log: Logger

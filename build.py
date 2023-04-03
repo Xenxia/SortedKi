@@ -3,6 +3,7 @@ import os, pathlib, shutil
 import PyInstaller.__main__
 import compileall
 
+INDEX = "index"
 APP_NAME = "SortedTree"
 
 parser = argparse.ArgumentParser(description="app to build Tree",
@@ -45,37 +46,39 @@ for p in path_comp:
     for file in pathlib.Path(p).glob("*.pyc"):
         os.rename(str(file), f"{p}/comp/{file.name}")
 
-print("\n=========================================== BUILD DEV ===========================================\n")
-PyInstaller.__main__.run([
-    f'{APP_NAME.lower()}.py',
-    f'--name={APP_NAME}_dev',
-    '--onefile',
-    # '--clean',
-    '--add-data=func/comp;func',
-    '--add-data=page/comp;page',
-    '--add-data=img;img',
-    '--add-data=lang;lang',
-    '--add-data=themes;themes',
-    '--hidden-import=locale',
-    '--hidden-import=ruamel.yaml',
-    '--hidden-import=typing',
-    '--hidden-import=ctypes',
-    '--hidden-import=sys',
-    '--hidden-import=tkinter.ttk',
-    '--hidden-import=tkinter.scrolledtext',
-    '--hidden-import=tkinter.filedialog',
-    '--hidden-import=tkinter',
-    '--hidden-import=requests',
-    '--hidden-import=webbrowser',
-    '--hidden-import=Tk-up',
-    '--icon=img/tree.ico'
-])
-print("\n========================================= END BUILD DEV ==========================================\n")
+if args.Command_Name == "dev":
 
-if not args.Command_Name == "dev":
+    print("\n=========================================== BUILD DEV ===========================================\n")
+    PyInstaller.__main__.run([
+        f'{INDEX.lower()}.py',
+        f'--name={APP_NAME}_dev',
+        '--onefile',
+        # '--clean',
+        '--add-data=func/comp;func',
+        '--add-data=page/comp;page',
+        '--add-data=img;img',
+        '--add-data=lang;lang',
+        '--add-data=themes;themes',
+        '--hidden-import=locale',
+        '--hidden-import=ruamel.yaml',
+        '--hidden-import=typing',
+        '--hidden-import=ctypes',
+        '--hidden-import=sys',
+        '--hidden-import=tkinter.ttk',
+        '--hidden-import=tkinter.scrolledtext',
+        '--hidden-import=tkinter.filedialog',
+        '--hidden-import=tkinter',
+        '--hidden-import=requests',
+        '--hidden-import=webbrowser',
+        '--hidden-import=Tk-up',
+        '--icon=img/tree.ico'
+    ])
+    print("\n========================================= END BUILD DEV ==========================================\n")
+
+else:
     print("=========================================== BUILD PROD ===========================================\n")
     PyInstaller.__main__.run([
-        f'{APP_NAME.lower()}.py',
+        f'{INDEX.lower()}.py',
         f'--name={APP_NAME}',
         '--onefile',
         # '--clean',

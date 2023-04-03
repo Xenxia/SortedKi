@@ -21,5 +21,5 @@ ttk::style configure Treeview \
 ttk::style configure Treeview.Item -padding {2 0 0 0}
 
 ttk::style map Treeview \
-    -background [list selected #555555] \
-    -foreground [list selected $colors(-selectfg)]
+    -background [list selected #414141]
+# -foreground [list selected $colors(-selectfg)]
