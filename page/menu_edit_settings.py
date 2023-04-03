@@ -4,9 +4,9 @@ from tk_up.widgets import Frame_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from tk_up.widgets import SCROLL_Y, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up, LabelFrame_up, Separator_up
 from PyThreadUp import ThreadManager
+from Pylogger import Logger
+from Pylang import Lang
 
-from func.langages import Lang_app
-from func.logger import Logger
 from func.conf import ConfigTree
 from func.function import sendMessage
 
@@ -23,29 +23,30 @@ class menu_edit_settings(Frame_up):
         self.manager_class = manager_class
 
         self.tm: ThreadManager = self.parameters_dict["tm"]
-        self.langs: Lang_app = parameters_list[0]
+        self.langs: Lang = parameters_list[0]
         self.config: ConfigTree = parameters_list[1]
         self.log: Logger = parameters_list[2]
 
         # Use 'self' in your widget
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
+        self.grid_propagate(False)
 
         self.frameButton = Frame_up(self)
         self.frameButton.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
 
         self.frameBox = Frame_up(self, width=700)
         self.frameBox.gridPosSize(row=3, column=0, sticky=(E, W, S, N)).show()
-        self.frameBox.propagate(False)
+        # self.frameBox.propagate(False)
         
         self.treeView = Treeview_up(self, scroll=SCROLL_Y, iid=True, child=True, show="tree headings", width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
         self.treeView.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
         self.treeView.setColumns(
             columns=[
-                self.langs.lang['UI']['EDIT_MENU']['col_name_profil'],
-                self.langs.lang['UI']['EDIT_MENU']['col_folder'],
-                self.langs.lang['UI']['EDIT_MENU']['col_extention']
+                self.langs.t('UI.EDIT_MENU.col_name_profil'),
+                self.langs.t('UI.EDIT_MENU.col_folder'),
+                self.langs.t('UI.EDIT_MENU.col_extention')
             ], 
             size=[150, 150, 300]
         )
@@ -63,7 +64,7 @@ class menu_edit_settings(Frame_up):
         self.sep = Separator_up(self).gridPosSize(row=1, column=0, sticky=(E, W), pady=(2,2)).show()
 
 
-        self.unselect_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_unselect'], width=15, command=self.unselect)
+        self.unselect_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_unselect'), width=15, command=self.unselect)
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
         self.move_up = Button_up(self.frameButton, text="⬆", command=self.treeView.moveUpSelectedElement, width=3)
@@ -72,22 +73,30 @@ class menu_edit_settings(Frame_up):
         self.move_down = Button_up(self.frameButton, text="⬇", command=self.treeView.moveDownSelectedElement, width=3)
         self.move_down.gridPosSize(column=3, row=0).show().disable()
 
-        self.remove = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_delete'], width=10, command=self.delete)
+        self.remove = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_delete'), width=10, command=self.delete)
         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.edit_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_edit'], width=10, command=self.editMenu)
+        self.edit_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_edit'), width=10, command=self.editMenu)
         self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        add_button = Button_up(self.frameButton, text=self.langs.lang['UI']['EDIT_MENU']['button_add'], width=10, command=self.addMenu)
+        self.onOffRule_button = Toggle_Button_up(self.frameButton, width=12)
+        self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
+        self.onOffRule_button.custom_toggle((
+                                        self.langs.t('UI.EDIT_MENU.button_onOff_rule', 1), 
+                                        self.langs.t('UI.EDIT_MENU.button_onOff_rule', 0)
+                                    ), ("fggreen.TButton", "fgred.TButton"))
+        self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
+
+        add_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_add'), width=10, command=self.addMenu)
         add_button.gridPosSize(column=0, row=0).show()
 
-        d1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_not_sort'], anchor=W)
+        d1 = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU.label_not_sort'), anchor=W)
         d1.gridPosSize(row=0, column=0, pady=(20, 10), padx=(5, 10)).show()
 
         self.doNotSort_box = Entry_up(self.frameBox, width=80)
         self.doNotSort_box.grid(row=0, column=1, sticky=W, pady=(13, 0))
 
-        u1 = Label_up(self.frameBox, text=self.langs.lang['UI']['EDIT_MENU']['label_unsorted'], justify="right")
+        u1 = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU.label_unsorted'), justify="right")
         u1.gridPosSize(row=1, column=0, padx=(5, 10)).show()
 
         self.toggle_b = Toggle_Button_up(self.frameBox, width=3)
@@ -102,16 +111,16 @@ class menu_edit_settings(Frame_up):
         self.frame_return.placePosSize(350, 570, 120, 80, anchor="center").show()
         self.frame_return.columnconfigure(0, weight=1)
         self.frame_return.rowconfigure(2, weight=1)
-        self.frame_return.propagate(True)
+        self.frame_return.grid_propagate(False)
 
-        self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return_save'], command=self.saveDataInTree)
+        self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return_save'), command=self.saveDataInTree)
         self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_return = Button_up(self.frame_return, text=self.langs.lang['UI']['EDIT_MENU']['button_return'], command=lambda: self.manager_class.showWidget("menu_option"))
+        self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("menu_option"))
         self.button_return.gridPosSize(column=0, row=2, sticky=(E, W, N), pady=(3,0)).show()
 
-        # self.label_error_edit = Label_up(self.frameBox, text="test")
-        # self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
+        self.label_error_edit = Label_up(self.frameBox, text="")
+        self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
 
         # TopLevel
 
@@ -121,13 +130,13 @@ class menu_edit_settings(Frame_up):
         self.addEditWindow.hide()
 
         #Labels
-        nl = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_name_profil'])
+        nl = Label_up(self.addEditWindow, text=self.langs.t('UI.EDIT_MENU.col_name_profil'))
         nl.gridPosSize(row=0, column=0, sticky=W, padx=(5,5)).show()
 
-        il = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_folder'])
+        il = Label_up(self.addEditWindow, text=self.langs.t('UI.EDIT_MENU.col_folder'))
         il.gridPosSize(row=1, column=0, sticky=W, padx=(5,5)).show()
 
-        tl = Label_up(self.addEditWindow, text=self.langs.lang['UI']['EDIT_MENU']['col_extention'])
+        tl = Label_up(self.addEditWindow, text=self.langs.t('UI.EDIT_MENU.col_extention'))
         tl.gridPosSize(row=2, column=0, sticky=W, padx=(5,5)).show()
 
         #Entry boxes
@@ -145,7 +154,7 @@ class menu_edit_settings(Frame_up):
         self.addOrEdit = Button_up(buttonF)
         self.addOrEdit.gridPosSize(row=0, column=0, padx=(0,3)).show()
 
-        self.cancel = Button_up(buttonF, text=self.langs.lang['UI']['EDIT_MENU']['button_cancel'], command=self.addEditWindow.hide)
+        self.cancel = Button_up(buttonF, text=self.langs.t('UI.EDIT_MENU.button_cancel'), command=self.addEditWindow.hide)
         self.cancel.gridPosSize(row=0, column=1).show()
 
         buttonF.gridPosSize(row=3, column=1, sticky=W, pady=(5,0)).show()
@@ -169,7 +178,6 @@ class menu_edit_settings(Frame_up):
 
             parent = parent if parent is not None else ''
 
-            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
             self.treeView.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(rule)])
 
         self.toggle_b.set_default_status(self.config.CONFIG["unsorted"])
@@ -191,16 +199,17 @@ class menu_edit_settings(Frame_up):
             self.unselect_button.disable()
             self.move_up.disable()
             self.move_down.disable()
+            self.onOffRule_button.disable()
             self.treeView.tree.selection_remove(self.treeView.tree.selection()[0])
         except:
-            print("not select")
+            self.log.debug("Not select", "unselect")
 
 #Toplevel menu ------------------------------------------------------------------------
     def editMenu(self):
 
-        self.addEditWindow.title(self.langs.lang['UI']['EDIT_MENU']['title_edit'])
+        self.addEditWindow.title(self.langs.t('UI.EDIT_MENU.title_edit'))
 
-        self.addOrEdit.config(text=self.langs.lang['UI']['EDIT_MENU']['button_apply'])
+        self.addOrEdit.config(text=self.langs.t('UI.EDIT_MENU.button_apply'))
 
         self.profile_box.delete(0, END)
         self.folder_box.delete(0, END)
@@ -221,7 +230,7 @@ class menu_edit_settings(Frame_up):
             self.addEditWindow.show()
 
         except:
-            print("not select")
+            self.log.debug("Not select", "editMenu")
 
     def edit(self):
         try:
@@ -232,9 +241,9 @@ class menu_edit_settings(Frame_up):
             self.tm.start("noItemSelectError")
 
     def addMenu(self):
-        self.addEditWindow.title(self.langs.lang['UI']['EDIT_MENU']['title_add'])
+        self.addEditWindow.title(self.langs.t('UI.EDIT_MENU.title_add'))
 
-        self.addOrEdit.config(text=self.langs.lang['UI']['EDIT_MENU']['button_add'])
+        self.addOrEdit.config(text=self.langs.t('UI.EDIT_MENU.button_add'))
 
         self.profile_box.delete(0, END)
         self.folder_box.delete(0, END)
@@ -271,11 +280,32 @@ class menu_edit_settings(Frame_up):
 
     def selected(self, event):
         if self.treeView.getSelectedElement():
+
+            tags = self.treeView.getItemSelectedElemnt("tags")
+            if tags == None:
+                self.onOffRule_button.set_status(True, True)
+            elif tags[0] == "Disable":
+                self.onOffRule_button.set_status(False, True)
+
+
             self.edit_button.enable()
             self.remove.enable()
             self.unselect_button.enable()
             self.move_up.enable()
             self.move_down.enable()
+            self.onOffRule_button.enable()
+
+    def onOffRule(self):
+        # print(self.treeView.getItemSelectedElemnt("tags"))
+
+        tags = self.treeView.getItemSelectedElemnt("tags")
+        if tags == None:
+            self.treeView.editSelectedElement(tags="Disable")
+        elif tags[0] == "Disable":
+            self.treeView.editSelectedElement(tags="")
+            # self.treeView.update()
+
+
 
     def saveDataInTree(self):
 
@@ -297,21 +327,37 @@ class menu_edit_settings(Frame_up):
             if 'Disable' in tags:
                 self.config.CONFIG['config_sort'][key]['disable'] = True
 
-        
             self.config.CONFIG['config_sort'][key]['parent'] = iid[1]['parent']
             self.config.CONFIG['config_sort'][key]['folder'] = value[0]
-            for index, parent in enumerate(self.treeView.getAllParentItem(key)[::-1]):
+
+            for index, parent in enumerate(self.treeView.getAllParentItem(key)):
 
                 folder = self.treeView.getItem(parent)["values"][0]
-                
+
+                self.log.debug(f"p : {parent}, i : {index}, f : {folder}")
+
+                if folder[0] == "/" or folder[1] == ":":
+                    fullPath = folder + fullPath
+                    pathStatic = True
+                    break
+
                 if index != 0:
-                    fullPath += f"/{folder}"
+                    fullPath = f"{folder}/{fullPath}"
                 else:
-                    if folder[0] != "/" and folder[1] != ":":
-                        fullPath += f"{folder}"
-                    else:
-                        fullPath += f"{folder}"
-                        pathStatic = True
+                    fullPath = f"{folder}"
+
+            self.log.debug(fullPath)
+
+
+            # else:
+                # for index, parent in enumerate(self.treeView.getAllParentItem(key)[::-1]):#
+
+                #     folder = self.treeView.getItem(parent)["values"][0]
+
+                #     if index != 0:
+                #         fullPath += f"/{folder}"
+                #     else:
+                #         fullPath += f"{folder}"
 
             self.config.CONFIG['config_sort'][key]['fullPath'] = fullPath
             self.config.CONFIG['config_sort'][key]['rule'] = value[1].split("|")
@@ -355,7 +401,9 @@ class menu_edit_settings(Frame_up):
 
     # this function is call if you hide widget
     def disable(self):
-        pass
+        self.unselect()
+
+        # pass
 
      # this function is call if you show class
     def enable(self):

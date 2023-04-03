@@ -3,8 +3,8 @@ from PyThreadUp import ThreadManager
 from tkinter import E, W, S, N
 from tk_up.widgets import Frame_up, Button_up, Terminal_ScrolledText_up, Separator_up
 from tk_up.managerWidgets import ManagerWidgets_up
-from func.logger import Logger
-from func.langages import Lang_app
+from Pylogger import Logger
+from Pylang import Lang
 
 class menu_sort(Frame_up):
 
@@ -18,7 +18,7 @@ class menu_sort(Frame_up):
         self.manager_class = manager_class
 
         tm: ThreadManager = self.parameters_dict["tm"]
-        langs: Lang_app = parameters_list[0]
+        langs: Lang = parameters_list[0]
         log: Logger = parameters_list[2]
 
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
@@ -27,10 +27,10 @@ class menu_sort(Frame_up):
         
         self.console1 = Terminal_ScrolledText_up(self, borderwidth=0)
 
-        self.button_tree = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_sort'], command=lambda: tm.start("sort"))
+        self.button_tree = Button_up(self, text=langs.t('UI.MAIN_MENU.button_sort'), command=lambda: tm.start("sort"))
         self.button_tree.placePosSize(350, 12, 86, 24, anchor="center").show()
 
-        self.button_clear = Button_up(self, text=langs.lang['UI']['MAIN_MENU']['button_clear'], command=self.console1.clearTerminal)
+        self.button_clear = Button_up(self, text=langs.t('UI.MAIN_MENU.button_clear'), command=self.console1.clearTerminal)
         self.button_clear.placePosSize(350, 38, 86, 24, anchor="center").show()
 
         self.sep = Separator_up(self).placePosSize(0, 52, 700, 0).show()
