@@ -1,0 +1,33 @@
+{
+    "name_app": "SortedTree",
+    "index": "index.py",
+    "icon": "img/tree.ico",
+    "onefile": true,
+    "clean": false,
+
+    "compile_dir": [
+        "func",
+        "page"
+    ],
+    "add_data": [
+        "func/comp;func",
+        "page/comp;page",
+        "img;img",
+        "lang;lang",
+        "themes;themes"
+    ],
+    "hidden_import": [
+        "locale",
+        "ruamel.yaml",
+        "typing",
+        "ctypes",
+        "sys",
+        "tkinter.ttk",
+        "tkinter.scrolledtext",
+        "tkinter.filedialog",
+        "tkinter",
+        "requests",
+        "webbrowser",
+        "Tk-up"
+    ]
+}
