@@ -36,8 +36,18 @@ try:
 except:
     argDebug = ""
 
-log = Logger(format="{time} | {levelname} : {context} {msg}", levellog=DEBUG if argDebug == "debug" else INFO)
-log.customize(level=("[", "]"), context=("{", "}"))
+try:
+    argFile = ARGS[2]
+except:
+    argFile = ""
+
+log = Logger(
+    format="{time} | {levelname} : {context}{msg}",
+    levellog=DEBUG if argDebug == "debug" else INFO,
+    file_path="./debug.log" if argFile == "file" else None
+)
+
+log.customize(level=("[", "]"), context=("{ ", " } "))
 
 if importPyInst.is_compiled:
     pathAppExe = os.path.realpath(sys.executable)
@@ -54,6 +64,7 @@ nameAppExe = ntpath.basename(pathAppExe)
 
 conf = ConfigTree(log, pathDirExe)
 conf.loadConfig()
+conf.CONFIG["doNotSort"].append("debug.log") if log.isEnableFile() else None
 
 langageTask = ThreadUP(target=lambda: Lang(f"{executionPath}/lang"), returnValue=True).start()
 
@@ -91,15 +102,14 @@ def notDev():
 # function Sorting
 def sortMain():
 
-    log.debug("test", "SORT-MAIN")
-
-    s = Sorting(log, langage, conf, pathDirExe, nameAppExe, main_menu_w)
+    log.info("Start", "SORT-MAIN")
     main_menu_w.button_tree.disable()
 
     try:
+        s = Sorting(log, langage, conf, pathDirExe, nameAppExe, main_menu_w)
         s.start()
-    except SystemError as e:
-        log.error(e, "Sort-Main")
+    except Exception as e:
+        log.error(e, "SORT-MAIN")
 
     main_menu_w.button_tree.enable()
 

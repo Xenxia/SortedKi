@@ -31,11 +31,14 @@ class Sorting:
 
 
     def start(self):
-        self.log.debug("test", "SORT-MAIN")
 
         dontSortFileRule = self.__dontSortFiles()
 
+        self.log.debug(f"dontSortFileRule : {dontSortFileRule}", "Sorting-start")
+
         self.checkedFile = []
+
+        self.log.debug("Check Dir", "Sorting-start")
 
         for name_profile in self.conf.CONFIG['config_sort']:
 
@@ -46,11 +49,14 @@ class Sorting:
                 pathStatic: bool = self.conf.CONFIG['config_sort'][name_profile]['pathStatic']
 
                 if pathStatic:
+
                     if not os.path.exists(f"{fullPathConfig}"):
+                        self.log.debug("Create static Dir : " + f"{self.parentPath}/{fullPathConfig}", "Sorting-start")
                         os.makedirs(f"{fullPathConfig}", exist_ok=True)
                 else:
 
                     if not os.path.exists(f"{self.parentPath}/{fullPathConfig}"):
+                        self.log.debug("Create Dir : " + f"{self.parentPath}/{fullPathConfig}", "Sorting-start")
                         os.makedirs(f"{self.parentPath}/{fullPathConfig}", exist_ok=True)
 
                 if rule == "":
@@ -60,12 +66,15 @@ class Sorting:
 
         if self.conf.CONFIG['unsorted'] == True :
             if not os.path.exists(f"{self.pathDirExe}/#Unsorted"):
+                self.log.debug("Create Unsorted Dir", "Sorting-start")
                 os.mkdir(f"{self.pathDirExe}/#Unsorted")
 
             self.unsorted(dontSortFileRule)
 
 
     def sort(self, rule: str, dontSortFileRule: list, fullPathConfig: str, parentPath: str, staticPath: bool, disableRule: bool):
+
+        self.log.debug(f"Start sort - rule {rule}", "sort")
 
         for file in pathlib.Path(self.searchPath).glob(rule):
 
@@ -86,6 +95,8 @@ class Sorting:
 
             if str(file_name) not in dontSortFileRule and str(file_name) not in NOT_SORT_LIST and str(file_name) != self.nameAppExe:
 
+                self.log.debug("file_name - "+file_name, "sort")
+
                 self.checkedFile.append(str(file_name))
 
                 if disableRule:
@@ -96,33 +107,47 @@ class Sorting:
                     try:
                         if os.path.isfile(file_name):
 
+                            with open(file_name, "a", encoding="utf8") as file:
+                                file.close()
+
                             shutil.move(str(file_name), futurSortedPathFile)
+                            self.log.debug("OK", "sort")
                             sort = True
                         else:
+                            self.log.debug("Not file", "sort")
                             break
 
                     # For permission related errors
                     except PermissionError:
+                        self.log.error("Permission error", "sort")
                         permission = True
 
                     # For other errors
                     except OSError as error:
+                        self.log.error(f"OS error - {error}", "sort")
                         err = [True, error]
 
                 else:
                     try:
                         if os.path.isfile(file_name):
+                            self.log.debug(f"Duplicate {file_name}", "sort")
                             new = self.duplicate(str(file_name), f"{pPath}")
+
+                            with open(file_name, "a", encoding="utf8") as file:
+                                file.close()
+                            
                             shutil.move(src = file_name, dst = f"{pPath}/{new}")
                             sort, duplica = True, True
                         else:
                             break
 
                     except PermissionError:
+                        self.log.error("Permission Duplicate error", "sort")
                         permission = True
                         
                     # For other errors
                     except OSError as error:
+                        self.log.error(f"Duplicate - {error}", "sort")
                         err = [True, error]
 
             if sort and not duplica:
