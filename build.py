@@ -59,6 +59,12 @@ group.add_argument('-v', '--version', action='version', version="V1")
 
 args = parser.parse_args()
 
+if args.Command_Name == "config":
+    
+    with open(CONFIG_FILE, 'w') as f:
+        json.dump(CONFIG_TEMPLATE, f)
+
+    exit()
 #load file config
 
 with open(CONFIG_FILE, 'r', encoding='utf8') as file:
@@ -125,7 +131,3 @@ else:
     PyInstaller.__main__.run(arg)
     print("\n========================================= END BUILD PROD ==========================================\n")
 
-if args.Command_Name == "config":
-    
-    with open(CONFIG_FILE, 'w') as f:
-        json.dump(CONFIG_TEMPLATE, f)

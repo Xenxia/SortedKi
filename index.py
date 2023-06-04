@@ -133,10 +133,10 @@ window.resizable(0, 0)
 # window.columnconfigure(0, weight=1)
 # window.rowconfigure(2, weight=1)
 
-theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme("sortedtree", "dark")
+theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme("dark")
 
 # log.debug(theme.get_theme_use())
-# log.debug(theme.get_info_element('B.TFrame'))
+log.debug(theme.get_info_element('TCombobox'))
 # exit()
 param_d = {
     "exe_path": executionPath,

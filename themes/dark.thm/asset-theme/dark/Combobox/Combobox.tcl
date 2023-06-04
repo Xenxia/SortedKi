@@ -1,3 +1,5 @@
+option add *TCombobox*Listbox.background $colors(-other)
+
 ttk::style map TCombobox -selectforeground [list \
     {!focus} $colors(-selectfg) \
     {readonly hover} $colors(-selectfg) \

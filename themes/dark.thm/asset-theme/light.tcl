@@ -1,3 +1,8 @@
+# Copyright (c) 2021 rdbende <rdbende@gmail.com>
+
+# The Azure theme is a beautiful modern ttk theme inspired by Microsoft's fluent design.
+
+
 
 proc findFiles { basedir pattern } {
 
@@ -37,22 +42,22 @@ proc load_images {imgdir} {
 }
 
 # load Image
-array set I [load_images [file join [file dirname [info script]] dark/img]]
+array set I [load_images [file join [file dirname [info script]] light/img]]
 
-#load TCL file
-set fileTCL [findFiles [file join [file dirname [info script]] dark] *.tcl]
+# found all sub TCL file
+set fileTCL [findFiles [file join [file dirname [info script]] light] *.tcl]
 
-ttk::style theme create "${nameTheme}-dark" -parent alt -settings {
+ttk::style theme create "${nameTheme}-light" -parent alt -settings {
 
         # Global Color
         array set colors {
-            -fg             "#ffffff"
-            -bg             "#000000"
-            -disabledfg     "#aaaaaa"
-            -disabledbg     "#110000"
+            -fg             "#000000"
+            -bg             "#dddddd"
+            -disabledfg     "#737373"
+            -disabledbg     "#ffffff"
             -selectfg       "#ffffff"
-            -selectbg       "#707070"
-            -other          "#333333"
+            -selectbg       "#00af00"
+            -other          "#aaaaaa"
             -accent         "#00FF00"
         }
 

@@ -1,4 +1,4 @@
-from tkinter import E, W, S, N
+from tkinter import E, W, S, N, CENTER
 from tk_up.widgets import Frame_up, Button_up, LabelFrame_up, Label_up, OptionMenu_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from PyThreadUp import ThreadManager
@@ -76,8 +76,8 @@ class menu_option(Frame_up):
         self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("menu_sort"))
         self.button_return.placePosSize(350, 400, 120, 24, anchor="center").show()
 
-        self.label_error_option = Label_up(self, text="", wraplength=300, justify="center")
-        self.label_error_option.placePosSize(350, 500, 300, 32, anchor="center").show()
+        self.label_error_option = Label_up(self, text="", wraplength=320, justify=CENTER, anchor="center")
+        self.label_error_option.placePosSize(350, 500, 320, 64, anchor="center").show()
 
         self.tm.thread("confExport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Exporter"))
         self.tm.thread("confImport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Importer"))
