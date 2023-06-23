@@ -17,8 +17,8 @@ from page.menu_option import menu_option
 from page.menu_sort import menu_sort
 
 PLATFORME_SYS = platform.system()
-VERSION = "2.0.0"
-APP_NAME = "SortedTree"
+VERSION = "2.0.1"
+APP_NAME = "SortedKi"
 ARGS = sys.argv
 
 importPyInst = Import_pyInst()
@@ -122,7 +122,7 @@ tm.thread("sort", target=sortMain)
 # main window
 window = Tk_up()
 
-window.configWindows(title=f"{APP_NAME} | {pathDirExe}", geometry="700x700+center", iconbitmap=f"{executionPath}/img/tree.ico")
+window.configWindows(title=f"{APP_NAME} | {pathDirExe}", geometry="700x700+center", iconbitmap=f"{executionPath}/img/icon.ico")
 
 # window.iconbitmap()
 # window.config(background='#202020')

@@ -9,4 +9,4 @@
 #     Vertical.separator -sticky nswe
 # }
 
-ttk::style configure TSeparator -background $colors(-accent)
+ttk::style configure TSeparator -background $colors(-primary)

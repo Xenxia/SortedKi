@@ -13,7 +13,7 @@ ttk::style element create Treeitem.indicator \
     ] -width 16 -sticky {}
 
 ttk::style configure Treeview \
-    -background $colors(-bg) \
+    -background $colors(-background) \
     -font {"Segor Ui" 10} \
     -indent 10
 

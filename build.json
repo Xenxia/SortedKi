@@ -1,7 +1,7 @@
 {
-    "name_app": "SortedTree",
+    "name_app": "SortedKi",
     "index": "index.py",
-    "icon": "img/tree.ico",
+    "icon": "img/icon.ico",
     "onefile": true,
     "clean": false,
 

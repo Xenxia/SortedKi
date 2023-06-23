@@ -124,7 +124,7 @@ class menu_edit_settings(Frame_up):
 
         # TopLevel
 
-        self.addEditWindow = Toplevel_up(self.parameters_dict["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.parameters_dict['exe_path']}/img/tree.ico")
+        self.addEditWindow = Toplevel_up(self.parameters_dict["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.parameters_dict['exe_path']}/img/icon.ico")
         self.addEditWindow.config(background='#000000')
         self.addEditWindow.resizable(0, 0)
         self.addEditWindow.hide()
