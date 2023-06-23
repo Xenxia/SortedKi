@@ -143,6 +143,7 @@ param_d = {
     "sort_func": sortMain,
     "screenMain": window,
     "tm": tm,
+    "app_name": APP_NAME
 }
 
 main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", parameters_list=[langage, conf, log], parameters_dict=param_d, width=700, height=670)

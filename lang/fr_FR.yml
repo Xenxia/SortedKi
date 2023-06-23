@@ -44,4 +44,8 @@ UI:
     label_not_sort: Ne pas trié
     label_unsorted: Non trié
 
+  ABOUT:
+    button_return: Retour
+    button_about: A propos
+
 

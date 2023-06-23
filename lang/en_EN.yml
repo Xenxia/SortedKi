@@ -1,6 +1,7 @@
 LONG_LANG: "English"
 
 ERROR:
+  create_config_file: Error during creation of sort configuration file.
   permission_file: The process cannot access the file "{file}" because it is used by another process
 
 OK:
@@ -42,3 +43,7 @@ UI:
     button_return: Return
     label_not_sort: Do not sort
     label_unsorted: Unsorted
+
+  ABOUT:
+    button_return: Return
+    button_about: About
