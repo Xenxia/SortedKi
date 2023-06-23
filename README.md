@@ -1,15 +1,15 @@
 <div align="center">
-    <img width="100" src="https://raw.githubusercontent.com/Xenxia/SortedTree/master/assets/img/SortedTree.png" />
-    <h1 align="center">SortedTree</h1>
+    <img width="100" src="https://raw.githubusercontent.com/Xenxia/SortedKi/master/assets/img/icon.png" />
+    <h1 align="center">SortedKi</h1>
 </div>
 
 <div align="center">
     <strong>This software allows you to sort your files according to defined rules</strong>
     <br><br>
-    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedTree/main/assets/img/SortedTree_ex.png" />
+    <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedKi/main/assets/img/preview.png" />
     <br><br>
-    <h1><a href="https://github.com/Xenxia/SortedTree/releases/latest">Download</a></h1>
-    <h1><a href="https://xenxia.github.io/SortedTree/">Convert config file</a></h1>
+    <h1><a href="https://github.com/Xenxia/SortedKi/releases/latest">Download</a></h1>
+    <h1><a href="https://xenxia.github.io/SortedKi/">Convert config file</a></h1>
 </div>
 
 
@@ -82,5 +82,5 @@
 </div> -->
 
 <div align="center">
-    <h2><a href="https://github.com/Xenxia/SortedTree/projects/1">DashBoard</a></h2>
+    <h2><a href="https://github.com/Xenxia/SortedKi/projects/1">DashBoard</a></h2>
 </div>
