@@ -136,9 +136,10 @@ window.resizable(0, 0)
 theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme("dark")
 
 # log.debug(theme.get_theme_use())
-log.debug(theme.get_info_element('TCombobox'))
+# log.debug(theme.get_info_element('TCombobox'))
 # exit()
-param_d = {
+context = {
+    "lib": [langage, conf, log],
     "exe_path": executionPath,
     "sort_func": sortMain,
     "screenMain": window,
@@ -146,7 +147,7 @@ param_d = {
     "app_name": APP_NAME
 }
 
-main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", parameters_list=[langage, conf, log], parameters_dict=param_d, width=700, height=670)
+main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", context=context, width=700, height=670)
 main_frame.showWidget("main")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
@@ -198,7 +199,7 @@ button_option = Button_up(master=footer, image=option_image, command=lambda: mai
 button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").show()
 
 
-main_frame.addParametersInOneWidget("menu_sort", parameter_list=button_option)
+main_frame.addInContextInOneWidget("menu_sort", addCtx=button_option)
 
 
 # mainUi()

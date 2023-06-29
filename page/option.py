@@ -1,4 +1,6 @@
 from tkinter import E, W, S, N, CENTER
+from typing import Any
+
 from tk_up.widgets import Frame_up, Button_up, LabelFrame_up, Label_up, OptionMenu_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from PyThreadUp import ThreadManager
@@ -10,7 +12,8 @@ from func.function import sendMessage
 
 class option(Frame_up):
 
-    parameters_list: list
+    # DONT REMOVE THIS
+    ctx: dict[str, Any]
     manager_class: ManagerWidgets_up
 
     #parameters
@@ -19,16 +22,15 @@ class option(Frame_up):
     config: ConfigTree
     langs: Lang
 
-    def __init__(self, parameters_list: list,  parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
-        self.parameters_list = parameters_list.copy()
-        self.parameters_dict = parameters_dict
+    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
+        self.ctx = context.copy()
         self.manager_class = manager_class
 
-        self.tm: ThreadManager = self.parameters_dict["tm"]
+        self.tm: ThreadManager = self.ctx["tm"]
 
-        self.langs: Lang = parameters_list[0]
-        self.config: ConfigTree = parameters_list[1]
-        self.log: Logger = parameters_list[2]
+        self.langs: Lang = self.ctx["lib"][0]
+        self.config: ConfigTree = self.ctx["lib"][1]
+        self.log: Logger = self.ctx["lib"][2]
 
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
@@ -49,7 +51,7 @@ class option(Frame_up):
         self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_settings"))
         self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton")
+        self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton", )
         self.button_delete.gridPosSize(row=3, column=0, sticky=(E, W, S, N), pady=(3,10)).show()
 
         # Warning

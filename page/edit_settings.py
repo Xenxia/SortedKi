@@ -1,5 +1,5 @@
-from threading import Thread
 from tkinter import END, W, E, N, S
+from typing import Any
 from tk_up.widgets import Frame_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from tk_up.widgets import SCROLL_Y, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up, LabelFrame_up, Separator_up
@@ -13,19 +13,17 @@ from func.function import sendMessage
 class edit_settings(Frame_up):
 
     # DONT REMOVE THIS
-    parameters_list: list
-    parameters_dict: dict
+    ctx: dict[str, Any]
     manager_class: ManagerWidgets_up
 
-    def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master, kw={"width":0, "height":0}):
-        self.parameters_list = parameters_list.copy()
-        self.parameters_dict = parameters_dict
+    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master, kw={"width":0, "height":0}):
+        self.ctx = context.copy()
         self.manager_class = manager_class
 
-        self.tm: ThreadManager = self.parameters_dict["tm"]
-        self.langs: Lang = parameters_list[0]
-        self.config: ConfigTree = parameters_list[1]
-        self.log: Logger = parameters_list[2]
+        self.tm: ThreadManager = self.ctx["tm"]
+        self.langs: Lang = self.ctx["lib"][0]
+        self.config: ConfigTree = self.ctx["lib"][1]
+        self.log: Logger = self.ctx["lib"][2]
 
         # Use 'self' in your widget
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
@@ -124,7 +122,7 @@ class edit_settings(Frame_up):
 
         # TopLevel
 
-        self.addEditWindow = Toplevel_up(self.parameters_dict["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.parameters_dict['exe_path']}/img/icon.ico")
+        self.addEditWindow = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
         self.addEditWindow.config(background='#000000')
         self.addEditWindow.resizable(0, 0)
         self.addEditWindow.hide()

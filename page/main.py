@@ -1,4 +1,4 @@
-
+from typing import Any
 from PyThreadUp import ThreadManager
 from tkinter import E, W, S, N
 from tk_up.widgets import Frame_up, Button_up, Terminal_ScrolledText_up, Separator_up
@@ -8,18 +8,17 @@ from Pylang import Lang
 
 class main(Frame_up):
 
-    parameters_list: list
-    parameters_dict: dict
+     # DONT REMOVE THIS
+    ctx: dict[str, Any]
     manager_class: ManagerWidgets_up
 
-    def __init__(self, parameters_list: list, parameters_dict: dict, manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
-        self.parameters_list = parameters_list.copy()
-        self.parameters_dict = parameters_dict
+    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
+        self.ctx = context.copy()
         self.manager_class = manager_class
 
-        tm: ThreadManager = self.parameters_dict["tm"]
-        langs: Lang = parameters_list[0]
-        log: Logger = parameters_list[2]
+        tm: ThreadManager = self.ctx["tm"]
+        langs: Lang = self.ctx["lib"][0]
+        log: Logger = self.ctx["lib"][2]
 
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
