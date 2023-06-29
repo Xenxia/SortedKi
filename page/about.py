@@ -34,7 +34,7 @@ class about(Frame_up):
         self.button_link = Button_up(self, text=f"Project Link : https://github.com/Xenxia/{self.parameters_dict['app_name']}", command=lambda: webbrowser.open(f'https://github.com/Xenxia/{self.parameters_dict["app_name"]}'), style="link.TButton")
         self.button_link.placePosSize(350, 200, 350, 24, anchor="center").show()
 
-        self.button_return = Button_up(self, text=self.langs.t('UI.ABOUT.button_return'), command=lambda: manager_class.showWidget("menu_option"))
+        self.button_return = Button_up(self, text=self.langs.t('UI.ABOUT.button_return'), command=lambda: manager_class.showWidget("option"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
 

@@ -8,7 +8,7 @@ from Pylang import Lang
 from func.conf import ConfigTree
 
 #Page
-from page.menu_sort import menu_sort
+from page.main import main
 
 NOT_SORT_LIST = ["config.yml", "desktop.ini"]
 
@@ -18,7 +18,7 @@ class Sorting:
     conf: ConfigTree
     checkedFile: list
 
-    def __init__(self, log: Logger, lang: Lang, conf: ConfigTree, pathDirExe: str, nameAppExe:str, mSort: menu_sort) -> None:
+    def __init__(self, log: Logger, lang: Lang, conf: ConfigTree, pathDirExe: str, nameAppExe:str, mSort: main) -> None:
         self.log = log
         self.conf = conf
         self.checkedFile = []

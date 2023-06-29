@@ -6,7 +6,7 @@ from tk_up.managerWidgets import ManagerWidgets_up
 from Pylogger import Logger
 from Pylang import Lang
 
-class menu_sort(Frame_up):
+class main(Frame_up):
 
     parameters_list: list
     parameters_dict: dict

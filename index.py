@@ -13,8 +13,8 @@ from Pylogger import Logger, DEBUG, INFO
 from Pylang import Lang
 
 #Page
-from page.menu_option import menu_option
-from page.menu_sort import menu_sort
+from page.option import option
+from page.main import main
 
 PLATFORME_SYS = platform.system()
 VERSION = "2.0.1"
@@ -147,12 +147,12 @@ param_d = {
 }
 
 main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", parameters_list=[langage, conf, log], parameters_dict=param_d, width=700, height=670)
-main_frame.showWidget("menu_sort")
+main_frame.showWidget("main")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
-main_menu_w: menu_sort = main_frame.getClassWidget("menu_sort")
+main_menu_w: main = main_frame.getClassWidget("main")
 # main_menu_w.button_clear.configure(command=sortMa)
-menu_option_w: menu_option = main_frame.getClassWidget("menu_option")
+menu_option_w: option = main_frame.getClassWidget("option")
 menu_option_w.button_moovToRoot.configure(command=moveToRoot)
 
 footer = Frame_up(master=window, width=700, height=30)
@@ -194,7 +194,7 @@ if last_version != "none" and last_version != VERSION:
 # button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_clear'], command=lambda: console1.clearTerminal())
 # button_clear.placePosSize(x=255, y=24, width=90, height=24)
 
-button_option = Button_up(master=footer, image=option_image, command=lambda: main_frame.showWidget("menu_option"), style="nobg.TButton")
+button_option = Button_up(master=footer, image=option_image, command=lambda: main_frame.showWidget("option"), style="nobg.TButton")
 button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").show()
 
 

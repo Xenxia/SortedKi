@@ -10,7 +10,7 @@ from Pylang import Lang
 from func.conf import ConfigTree
 from func.function import sendMessage
 
-class menu_edit_settings(Frame_up):
+class edit_settings(Frame_up):
 
     # DONT REMOVE THIS
     parameters_list: list
@@ -116,7 +116,7 @@ class menu_edit_settings(Frame_up):
         self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return_save'), command=self.saveDataInTree)
         self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("menu_option"))
+        self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("option"))
         self.button_return.gridPosSize(column=0, row=2, sticky=(E, W, N), pady=(3,0)).show()
 
         self.label_error_edit = Label_up(self.frameBox, text="")
@@ -372,7 +372,7 @@ class menu_edit_settings(Frame_up):
 
         self.config.saveConfig()
 
-        self.manager_class.showWidget("menu_option")
+        self.manager_class.showWidget("option")
 
     def addDataToTree(self):
         for i in self.treeView.tree.get_children():

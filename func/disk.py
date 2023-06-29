@@ -44,4 +44,5 @@ for drive in c.Win32_LogicalDisk ():
     # prints all the drives details including name, type and size
     # print(drive)
     if drive.DriveType == 2:
-        print(drive.Caption, drive.VolumeName, DRIVE_TYPES[drive.DriveType], drive.VolumeSerialNumber, drive.FileSystem)
+        pass
+    print(drive.Caption, drive.VolumeName, DRIVE_TYPES[drive.DriveType], drive.VolumeSerialNumber, drive.FileSystem)

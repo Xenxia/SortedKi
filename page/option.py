@@ -8,7 +8,7 @@ from Pylang import Lang
 from func.conf import ConfigTree
 from func.function import sendMessage
 
-class menu_option(Frame_up):
+class option(Frame_up):
 
     parameters_list: list
     manager_class: ManagerWidgets_up
@@ -46,7 +46,7 @@ class menu_option(Frame_up):
         self.button_import = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_import'), command=self.import_conf)
         self.button_import.gridPosSize(row=1, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("menu_edit_settings"))
+        self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_settings"))
         self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton")
@@ -73,7 +73,7 @@ class menu_option(Frame_up):
         self.combox_option_lang.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,0)).show()
 
         # Other
-        self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("menu_sort"))
+        self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("main"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
         self.button_about = Button_up(self, text=self.langs.t('UI.ABOUT.button_about'), command=lambda: manager_class.showWidget("about"))
