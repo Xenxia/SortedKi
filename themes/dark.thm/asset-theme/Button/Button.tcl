@@ -2,17 +2,18 @@
 set name ""
 
 # ttk::style layout TButton {
-#     Button.button -children {
-#         # Button.focus -children {
+#     Button.border -children {
+#         Button.focus -children {
 #             Button.padding -children {
-#                 Button.label -expend true
+#                 Button.label -justify center
 #             }
-#         # 
+#         }
 #     }
 # }
 
 # ttk::style layout TButton {
 #     Button.button -children {
+
 #         Button.padding -children {
 #             Button.label -side left -expand true -anchor center
 #         } 

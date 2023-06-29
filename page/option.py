@@ -51,7 +51,7 @@ class option(Frame_up):
         self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_settings"))
         self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton", )
+        self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton")
         self.button_delete.gridPosSize(row=3, column=0, sticky=(E, W, S, N), pady=(3,10)).show()
 
         # Warning

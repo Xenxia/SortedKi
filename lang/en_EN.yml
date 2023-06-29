@@ -23,7 +23,7 @@ UI:
     button_import: Import
     button_return: Return
     button_move_root: "! Move to root !"
-    button_delete_conf: "! Delete config\n file !"
+    button_delete_conf: "! Delete config file !"
     message_change_lang: "Restart the application to change the language"
 
   EDIT_MENU:
