@@ -136,7 +136,7 @@ window.resizable(0, 0)
 theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme("dark")
 
 # log.debug(theme.get_theme_use())
-log.debug(theme.get_info_element('TButton'))
+# log.debug(theme.get_info_element('TButton'))
 # exit()
 context = {
     "lib": [langage, conf, log],
