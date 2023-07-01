@@ -1,8 +1,14 @@
 from tkinter import END, W, E, N, S
 from typing import Any
-from tk_up.widgets import Frame_up
+from tk_up.widgets.frame import Frame_up, LabelFrame_up
+from tk_up.widgets.button import Button_up, Toggle_Button_up
+from tk_up.widgets.treeview import Treeview_up
+from tk_up.widgets.separator import Separator_up
+from tk_up.widgets.label import Label_up
+from tk_up.widgets.toplevel import Toplevel_up
+from tk_up.widgets.entry import Entry_up
 from tk_up.managerWidgets import ManagerWidgets_up
-from tk_up.widgets import SCROLL_Y, Button_up, Frame_up, Label_up, Toggle_Button_up, Treeview_up, Toplevel_up, Entry_up, LabelFrame_up, Separator_up
+from tk_up.widgets import SCROLL_Y
 from PyThreadUp import ThreadManager
 from Pylogger import Logger
 from Pylang import Lang

@@ -15,7 +15,7 @@ ttk::style theme create "${nameTheme}" -parent alt -settings {
 
         # Global Color
         array set colors {
-            -primary        "#00FF00"
+            -primary        "#00F700"
             -primaryVar     ""
             -secondary      ""
             -secondaryVar   ""

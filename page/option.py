@@ -1,7 +1,10 @@
 from tkinter import E, W, S, N, CENTER
 from typing import Any
 
-from tk_up.widgets import Frame_up, Button_up, LabelFrame_up, Label_up, OptionMenu_up
+from tk_up.widgets.frame import Frame_up, LabelFrame_up
+from tk_up.widgets.label import Label_up
+from tk_up.widgets.button import Button_up, Checkbutton_up
+from tk_up.widgets.optionmenu import OptionMenu_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from PyThreadUp import ThreadManager
 from Pylogger import Logger
@@ -34,6 +37,8 @@ class option(Frame_up):
 
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
+
+        self.log.debug(self.event_info(), "option_event")
         #command=lambda: Thread(target=sort).start()
 
         # Settings
@@ -63,6 +68,9 @@ class option(Frame_up):
         self.button_moovToRoot = Button_up(self.frame_function_warning, text=self.langs.t('UI.OPTION_MENU.button_move_root'), style="fgred.TButton")
         self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,10)).show()
 
+        self.button_c = Checkbutton_up(self, style="Switch.TCheckbutton")
+        self.button_c.placePosSize(350, 450, 80, 40, anchor="center").show()
+
         # Lang
         self.frame_lang = LabelFrame_up(self, text="lang")
         self.frame_lang.placePosSize(350, 300, 120, 51, anchor="center").show()
@@ -78,7 +86,7 @@ class option(Frame_up):
         self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("main"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
-        self.button_about = Button_up(self, text=self.langs.t('UI.ABOUT.button_about'), command=lambda: manager_class.showWidget("about"))
+        self.button_about = Button_up(self, text=(self.langs.t, ['UI.ABOUT.button_about']), command=lambda: manager_class.showWidget("about"))
         self.button_about.placePosSize(350, 577, 120, 24, anchor="center").show()
 
         self.label_error_option = Label_up(self, text="", wraplength=320, justify=CENTER, anchor="center")
@@ -106,8 +114,12 @@ class option(Frame_up):
             print('import')
 
     def fixLang(self, event):
-        self.config.CONFIG["lang"] = self.langs.getLocaleShort(self.combox_option_lang.get())
+        lc = self.langs.getLocaleShort(self.combox_option_lang.get())
+        self.config.CONFIG["lang"] = lc
         self.config.saveConfig()
+        self.langs.setLang(lc)
+        self.log.debug(f"lang : {self.langs.getSelectLang()}")
+        self.event_generate("<<TK_UP.Update>>")
         self.tm.start("lang")
 
     

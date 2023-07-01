@@ -1,7 +1,10 @@
 from typing import Any
 from PyThreadUp import ThreadManager
 from tkinter import E, W, S, N
-from tk_up.widgets import Frame_up, Button_up, Terminal_ScrolledText_up, Separator_up
+from tk_up.widgets.frame import Frame_up
+from tk_up.widgets.button import Button_up
+from tk_up.widgets.text import Terminal_ScrolledText_up
+from tk_up.widgets.separator import Separator_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from Pylogger import Logger
 from Pylang import Lang
@@ -47,9 +50,9 @@ class main(Frame_up):
         self.console1.placePosSize(0, 53, 700, 615).show()
 
     def disable(self):
-        button: Button_up = self.parameters_list[3]
+        button: Button_up = self.ctx["btn_option"]
         button.disable()
 
     def enable(self):
-        button: Button_up = self.parameters_list[3]
+        button: Button_up = self.ctx["btn_option"]
         button.enable()

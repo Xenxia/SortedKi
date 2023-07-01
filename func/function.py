@@ -1,5 +1,5 @@
 from time import sleep
-from tk_up.widgets import Label_up
+from tk_up.widgets.label import Label_up
 
 
 

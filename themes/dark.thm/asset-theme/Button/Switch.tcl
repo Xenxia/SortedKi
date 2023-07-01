@@ -12,11 +12,11 @@ ttk::style element create ${name}indicator image \
         active $I(off-basic) \
     ] -width 46 -sticky w
 
-ttk::style layout ${name}TCheckbutton {
-    ${name}button -children {
-        ${name}padding -children {
-            ${name}indicator -side left
-            ${name}label -side right -expand true
+ttk::style layout Switch.TCheckbutton {
+    Switch.button -children {
+        Switch.padding -children {
+            Switch.indicator -side left
+            Switch.label -side right -expand true
         }
     }
 }

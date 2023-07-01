@@ -1,6 +1,8 @@
 from typing import Any
 import webbrowser
-from tk_up.widgets import Frame_up, Label_up, Button_up
+from tk_up.widgets.frame import Frame_up
+from tk_up.widgets.button import Button_up
+from tk_up.widgets.label import Label_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from tkinter import E, W, S, N
 import datetime
