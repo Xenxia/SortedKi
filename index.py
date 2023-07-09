@@ -139,7 +139,7 @@ window.resizable(0, 0)
 theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme("dark")
 
 # log.debug(theme.get_theme_use())
-log.debug(theme.get_info_element('Switch.TCheckbutton'))
+# log.debug(theme.get_info_element('Switch.TCheckbutton'))
 # exit()
 context = {
     "lib": [langage, conf, log],
@@ -194,7 +194,7 @@ if last_version != "none" and last_version != VERSION:
 # button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_clear'], command=lambda: console1.clearTerminal())
 # button_clear.placePosSize(x=255, y=24, width=90, height=24)
 
-button_option = Button_up(master=footer, image=executionPath + '/img/option.png', command=lambda: main_frame.showWidget("option"), style="nobg.TButton")
+button_option = Button_up(master=footer, image=executionPath + '/img/option.png', size=(26,26), command=lambda: main_frame.showWidget("option"), style="nobg.TButton")
 button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").show()
 
 

@@ -23,7 +23,8 @@ set name ""
 ttk::style configure ${name}TButton \
     -anchor center \
     -background $colors(-other) \
-    -border $colors(-other)
+    -border $colors(-other) \
+    -focuscolor ""
 
 ttk::style map ${name}TButton \
     -background [list disabled $colors(-disabledbg) active $colors(-selectbg)] \

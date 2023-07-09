@@ -8,7 +8,7 @@ from tk_up.widgets.label import Label_up
 from tk_up.widgets.toplevel import Toplevel_up
 from tk_up.widgets.entry import Entry_up
 from tk_up.managerWidgets import ManagerWidgets_up
-from tk_up.widgets import SCROLL_Y
+from tk_up.widgets import SCROLL_ALL
 from PyThreadUp import ThreadManager
 from Pylogger import Logger
 from Pylang import Lang
@@ -16,7 +16,7 @@ from Pylang import Lang
 from func.conf import ConfigTree
 from func.function import sendMessage
 
-class edit_settings(Frame_up):
+class edit_rules(Frame_up):
 
     # DONT REMOVE THIS
     ctx: dict[str, Any]
@@ -37,15 +37,15 @@ class edit_settings(Frame_up):
         self.grid_propagate(False)
 
         self.frameButton = Frame_up(self)
-        self.frameButton.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
+        self.frameButton.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
 
         self.frameBox = Frame_up(self, width=700)
-        self.frameBox.gridPosSize(row=3, column=0, sticky=(E, W, S, N)).show()
+        self.frameBox.gridPosSize(row=4, column=0, sticky=(E, W, S, N)).show()
         # self.frameBox.propagate(False)
         
-        self.treeView = Treeview_up(self, scroll=SCROLL_Y, iid=True, child=True, show="tree headings", width=700, height=400)
+        self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
-        self.treeView.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
+        self.treeView.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
         self.treeView.setColumns(
             columns=[
                 self.langs.t('UI.EDIT_MENU.col_name_profil'),
@@ -65,33 +65,38 @@ class edit_settings(Frame_up):
             },
         ))
 
-        self.sep = Separator_up(self).gridPosSize(row=1, column=0, sticky=(E, W), pady=(2,2)).show()
+        self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
 
 
-        self.unselect_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_unselect'), width=15, command=self.unselect)
+        # self.unselect_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_unselect'), width=15, command=self.unselect)
+        # self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
+
+        self.unselect_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/selectNone.png", size=(36, 36), command=self.unselect, style="nobg.TButton")
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
-        self.move_up = Button_up(self.frameButton, text="⬆", command=self.treeView.moveUpSelectedElement, width=3)
+        self.move_up = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/up.png", size=(36, 36), command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
         self.move_up.gridPosSize(column=4, row=0).show().disable()
 
-        self.move_down = Button_up(self.frameButton, text="⬇", command=self.treeView.moveDownSelectedElement, width=3)
+        self.move_down = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/down.png", size=(36, 36), command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
         self.move_down.gridPosSize(column=3, row=0).show().disable()
 
-        self.remove = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_delete'), width=10, command=self.delete)
+        self.remove = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/delete.png", size=(36, 36), command=self.delete, style="nobg.TButton")
         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.edit_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_edit'), width=10, command=self.editMenu)
+        self.edit_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/edit.png", size=(36, 36), command=self.editMenu, style="nobg.TButton")
         self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        self.onOffRule_button = Toggle_Button_up(self.frameButton, width=12)
+        self.onOffRule_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
         self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
-        self.onOffRule_button.custom_toggle((
-                                        self.langs.t('UI.EDIT_MENU.button_onOff_rule', 1), 
-                                        self.langs.t('UI.EDIT_MENU.button_onOff_rule', 0)
-                                    ), ("fggreen.TButton", "fgred.TButton"))
+        self.onOffRule_button.custom_toggle(
+            image=(
+                (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
+                (self.ctx["exe_path"]+"/img/off.png", (36, 36))
+            )
+        )
         self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
 
-        add_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_add'), width=10, command=self.addMenu)
+        add_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/add.png", size=(36, 36), command=self.addMenu, style="nobg.TButton")
         add_button.gridPosSize(column=0, row=0).show()
 
         d1 = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU.label_not_sort'), anchor=W)
@@ -103,8 +108,13 @@ class edit_settings(Frame_up):
         u1 = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU.label_unsorted'), justify="right")
         u1.gridPosSize(row=1, column=0, padx=(5, 10)).show()
 
-        self.toggle_b = Toggle_Button_up(self.frameBox, width=3)
-        self.toggle_b.custom_toggle(("✔", "✖"), ("fggreen.TButton", "fgred.TButton"))
+        self.toggle_b = Toggle_Button_up(self.frameBox, style="nobg.TButton")
+        self.toggle_b.custom_toggle(
+            image=(
+                (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
+                (self.ctx["exe_path"]+"/img/off.png", (36, 36))
+            )
+        )
         self.toggle_b.gridPosSize(column=1, row=1, sticky=W).show()
 
         # self.back = Button_up(self.frameBox, text="back", width=10, command=lambda: self.manager_class.showWidget("menu_option"))

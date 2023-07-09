@@ -53,7 +53,7 @@ class option(Frame_up):
         self.button_import = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_import'), command=self.import_conf)
         self.button_import.gridPosSize(row=1, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
-        self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_settings"))
+        self.button_edit = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_rules"))
         self.button_edit.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         self.button_delete = Button_up(self.frame_config, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton")
@@ -67,9 +67,6 @@ class option(Frame_up):
 
         self.button_moovToRoot = Button_up(self.frame_function_warning, text=self.langs.t('UI.OPTION_MENU.button_move_root'), style="fgred.TButton")
         self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,10)).show()
-
-        self.button_c = Checkbutton_up(self, style="Switch.TCheckbutton")
-        self.button_c.placePosSize(350, 450, 80, 40, anchor="center").show()
 
         # Lang
         self.frame_lang = LabelFrame_up(self, text="lang")
@@ -86,7 +83,7 @@ class option(Frame_up):
         self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("main"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
-        self.button_about = Button_up(self, text=(self.langs.t, ['UI.ABOUT.button_about']), command=lambda: manager_class.showWidget("about"))
+        self.button_about = Button_up(self, text=self.langs.t('UI.ABOUT.button_about'), command=lambda: manager_class.showWidget("about"))
         self.button_about.placePosSize(350, 577, 120, 24, anchor="center").show()
 
         self.label_error_option = Label_up(self, text="", wraplength=320, justify=CENTER, anchor="center")

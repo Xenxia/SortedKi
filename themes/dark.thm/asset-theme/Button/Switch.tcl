@@ -2,14 +2,14 @@
 set name "Switch."
 
 ttk::style element create ${name}indicator image \
-    [list $I(off-basic) \
-        {selected disabled} $I(on-basic) \
-        disabled $I(off-basic) \
-        {pressed selected} $I(on-accent) \
-        {active selected} $I(on-accent) \
-        selected $I(on-accent) \
-        {pressed !selected} $I(off-basic) \
-        active $I(off-basic) \
+    [list $I(off) \
+        {selected disabled} $I(on) \
+        disabled $I(off) \
+        {pressed selected} $I(on) \
+        {active selected} $I(on) \
+        selected $I(on) \
+        {pressed !selected} $I(off) \
+        active $I(off) \
     ] -width 46 -sticky w
 
 ttk::style layout Switch.TCheckbutton {
