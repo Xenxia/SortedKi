@@ -5,7 +5,11 @@ from tk_up.widgets.frame import Frame_up
 from tk_up.widgets.button import Button_up
 from tk_up.widgets.text import Terminal_ScrolledText_up
 from tk_up.widgets.separator import Separator_up
+
+from tk_up.object.image import Wimage
+
 from tk_up.managerWidgets import ManagerWidgets_up
+
 from Pylogger import Logger
 from Pylang import Lang
 
@@ -29,11 +33,11 @@ class main(Frame_up):
         
         self.console1 = Terminal_ScrolledText_up(self, borderwidth=0)
 
-        self.button_tree = Button_up(self, text=langs.t('UI.MAIN_MENU.button_sort'), command=lambda: tm.start("sort"))
-        self.button_tree.placePosSize(350, 12, 86, 24, anchor="center").show()
+        self.button_tree = Button_up(self, image=Wimage(self.ctx["exe_path"]+"/img/start.png", (46, 46)), command=lambda: tm.start("sort"), style="nobg.TButton")
+        self.button_tree.placePosSize(350, 25, 48, 48, anchor="center").show()
 
-        self.button_clear = Button_up(self, text=langs.t('UI.MAIN_MENU.button_clear'), command=self.console1.clearTerminal)
-        self.button_clear.placePosSize(350, 38, 86, 24, anchor="center").show()
+        self.button_clear = Button_up(self, image=Wimage(self.ctx["exe_path"]+"/img/clear.png", (32, 32)), command=self.console1.clearTerminal, style="nobg.TButton")
+        self.button_clear.placePosSize(673, 70, 36, 36, anchor="center").show()
 
         self.sep = Separator_up(self).placePosSize(0, 52, 700, 0).show()
         self.sep2 = Separator_up(self).placePosSize(0, 669, 700, 0).show()

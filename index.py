@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 
 import os, pathlib, sys, ntpath, shutil, webbrowser, platform
+
+from tk_up import *
 from tkinter import *
 from ImportPyinstaller import Import_pyInst
-from PIL import Image, ImageTk
 
 from tk_up.widgets.tk import Tk_up
 from tk_up.widgets.frame import Frame_up
 from tk_up.widgets.label import Label_up
 from tk_up.widgets.button import Button_up
+
 from tk_up.managerThemes import ManagerThemes
 from tk_up.managerWidgets import ManagerWidgets_up
+
+from tk_up.object.image import Wimage
+
 from PyThreadUp import ThreadUP, ThreadManager
 from Pylogger import Logger, DEBUG, INFO
 from Pylang import Lang
@@ -194,7 +199,7 @@ if last_version != "none" and last_version != VERSION:
 # button_clear = Button_up(window, bg="#555555", fg="#00ca00", activebackground="#555555", text=langage.lang['UI']['MAIN_MENU']['button_clear'], command=lambda: console1.clearTerminal())
 # button_clear.placePosSize(x=255, y=24, width=90, height=24)
 
-button_option = Button_up(master=footer, image=executionPath + '/img/option.png', size=(26,26), command=lambda: main_frame.showWidget("option"), style="nobg.TButton")
+button_option = Button_up(master=footer, image=Wimage(executionPath + '/img/option.png', (26, 26)), command=lambda: main_frame.showWidget("option"), style="nobg.TButton")
 button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").show()
 
 

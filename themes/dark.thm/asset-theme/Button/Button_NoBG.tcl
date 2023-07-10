@@ -9,4 +9,4 @@ ttk::style configure ${name}TButton \
 ttk::style map ${name}TButton \
     -background [list disabled $colors(-background) active $colors(-background)] \
     -foreground [list disabled $colors(-foreground)] \
-    -relief [list {pressed !disabled} flat]
+    -relief [list {pressed !disabled} sunken]

@@ -1,5 +1,6 @@
 from tkinter import END, W, E, N, S
 from typing import Any
+
 from tk_up.widgets.frame import Frame_up, LabelFrame_up
 from tk_up.widgets.button import Button_up, Toggle_Button_up
 from tk_up.widgets.treeview import Treeview_up
@@ -9,9 +10,14 @@ from tk_up.widgets.toplevel import Toplevel_up
 from tk_up.widgets.entry import Entry_up
 from tk_up.managerWidgets import ManagerWidgets_up
 from tk_up.widgets import SCROLL_ALL
+
+from tk_up.object.image import Wimage
+
 from PyThreadUp import ThreadManager
 from Pylogger import Logger
 from Pylang import Lang
+
+from PIL import Image, ImageTk
 
 from func.conf import ConfigTree
 from func.function import sendMessage
@@ -31,6 +37,10 @@ class edit_rules(Frame_up):
         self.config: ConfigTree = self.ctx["lib"][1]
         self.log: Logger = self.ctx["lib"][2]
 
+        temp = Image.open(self.ctx["exe_path"]+"/img/addSub.png")
+        temp = temp.resize((36, 36), Image.LANCZOS)
+        self.addSubImage = ImageTk.PhotoImage(temp, size=(36, 36))
+
         # Use 'self' in your widget
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
@@ -43,6 +53,8 @@ class edit_rules(Frame_up):
         self.frameBox.gridPosSize(row=4, column=0, sticky=(E, W, S, N)).show()
         # self.frameBox.propagate(False)
         
+        self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
+
         self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
         self.treeView.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
@@ -57,7 +69,7 @@ class edit_rules(Frame_up):
         self.treeView.setTags((
             {
             "name": "Disable",
-            "fg": "#AA0000",
+            "fg": "#F70000",
             },
             {
             "name": "SysDisable",
@@ -65,26 +77,26 @@ class edit_rules(Frame_up):
             },
         ))
 
-        self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
+        self.add_button = Button_up(self.frameButton, command=self.addMenu, style="nobg.TButton", images=[
+            Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
+            Wimage(self.ctx["exe_path"]+"/img/addSub.png", (36, 36)),
+        ])
+        self.add_button.gridPosSize(column=0, row=0).show()
 
+        self.edit_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], command=self.editMenu, style="nobg.TButton")
+        self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        # self.unselect_button = Button_up(self.frameButton, text=self.langs.t('UI.EDIT_MENU.button_unselect'), width=15, command=self.unselect)
-        # self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
-
-        self.unselect_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/selectNone.png", size=(36, 36), command=self.unselect, style="nobg.TButton")
-        self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
-
-        self.move_up = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/up.png", size=(36, 36), command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
-        self.move_up.gridPosSize(column=4, row=0).show().disable()
-
-        self.move_down = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/down.png", size=(36, 36), command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
-        self.move_down.gridPosSize(column=3, row=0).show().disable()
-
-        self.remove = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/delete.png", size=(36, 36), command=self.delete, style="nobg.TButton")
+        self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.edit_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/edit.png", size=(36, 36), command=self.editMenu, style="nobg.TButton")
-        self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
+        self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
+        self.move_down.gridPosSize(column=3, row=0, padx=(20, 0)).show().disable()
+
+        self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
+        self.move_up.gridPosSize(column=4, row=0, padx=(0, 20)).show().disable()
+
+        self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
+        self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
         self.onOffRule_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
         self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
@@ -96,8 +108,6 @@ class edit_rules(Frame_up):
         )
         self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
 
-        add_button = Button_up(self.frameButton, image=self.ctx["exe_path"]+"/img/add.png", size=(36, 36), command=self.addMenu, style="nobg.TButton")
-        add_button.gridPosSize(column=0, row=0).show()
 
         d1 = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU.label_not_sort'), anchor=W)
         d1.gridPosSize(row=0, column=0, pady=(20, 10), padx=(5, 10)).show()
@@ -215,12 +225,13 @@ class edit_rules(Frame_up):
             self.move_down.disable()
             self.onOffRule_button.disable()
             self.treeView.tree.selection_remove(self.treeView.tree.selection()[0])
+            self.add_button.set_image("add")
         except:
             self.log.debug("Not select", "unselect")
 
 #Toplevel menu ------------------------------------------------------------------------
     def editMenu(self):
-
+        
         self.addEditWindow.title(self.langs.t('UI.EDIT_MENU.title_edit'))
 
         self.addOrEdit.config(text=self.langs.t('UI.EDIT_MENU.button_apply'))
@@ -255,7 +266,10 @@ class edit_rules(Frame_up):
             self.tm.start("noItemSelectError")
 
     def addMenu(self):
-        self.addEditWindow.title(self.langs.t('UI.EDIT_MENU.title_add'))
+        if self.treeView.isSelect():
+            self.addEditWindow.title("Add Sub Rule")
+        else:
+            self.addEditWindow.title(self.langs.t('UI.EDIT_MENU.title_add'))
 
         self.addOrEdit.config(text=self.langs.t('UI.EDIT_MENU.button_add'))
 
@@ -308,6 +322,7 @@ class edit_rules(Frame_up):
             self.move_up.enable()
             self.move_down.enable()
             self.onOffRule_button.enable()
+            self.add_button.set_image("addSub")
 
     def onOffRule(self):
         # print(self.treeView.getItemSelectedElemnt("tags"))
