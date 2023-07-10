@@ -243,7 +243,7 @@ class edit_rules(Frame_up):
         self.addOrEdit.config(command=self.edit)
 
         try:
-            selected = self.treeView.getItemSelectedElemnt()
+            selected = self.treeView.getItemSelectedElement()
             # values = self.treeView.tree.item(selected, 'values')
 
             # output to entry boxes
@@ -309,7 +309,7 @@ class edit_rules(Frame_up):
     def selected(self, event):
         if self.treeView.getSelectedElement():
 
-            tags = self.treeView.getItemSelectedElemnt("tags")
+            tags = self.treeView.getItemSelectedElement("tags")
             if tags == None:
                 self.onOffRule_button.set_status(True, True)
             elif tags[0] == "Disable":
@@ -325,12 +325,12 @@ class edit_rules(Frame_up):
             self.add_button.set_image("addSub")
 
     def onOffRule(self):
-        # print(self.treeView.getItemSelectedElemnt("tags"))
 
-        tags = self.treeView.getItemSelectedElemnt("tags")
-        if tags == None:
+        tags = self.treeView.getItemSelectedElement("tags")
+        self.log.debug(tags, "onOffRule")
+        if not "Disable" in tags:
             self.treeView.editSelectedElement(tags="Disable")
-        elif tags[0] == "Disable":
+        elif "Disable" in tags:
             self.treeView.editSelectedElement(tags="")
             # self.treeView.update()
 

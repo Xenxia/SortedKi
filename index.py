@@ -99,7 +99,7 @@ def moveToRoot():
 
             for file_path in pathlib.Path(path).rglob(rule):
                 file_name = os.path.basename(file_path)
-                if os.path.isfile(file_path):
+                if os.path.isfile(str(file_path)):
                     shutil.move(str(file_path), './'+str(file_name))
     log.info("Move to root", "MOOV-TO-ROOT")
 

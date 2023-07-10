@@ -2,13 +2,13 @@ LONG_LANG: "English"
 
 ERROR:
   create_config_file: Error during creation of sort configuration file.
-  permission_file: The process cannot access the file "{file}" because it is used by another process
+  permission_file: "{file} used by another process"
 
 OK:
-  sorted: "{file} move ➤ {path}"
-  sorted_double: "{file} rename ➤ {new_name} move ➤ {path}"
-  unsorted: "{file} move ➤ Unsorted"
-  sorted_double_unsorted: "{file} rename ➤ {new_name} move ➤ Unsorted"
+  sorted: "{file} move ❯ {path}"
+  sorted_double: "{file} rename ❯ {new_name} move ❯ {path}"
+  unsorted: "{file} move ❯ Unsorted"
+  sorted_double_unsorted: "{file} rename ❯ {new_name} move ❯ Unsorted"
 
 UI:
   MAIN_MENU:

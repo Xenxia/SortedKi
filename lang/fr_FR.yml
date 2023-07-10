@@ -2,13 +2,13 @@ LONG_LANG: "Français"
 
 ERROR:
   create_config_file: Erreur durant la création du fichier de configuration de trie.
-  permission_file: Le processus ne peut pas accéder au fichier "{file}" car il est utilisé par un autre processus.
+  permission_file: "{file} utilisé par un autre processus."
 
 OK:
-  sorted: le fichier "{file}" a été déplacé dans {path}.
-  sorted_double: le fichier "{file}" a été renommé "{new_name}" et déplacé dans {path}.
-  unsorted: le fichier "{file}" n'a pas été trié.
-  sorted_double_unsorted: Le fichier "{file}" a été renommé "{new_name}" et n'a pas été trié.
+  sorted: "{file} déplacé ❯ {path}"
+  sorted_double: "{file} renommé ❯ {new_name} déplacé ❯ {path}"
+  unsorted: "{file} déplacé ❯ #Unsorted"
+  sorted_double_unsorted: "{file} renommé ❯ {new_name} déplacé ❯ #Unsorted"
 
 UI:
   MAIN_MENU:

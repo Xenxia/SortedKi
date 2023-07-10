@@ -105,7 +105,7 @@ class Sorting:
                 if not os.path.exists(futurSortedPathFile):
 
                     try:
-                        if os.path.isfile(file_name):
+                        if os.path.isfile(str(file_name)):
 
                             with open(file_name, "a", encoding="utf8") as file:
                                 file.close()
@@ -114,7 +114,7 @@ class Sorting:
                             self.log.debug("OK", "sort")
                             sort = True
                         else:
-                            self.log.debug("Not file", "sort")
+                            self.log.debug(f"Not file {str(file_name)}", "sort")
                             break
 
                     # For permission related errors
@@ -129,7 +129,7 @@ class Sorting:
 
                 else:
                     try:
-                        if os.path.isfile(file_name):
+                        if os.path.isfile(str(file_name)):
                             self.log.debug(f"Duplicate {file_name}", "sort")
                             new = self.duplicate(str(file_name), f"{pPath}")
 
@@ -151,16 +151,16 @@ class Sorting:
                         err = [True, error]
 
             if sort and not duplica:
-                self.console.printLastLine("✔: ", self.langage.t('OK.sorted').format(file=str(file_name), path=fullPathConfig), color=["Green", None])
+                self.console.printLastLine("@ : ", self.langage.t('OK.sorted').format(file=str(file_name), path=fullPathConfig), color=["Green", None])
 
             if sort and duplica:
-                self.console.printLastLine("✔: ", self.langage.t('OK.sorted_double').format(file=str(file_name), new_name=new, path=fullPathConfig), color=["Blue", None])
+                self.console.printLastLine("@ : ", self.langage.t('OK.sorted_double').format(file=str(file_name), new_name=new, path=fullPathConfig), color=["Blue", None])
 
             if permission:
-                self.console.printLastLine("⚠: ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
+                self.console.printLastLine("@ : ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
 
             if err[0]:
-                self.console.printLastLine("❌: ", str(err[1]), color=["Red", None])
+                self.console.printLastLine("@ : ", str(err[1]), color=["Red", None])
                 self.log.error("❌: " + str(err[1]))
 
     def unsorted(self, dontSortFileRule: list):
@@ -174,21 +174,21 @@ class Sorting:
 
                 try:
                     os.rename(str(file_name), f"{self.pathDirExe}/#Unsorted/{str(file_name)}")
-                    self.console.printLastLine("✔: ", self.langage.t('OK.unsorted').format(file=str(file_name)), color=["Purple", None])
+                    self.console.printLastLine("@ : ", self.langage.t('OK.unsorted').format(file=str(file_name)), color=["Purple", None])
 
                 # For permission related errors
                 except PermissionError:
-                    self.console.printLastLine("⚠: ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
+                    self.console.printLastLine("@ : ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
 
                 # For File Exists errors
                 except FileExistsError:
                     new = self.duplicate(str(file_name), f"{self.pathDirExe}/#Unsorted")
                     shutil.move(src = str(file_name), dst = f"{self.pathDirExe}/#Unsorted/{new}")
-                    self.console.printLastLine("✔: ", self.langage.t('OK.sorted_double_unsorted').format(file=str(file_name), new_name=new), color=["Purple2", None])
+                    self.console.printLastLine("@ : ", self.langage.t('OK.sorted_double_unsorted').format(file=str(file_name), new_name=new), color=["Purple2", None])
 
                 # For other errors
                 except OSError as error:
-                    self.console.printLastLine("❌: ", str(error), color=["Red", None])
+                    self.console.printLastLine("@ : ", str(error), color=["Red", None])
                     self.log.error("❌: " + str(error))
 
     def __dontSortFiles(self) -> list:

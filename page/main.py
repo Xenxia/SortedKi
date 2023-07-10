@@ -36,8 +36,8 @@ class main(Frame_up):
         self.button_tree = Button_up(self, image=Wimage(self.ctx["exe_path"]+"/img/start.png", (46, 46)), command=lambda: tm.start("sort"), style="nobg.TButton")
         self.button_tree.placePosSize(350, 25, 48, 48, anchor="center").show()
 
-        self.button_clear = Button_up(self, image=Wimage(self.ctx["exe_path"]+"/img/clear.png", (32, 32)), command=self.console1.clearTerminal, style="nobg.TButton")
-        self.button_clear.placePosSize(673, 70, 36, 36, anchor="center").show()
+        self.button_clear = Button_up(self, image=Wimage(self.ctx["exe_path"]+"/img/clear.png", (20, 20)), command=self.console1.clearTerminal, style="nobg.TButton")
+        self.button_clear.placePosSize(690, 43, 24, 24, anchor="center").show()
 
         self.sep = Separator_up(self).placePosSize(0, 52, 700, 0).show()
         self.sep2 = Separator_up(self).placePosSize(0, 669, 700, 0).show()

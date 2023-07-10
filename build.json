@@ -2,7 +2,7 @@
     "name_app": "SortedKi",
     "index": "index.py",
     "icon": "img/icon.ico",
-    "onefile": false,
+    "onefile": true,
     "clean": false,
 
     "compile_dir": [
@@ -28,6 +28,8 @@
         "tkinter",
         "requests",
         "webbrowser",
-        "tk_up.widgets"
+        "tk_up.widgets.treeview",
+        "tk_up.widgets.toplevel",
+        "tk_up.widgets.entry"
     ]
 }
