@@ -30,7 +30,6 @@ class Sorting:
         self.console = mSort.console1
         self.langage = lang
 
-
     def start(self):
 
         dontSortFileRule = self.__dontSortFiles()

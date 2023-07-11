@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 from func.conf import ConfigTree
 from func.function import sendMessage
 
-class edit_rules(Frame_up):
+class rules(Frame_up):
 
     # DONT REMOVE THIS
     ctx: dict[str, Any]
@@ -90,10 +90,10 @@ class edit_rules(Frame_up):
         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
         self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
-        self.move_down.gridPosSize(column=3, row=0, padx=(20, 0)).show().disable()
+        self.move_down.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
 
         self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
-        self.move_up.gridPosSize(column=4, row=0, padx=(0, 20)).show().disable()
+        self.move_up.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
 
         self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()

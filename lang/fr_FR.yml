@@ -15,7 +15,9 @@ UI:
     lang: Langue
   
   OPTION_MENU:
-    frame_config: Configuration
+    settings: "- Paramètres -"
+    frame_rules: Règles
+    frame_source: Source
     button_edit: Editer
     button_export: Exporter
     button_import: Importer

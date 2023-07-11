@@ -67,7 +67,7 @@ class ConfigTree():
             },
         },
         "version_config_file": "2.0",
-        "search_folder": [],
+        "source": [],
         "unsorted": False,
         "doNotSort": [],
         "lang": None
