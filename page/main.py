@@ -43,12 +43,27 @@ class main(Frame_up):
         self.sep2 = Separator_up(self).placePosSize(0, 669, 700, 0).show()
 
         colorConsole = {
-            "Green": ["", "#00ff00"],
-            "Blue": ["", "#26abff"],
-            "Orange": ["", "#ff7f00"],
-            "Red": ["", "#ff0000"],
-            "Purple": ["", "#ff0aff"],
-            "Purple2": ["", "#743DFF"]
+            "Green": {
+                "background": "",
+                "foreground": "#00ff00"},
+            "Blue": {
+                "background": "",
+                "foreground": "#26abff"},
+            "Orange": {
+                "background": "",
+                "foreground": "#ff7f00"},
+            "Red": {
+                "background": "",
+                "foreground": "#ff0000"},
+            "Purple": {
+                "background": "",
+                "foreground": "#ff0aff"},
+            "Purple2": {
+                "background": "",
+                "foreground": "#743DFF"},
+            "Bold": {
+                "font" : ("Consolas", 11, "bold")
+            }
         }
         self.console1.configTag(colorConsole)
         self.console1.placePosSize(0, 53, 700, 615).show()

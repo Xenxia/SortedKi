@@ -38,7 +38,7 @@ class option(Frame_up):
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
         self.gridPosSize(row=0, column=0, sticky=(E, W, S, N))
 
-        self.log.debug(self.event_info(), "option_event")
+        # self.log.debug(self.event_info(), "option_event")
         #command=lambda: Thread(target=sort).start()
 
         # Settings
@@ -61,16 +61,19 @@ class option(Frame_up):
 
         # Warning
         self.frame_function_warning = LabelFrame_up(self, text="Warning")
-        self.frame_function_warning.placePosSize(350, 220, 120, 70, anchor="center").show()
+        self.frame_function_warning.placePosSize(350, 245, 120, 120, anchor="center").show()
         self.frame_function_warning.columnconfigure(0, weight=1)
         self.frame_function_warning.rowconfigure(0, weight=1)
+        self.frame_function_warning.rowconfigure(1, weight=1)
 
-        self.button_moovToRoot = Button_up(self.frame_function_warning, text=self.langs.t('UI.OPTION_MENU.button_move_root'), style="fgred.TButton")
-        self.button_moovToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,10)).show()
+        self.button_sortedToRoot = Button_up(self.frame_function_warning, text=self.langs.t('UI.OPTION_MENU.button_sorted_root'), style="fgred.TButton")
+        self.button_sortedToRoot.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,0)).show()
+        self.button_unsortedToRoot = Button_up(self.frame_function_warning, text=self.langs.t('UI.OPTION_MENU.button_unsorted_root'), style="fgred.TButton")
+        self.button_unsortedToRoot.gridPosSize(row=1, column=0, sticky=(E, W, S, N), pady=(5,10)).show()
 
         # Lang
         self.frame_lang = LabelFrame_up(self, text="lang")
-        self.frame_lang.placePosSize(350, 300, 120, 51, anchor="center").show()
+        self.frame_lang.placePosSize(350, 340, 120, 51, anchor="center").show()
         self.frame_lang.columnconfigure(0, weight=1)
         # self.frame_lang.rowconfigure(3, weight=1)
 
@@ -115,7 +118,7 @@ class option(Frame_up):
         self.config.CONFIG["lang"] = lc
         self.config.saveConfig()
         self.langs.setLang(lc)
-        self.log.debug(f"lang : {self.langs.getSelectLang()}")
+        self.log.debug(f"lang : {self.langs.defaultLang}")
         self.event_generate("<<TK_UP.Update>>")
         self.tm.start("lang")
 

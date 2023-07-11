@@ -11,6 +11,7 @@ from func.conf import ConfigTree
 from page.main import main
 
 NOT_SORT_LIST = ["config.yml", "desktop.ini"]
+NAME_FOLDER_UNSORTED = "#_"
 
 class Sorting:
 
@@ -65,9 +66,9 @@ class Sorting:
                 self.sort(rule, dontSortFileRule, fullPathConfig, self.parentPath, pathStatic, disable)
 
         if self.conf.CONFIG['unsorted'] == True :
-            if not os.path.exists(f"{self.pathDirExe}/#Unsorted"):
+            if not os.path.exists(f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}"):
                 self.log.debug("Create Unsorted Dir", "Sorting-start")
-                os.mkdir(f"{self.pathDirExe}/#Unsorted")
+                os.mkdir(f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}")
 
             self.unsorted(dontSortFileRule)
 
@@ -151,13 +152,13 @@ class Sorting:
                         err = [True, error]
 
             if sort and not duplica:
-                self.console.printLastLine("@ : ", self.langage.t('OK.sorted').format(file=str(file_name), path=fullPathConfig), color=["Green", None])
+                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Green", "Bold", None, "Bold"])
 
             if sort and duplica:
-                self.console.printLastLine("@ : ", self.langage.t('OK.sorted_double').format(file=str(file_name), new_name=new, path=fullPathConfig), color=["Blue", None])
+                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Blue", "Bold", None, "Bold", None, "Bold"])
 
             if permission:
-                self.console.printLastLine("@ : ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
+                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
 
             if err[0]:
                 self.console.printLastLine("@ : ", str(err[1]), color=["Red", None])
@@ -173,18 +174,18 @@ class Sorting:
             if str(file_name) not in dontSortFileRule and str(file_name) not in NOT_SORT_LIST and str(file_name) not in self.checkedFile and str(file_name) != self.nameAppExe:
 
                 try:
-                    os.rename(str(file_name), f"{self.pathDirExe}/#Unsorted/{str(file_name)}")
-                    self.console.printLastLine("@ : ", self.langage.t('OK.unsorted').format(file=str(file_name)), color=["Purple", None])
+                    os.rename(str(file_name), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(file_name)}")
+                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple", "Bold", None, "Bold"])
 
                 # For permission related errors
                 except PermissionError:
-                    self.console.printLastLine("@ : ", self.langage.t('ERROR.permission_file').format(file=str(file_name)), color=["Orange", None])
+                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
 
                 # For File Exists errors
                 except FileExistsError:
-                    new = self.duplicate(str(file_name), f"{self.pathDirExe}/#Unsorted")
-                    shutil.move(src = str(file_name), dst = f"{self.pathDirExe}/#Unsorted/{new}")
-                    self.console.printLastLine("@ : ", self.langage.t('OK.sorted_double_unsorted').format(file=str(file_name), new_name=new), color=["Purple2", None])
+                    new = self.duplicate(str(file_name), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}")
+                    shutil.move(src = str(file_name), dst = f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{new}")
+                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple2", "Bold", None, "Bold", None, "Bold"])
 
                 # For other errors
                 except OSError as error:

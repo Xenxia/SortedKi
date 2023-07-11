@@ -134,14 +134,15 @@ class edit_rules(Frame_up):
         self.frame_return = LabelFrame_up(self, text="-")
         self.frame_return.placePosSize(350, 570, 120, 80, anchor="center").show()
         self.frame_return.columnconfigure(0, weight=1)
-        self.frame_return.rowconfigure(2, weight=1)
-        self.frame_return.grid_propagate(False)
+        # self.frame_return.rowconfigure(1, weight=1)
+        # self.frame_return.rowconfigure(2, weight=1)
+        # self.frame_return.grid_propagate(True)
 
         self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return_save'), command=self.saveDataInTree)
-        self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W, S, N), pady=(3,0)).show()
+        self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W), pady=(3,0), ipady=2).show()
 
         self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("option"))
-        self.button_return.gridPosSize(column=0, row=2, sticky=(E, W, N), pady=(3,0)).show()
+        self.button_return.gridPosSize(column=0, row=2, sticky=(E, W), pady=(3,0), ipady=2).show()
 
         self.label_error_edit = Label_up(self.frameBox, text="")
         self.label_error_edit.gridPosSize(column=0, row=3, padx=(5, 0), pady=(50, 0)).show()
@@ -227,7 +228,7 @@ class edit_rules(Frame_up):
             self.treeView.tree.selection_remove(self.treeView.tree.selection()[0])
             self.add_button.set_image("add")
         except:
-            self.log.debug("Not select", "unselect")
+            self.log.debug("No Item selected", "edit_rules.unselect")
 
 #Toplevel menu ------------------------------------------------------------------------
     def editMenu(self):
@@ -310,9 +311,9 @@ class edit_rules(Frame_up):
         if self.treeView.getSelectedElement():
 
             tags = self.treeView.getItemSelectedElement("tags")
-            if tags == None:
+            if not "Disable" in tags:
                 self.onOffRule_button.set_status(True, True)
-            elif tags[0] == "Disable":
+            elif "Disable" in tags:
                 self.onOffRule_button.set_status(False, True)
 
 

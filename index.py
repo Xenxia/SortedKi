@@ -35,7 +35,7 @@ importPyInst.add_path(folder_path='page')
 
 from update import Update
 from conf import ConfigTree
-from sort import Sorting
+from sort import Sorting, NAME_FOLDER_UNSORTED
 
 executionPath = importPyInst.get_execute_path()
 
@@ -92,7 +92,7 @@ tm = ThreadManager()
 def openWeb():
     webbrowser.open(f'https://github.com/Xenxia/{APP_NAME}/releases/latest')
 
-def moveToRoot():
+def sortedToRoot():
     for name_profile in conf.CONFIG['config_sort']:
         for rule in ["*.*", "*"]:
             path = conf.CONFIG['config_sort'][name_profile]['fullPath']
@@ -101,7 +101,15 @@ def moveToRoot():
                 file_name = os.path.basename(file_path)
                 if os.path.isfile(str(file_path)):
                     shutil.move(str(file_path), './'+str(file_name))
-    log.info("Move to root", "MOOV-TO-ROOT")
+    log.info("Sorted to root", "SORTED-TO-ROOT")
+
+def unsortedToRoot():
+    for rule in ["*.*", "*"]:
+        for file_path in pathlib.Path(f"./{NAME_FOLDER_UNSORTED}").rglob(rule):
+            file_name = os.path.basename(file_path)
+            if os.path.isfile(str(file_path)):
+                shutil.move(str(file_path), './'+str(file_name))
+    log.info("Unsorted to root", "UNSORTED-TO-ROOT")
 
 def notDev():
     main_menu_w.console1.printLastLine("This feature is not developed", color=["Purple"])
@@ -162,7 +170,8 @@ main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 main_menu_w: main = main_frame.getClassWidget("main")
 # main_menu_w.button_clear.configure(command=sortMa)
 menu_option_w: option = main_frame.getClassWidget("option")
-menu_option_w.button_moovToRoot.configure(command=moveToRoot)
+menu_option_w.button_sortedToRoot.configure(command=sortedToRoot)
+menu_option_w.button_unsortedToRoot.configure(command=unsortedToRoot)
 
 footer = Frame_up(master=window, width=700, height=30)
 footer.propagate(False)
@@ -204,7 +213,7 @@ button_option.placePosSize(x=16, y=16, width=32, height=32, anchor="center").sho
 
 
 log.debug(str(main_frame.addInContextInOneWidget("main", addCtx=("btn_option", button_option))), "addInCtx")
-log.debug(str(window.event_info()), "event")
+# log.debug(str(window.event_info()), "event")
 
 # mainUi()
 window.update()

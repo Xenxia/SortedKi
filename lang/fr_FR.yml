@@ -4,11 +4,9 @@ ERROR:
   create_config_file: Erreur durant la création du fichier de configuration de trie.
   permission_file: "{file} utilisé par un autre processus."
 
-OK:
-  sorted: "{file} déplacé ❯ {path}"
-  sorted_double: "{file} renommé ❯ {new_name} déplacé ❯ {path}"
-  unsorted: "{file} déplacé ❯ #Unsorted"
-  sorted_double_unsorted: "{file} renommé ❯ {new_name} déplacé ❯ #Unsorted"
+TERM:
+  move: "déplacé ❯"
+  rename: "renommé ❯"
 
 UI:
   MAIN_MENU:
@@ -22,8 +20,9 @@ UI:
     button_export: Exporter
     button_import: Importer
     button_return: Retour
-    button_move_root: "! Déplacer à\n la racine !"
-    button_delete_conf: "! Supprimer la\n configuration !"
+    button_sorted_root: "Déplacer triées vers racine"
+    button_unsorted_root: "Déplacer non triées vers racine"
+    button_delete_conf: "Supprimer la configuration"
     message_change_lang: "Redémarrer l'application pour changer de langue"
 
   EDIT_MENU:

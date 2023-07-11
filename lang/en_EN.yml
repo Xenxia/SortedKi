@@ -2,13 +2,11 @@ LONG_LANG: "English"
 
 ERROR:
   create_config_file: Error during creation of sort configuration file.
-  permission_file: "{file} used by another process"
+  permission_file: "used by another process"
 
-OK:
-  sorted: "{file} move ❯ {path}"
-  sorted_double: "{file} rename ❯ {new_name} move ❯ {path}"
-  unsorted: "{file} move ❯ Unsorted"
-  sorted_double_unsorted: "{file} rename ❯ {new_name} move ❯ Unsorted"
+TERM:
+  move: "move ❯"
+  rename: "rename ❯"
 
 UI:
   MAIN_MENU:
@@ -22,8 +20,9 @@ UI:
     button_export: Export
     button_import: Import
     button_return: Return
-    button_move_root: "! Move to root !"
-    button_delete_conf: "! Delete config file !"
+    button_sorted_root: "Move sorted to root"
+    button_unsorted_root: "Move unsoted to root"
+    button_delete_conf: "Delete config file"
     message_change_lang: "Restart the application to change the language"
 
   EDIT_MENU:
