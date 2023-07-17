@@ -57,7 +57,7 @@ class option(Frame_up):
         self.frame_rules.columnconfigure(0, weight=1)
         self.frame_rules.rowconfigure(3, weight=1)
 
-        self.button_edit_rules = Button_up(self.frame_rules, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("edit_rules"))
+        self.button_edit_rules = Button_up(self.frame_rules, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("rules"))
         self.button_edit_rules.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         #Source
@@ -77,7 +77,7 @@ class option(Frame_up):
         self.button_import = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_import'), command=self.import_conf)
         self.button_import.placePosSize(350, 105, 120, 24, anchor="center").show()
 
-        self.button_delete = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), style="fgred.TButton")
+        self.button_delete = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), command=self.delete_conf, style="fgred.TButton")
         self.button_delete.placePosSize(350, 148, 120, 48, anchor="center").show()
 
         self.sep = Separator_up(self).placePosSize(350, 187, 500, 0, anchor=CENTER).show()
@@ -117,6 +117,7 @@ class option(Frame_up):
 
         self.tm.thread("confExport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Exporter"))
         self.tm.thread("confImport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Importer"))
+        self.tm.thread("confDelete", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Delete config", 3))
         self.tm.thread("lang", target=lambda: sendMessage(self.label_error_option, "#00ca00", self.langs.t('UI.OPTION_MENU.message_change_lang'), 3))
 
     def disable(self):
@@ -145,4 +146,8 @@ class option(Frame_up):
         self.event_generate("<<TK_UP.Update>>")
         self.tm.start("lang")
 
+    def delete_conf(self):
+
+        self.config.delete()
+        self.tm.start("confDelete")
     

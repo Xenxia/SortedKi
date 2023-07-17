@@ -1,0 +1,56 @@
+{
+    "LONG_LANG": "Français",
+    "ERROR": {
+      "create_config_file": "Erreur durant la création du fichier de configuration de trie.",
+      "permission_file": "{file} utilisé par un autre processus."
+    },
+    "TERM": {
+      "move": "déplacé ❯",
+      "rename": "renommé ❯"
+    },
+    "UI": {
+      "MAIN_MENU": {
+        "button_sort": "Trié",
+        "button_clear": "Effacer log",
+        "lang": "Langue"
+      },
+      "OPTION_MENU": {
+        "settings": "- Paramètres -",
+        "frame_rules": "Règles",
+        "frame_source": "Source",
+        "button_edit": "Editer",
+        "button_export": "Exporter",
+        "button_import": "Importer",
+        "button_return": "Retour",
+        "button_sorted_root": "Déplacer triées vers racine",
+        "button_unsorted_root": "Déplacer non triées vers racine",
+        "button_delete_conf": "Supprimer la configuration",
+        "message_change_lang": "Redémarrer l'application pour changer de langue"
+      },
+      "EDIT_MENU": {
+        "title_edit": "Editer la règle",
+        "title_add": "Ajouter une règle",
+        "col_name_profil": "Nom du profile",
+        "col_folder": "Nom du dossier",
+        "col_extention": "Règle",
+        "button_add": "Ajouter",
+        "button_edit": "Editer",
+        "button_apply": "Appliquer",
+        "button_cancel": "Annuler",
+        "button_delete": "Suprimmer",
+        "button_unselect": "Déselectionner",
+        "button_onOff_rule": [
+          "Désactiver",
+          "Activé"
+        ],
+        "button_return_save": "Sauvegarder",
+        "button_return": "Retour",
+        "label_not_sort": "Ne pas trié",
+        "label_unsorted": "Non trié"
+      },
+      "ABOUT": {
+        "button_return": "Retour",
+        "button_about": "A propos"
+      }
+    }
+}

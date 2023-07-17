@@ -1,0 +1,56 @@
+{
+    "LONG_LANG": "English",
+    "ERROR": {
+      "create_config_file": "Error during creation of sort configuration file.",
+      "permission_file": "used by another process"
+    },
+    "TERM": {
+      "move": "move ❯",
+      "rename": "rename ❯"
+    },
+    "UI": {
+      "MAIN_MENU": {
+        "button_sort": "Sorted",
+        "button_clear": "Clear log",
+        "lang": "language"
+      },
+      "OPTION_MENU": {
+        "settings": "- Settings -",
+        "frame_rules": "Rules",
+        "frame_source": "Source",
+        "button_edit": "Edit",
+        "button_export": "Export",
+        "button_import": "Import",
+        "button_return": "Return",
+        "button_sorted_root": "Move sorted to root",
+        "button_unsorted_root": "Move unsoted to root",
+        "button_delete_conf": "Delete config file",
+        "message_change_lang": "Restart the application to change the language"
+      },
+      "EDIT_MENU": {
+        "title_edit": "Edit rule",
+        "title_add": "Add rule",
+        "col_name_profil": "Profile name",
+        "col_folder": "Folder Name",
+        "col_extention": "Rule",
+        "button_add": "Add",
+        "button_edit": "Edit",
+        "button_apply": "Apply",
+        "button_cancel": "Cancel",
+        "button_delete": "Delete",
+        "button_unselect": "Deselect",
+        "button_onOff_rule": [
+          "Disable",
+          "Enable"
+        ],
+        "button_return_save": "Save",
+        "button_return": "Return",
+        "label_not_sort": "Do not sort",
+        "label_unsorted": "Unsorted"
+      },
+      "ABOUT": {
+        "button_return": "Return",
+        "button_about": "About"
+      }
+    }
+}

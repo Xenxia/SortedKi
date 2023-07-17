@@ -1,7 +1,6 @@
-import os, stat, shutil, platform
+import os, stat, shutil, platform, json
 from tkinter import filedialog
 from typing import Any, TypedDict
-from ruamel.yaml import YAML
 from Pylogger import Logger
 
 PLATFORM_SYS = platform.system()
@@ -12,7 +11,7 @@ if PLATFORM_SYS == "Windows":
 class ConfigTree():
     log: Logger
     CONFIG: TypedDict
-    CONFIG_FILE_NAME = "config.yml"
+    CONFIG_FILE_NAME = "config.json"
     __HIDE_FILE: int = stat.FILE_ATTRIBUTE_HIDDEN+stat.FILE_ATTRIBUTE_SYSTEM
     __SHOW_FILE: int = stat.FILE_ATTRIBUTE_NORMAL
     __DEFAULT_CONFIG = {
@@ -83,7 +82,7 @@ class ConfigTree():
             self.path_config = f"{path_config}/{self.CONFIG_FILE_NAME}"
 
         if not os.path.exists(self.path_config):
-            self.write_yaml(self.path_config, self.__DEFAULT_CONFIG)
+            self.write_conf(self.path_config, self.__DEFAULT_CONFIG)
 
             if PLATFORM_SYS == "Windows":
                 windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
@@ -94,12 +93,12 @@ class ConfigTree():
 
     def loadConfig(self) -> None:
         if os.path.exists(self.path_config):
-            self.CONFIG = self.read_yaml(self.path_config)
+            self.CONFIG = self.read_conf(self.path_config)
             self.log.info("Load config")
 
     def saveConfig(self) -> None:
         if os.path.exists(self.path_config):
-            self.write_yaml(self.path_config, self.CONFIG)
+            self.write_conf(self.path_config, self.CONFIG)
             self.log.info("Save config")
 
 
@@ -109,13 +108,13 @@ class ConfigTree():
         self.log.info("Reload config")
 
     def exportConfig(self) -> None:
-        pathfile = filedialog.asksaveasfilename(defaultextension=".configTree.yml" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configTree.yml")])
+        pathfile = filedialog.asksaveasfilename(defaultextension=".configKi.json" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configKi.json")])
         if pathfile != '':
             shutil.copy(src=self.path_config, dst=pathfile)
             self.log.info("Exporting config")
 
     def importConfig(self) -> None:
-        pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configTree.yml")])
+        pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configKi.json")])
         if pathfile != '':
             if os.path.exists(self.path_config):
                 os.remove(self.path_config)
@@ -127,25 +126,22 @@ class ConfigTree():
             self.reloadConfig()
             self.log.debug("Importing config")
 
-    def write_yaml(self, name_file: str, content: Any) -> None:
-        yml = YAML()
-        yml.default_flow_style = None
-        yml.width = 4096
-        yml.indent(mapping=4, sequence=0, offset=0)
+    def write_conf(self, name_file: str, content: Any) -> None:
+        
 
         if PLATFORM_SYS == "Windows":
             windll.kernel32.SetFileAttributesW(self.path_config, self.__SHOW_FILE)
 
         with open(name_file, 'w') as file:
-            yml.dump(content, file)
+            json.dump(content, file, indent=4, )
 
         if PLATFORM_SYS == "Windows":
             windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
         
-    def read_yaml(self, name_file: str) -> TypedDict:
+    def read_conf(self, name_file: str) -> TypedDict:
 
         with open(name_file, 'r', encoding='utf8') as file:
-            classique_dict: TypedDict = YAML(typ="safe", pure=True).load(file)
+            classique_dict: TypedDict = json.load(file)
 
         return classique_dict
 
@@ -164,6 +160,9 @@ class ConfigTree():
 
         if path[1] == ":" and PLATFORM_SYS != "Windows":
             return False
+        
+    def delete(self):
+        os.remove(self.path_config)
 
 
 

@@ -44,36 +44,36 @@ class source(Frame_up):
         self.l.addElement(values=test[0])
         self.l.setColumns(("Source",))
 
-        self.add_button = Button_up(self.frameButton, command=self.addMenu, style="nobg.TButton", images=[
-            Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
-            Wimage(self.ctx["exe_path"]+"/img/addSub.png", (36, 36)),
-        ])
-        self.add_button.gridPosSize(column=0, row=0).show()
+        # self.add_button = Button_up(self.frameButton, command=self.addMenu, style="nobg.TButton", images=[
+        #     Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
+        #     Wimage(self.ctx["exe_path"]+"/img/addSub.png", (36, 36)),
+        # ])
+        # self.add_button.gridPosSize(column=0, row=0).show()
 
-        self.edit_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], command=self.editMenu, style="nobg.TButton")
-        self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
+        # self.edit_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], command=self.editMenu, style="nobg.TButton")
+        # self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
-        self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
+        # self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
+        # self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
-        self.move_down.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
+        # self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.treeView.moveDownSelectedElement, style="nobg.TButton")
+        # self.move_down.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
 
-        self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
-        self.move_up.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
+        # self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.treeView.moveUpSelectedElement, style="nobg.TButton")
+        # self.move_up.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
 
-        self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
-        self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
+        # self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
+        # self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
-        self.onOffRule_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
-        self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
-        self.onOffRule_button.custom_toggle(
-            image=(
-                (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
-                (self.ctx["exe_path"]+"/img/off.png", (36, 36))
-            )
-        )
-        self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
+        # self.onOffRule_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
+        # self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
+        # self.onOffRule_button.custom_toggle(
+        #     image=(
+        #         (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
+        #         (self.ctx["exe_path"]+"/img/off.png", (36, 36))
+        #     )
+        # )
+        # self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
 
     def showSelected(self, e):
         self.log.debug(self.l.getSelectedElement(), "SOURCE")
