@@ -124,9 +124,9 @@ class source(Frame_up):
         pass
 
     # this function is call if you show widget
-    def enable(self) -> None:
+    def enable(self):
+        self.grid_propagate(False)
         self.addDataToList()
-        pass
     
     # this function is call if <<TK_UP.Update>> event is call
     def __update(self, event) -> None:

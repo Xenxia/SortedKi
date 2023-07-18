@@ -17,7 +17,7 @@ from tk_up.managerWidgets import ManagerWidgets_up
 from tk_up.object.image import Wimage
 
 from PyThreadUp import ThreadUP, ThreadManager
-from Pylogger import Logger, DEBUG, INFO
+from Pylogger import Logger, DEBUG, INFO, Level_s, Context_s, Stack_s
 from Pylang import Lang
 
 #Page
@@ -50,12 +50,12 @@ except:
     argFile = ""
 
 log = Logger(
-    format="{time} | {levelname} : {context}{msg}",
+    format="{time} | {levelname} : {stack}{msg}",
     levellog=DEBUG if argDebug == "debug" else INFO,
     file_path="./debug.log" if argFile == "file" else None
 )
 
-log.customize(level=("[", "]"), context=("{ ", " } "))
+log.customize(level=Level_s("[", "]"), context=Context_s("{ ", " } "), stack=Stack_s("( ", " ) ", 5, "/", False))
 
 if importPyInst.is_compiled:
     pathAppExe = os.path.realpath(sys.executable)
