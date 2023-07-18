@@ -65,8 +65,13 @@ class ConfigTree():
                 "pathStatic": False,
             },
         },
+        "source": [
+            {
+                "path": ".", 
+                "disable": False
+            }
+        ],
         "version_config_file": "2.0",
-        "source": [],
         "unsorted": False,
         "doNotSort": [],
         "lang": None
