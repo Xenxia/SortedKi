@@ -9,7 +9,7 @@ from tk_up.widgets.label import Label_up
 from tk_up.widgets.toplevel import Toplevel_up
 from tk_up.widgets.entry import Entry_up
 from tk_up.managerWidgets import ManagerWidgets_up
-from tk_up.widgets import SCROLL_ALL
+from tk_up.widgets import SCROLL_Y, SCROLL_ALL
 
 from tk_up.object.image import Wimage
 
@@ -55,7 +55,7 @@ class rules(Frame_up):
         
         self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
 
-        self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", width=700, height=400)
+        self.treeView = Treeview_up(self, scroll=SCROLL_ALL, iid=True, child=True, show="tree headings", editRow=True, width=700, height=400)
         self.treeView.bind("<ButtonRelease-1>", self.selected)
         self.treeView.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
         self.treeView.setColumns(
@@ -149,10 +149,10 @@ class rules(Frame_up):
 
         # TopLevel
 
-        self.addEditWindow = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x95+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
+        self.addEditWindow = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x300+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
         self.addEditWindow.config(background='#000000')
         self.addEditWindow.resizable(0, 0)
-        self.addEditWindow.hide()
+        self.addEditWindow.show()
 
         #Labels
         nl = Label_up(self.addEditWindow, text=self.langs.t('UI.EDIT_MENU.col_name_profil'))
@@ -171,18 +171,33 @@ class rules(Frame_up):
         self.folder_box = Entry_up(self.addEditWindow, width=80)
         self.folder_box.gridPosSize(row=1, column=1, sticky=W).show()
 
-        self.rule_box = Entry_up(self.addEditWindow, width=80)
-        self.rule_box.gridPosSize(row=2, column=1, sticky=W).show()
+        # self.rule_box = Entry_up(self.addEditWindow, width=80)
+        # self.rule_box.gridPosSize(row=2, column=1, sticky=W).show()
+
+        self.frameListRule = Frame_up(self.addEditWindow)
+
+        self.add_button = Button_up(self.frameListRule, command=self.addMenu, style="nobg.TButton", images=[
+            Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
+        ])
+        self.add_button.gridPosSize(column=0, row=0).show()
+
+        self.remove = Button_up(self.frameListRule, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
+        self.remove.gridPosSize(column=0, row=1).show().disable()
+
+        self.list_rule = Treeview_up(self.frameListRule, scroll=SCROLL_Y, iid=True, show="tree", editRow=True, width=200, height=200)
+        self.list_rule.gridPosSize(row=0, column=1, rowspan=15, sticky=W).show()
+
+        self.frameListRule.gridPosSize(row=2, column=1, sticky=W, pady=(5,0)).show()
 
         buttonF = Frame_up(self.addEditWindow)
 
-        self.addOrEdit = Button_up(buttonF)
+        self.addOrEdit = Button_up(buttonF, width=15)
         self.addOrEdit.gridPosSize(row=0, column=0, padx=(0,3)).show()
 
-        self.cancel = Button_up(buttonF, text=self.langs.t('UI.EDIT_MENU.button_cancel'), command=self.addEditWindow.hide)
+        self.cancel = Button_up(buttonF, width=15, text=self.langs.t('UI.EDIT_MENU.button_cancel'), command=self.addEditWindow.hide)
         self.cancel.gridPosSize(row=0, column=1).show()
 
-        buttonF.gridPosSize(row=3, column=1, sticky=W, pady=(5,0)).show()
+        buttonF.gridPosSize(row=3, column=1, sticky=W, pady=(15,0)).show()
 
         self.label_error_addEditWindow = Label_up(self.addEditWindow, text="")
         self.label_error_addEditWindow.placePosSize(x=200, y=63, width=300, height=32)
@@ -239,12 +254,12 @@ class rules(Frame_up):
 
         self.profile_box.delete(0, END)
         self.folder_box.delete(0, END)
-        self.rule_box.delete(0, END)
+        self.list_rule.removeAllElement()
 
         self.addOrEdit.config(command=self.edit)
 
         try:
-            selected = self.treeView.getItemSelectedElement()
+            selected = self.treeView.getItemSelectedRow()
             # values = self.treeView.tree.item(selected, 'values')
 
             # output to entry boxes
@@ -261,7 +276,7 @@ class rules(Frame_up):
     def edit(self):
         try:
             selected = self.treeView.tree.selection()[0]
-            self.treeView.tree.item(selected, text=self.profile_box.get(), values=(self.folder_box.get(), self.rule_box.get()))
+            self.treeView.tree.item(selected, text=self.profile_box.get(), values=(self.folder_box.get(), "|".join(self.list_rule)))
             self.addEditWindow.hide()
         except:
             self.tm.start("noItemSelectError")
@@ -276,7 +291,7 @@ class rules(Frame_up):
 
         self.profile_box.delete(0, END)
         self.folder_box.delete(0, END)
-        self.rule_box.delete(0, END)
+        self.list_rule.removeAllElement()
 
         self.addOrEdit.config(command=self.add)
 
@@ -308,9 +323,9 @@ class rules(Frame_up):
 #------------------------------------------------------------------------
 
     def selected(self, event):
-        if self.treeView.getSelectedElement():
+        if self.treeView.getItemSelectedRow():
 
-            tags = self.treeView.getItemSelectedElement("tags")
+            tags = self.treeView.getItemSelectedRow("tags")
             if not "Disable" in tags:
                 self.onOffRule_button.set_status(True, True)
             elif "Disable" in tags:
@@ -327,7 +342,7 @@ class rules(Frame_up):
 
     def onOffRule(self):
 
-        tags = self.treeView.getItemSelectedElement("tags")
+        tags = self.treeView.getItemSelectedRow("tags")
         self.log.debug(tags, "onOffRule")
         if not "Disable" in tags:
             self.treeView.editSelectedElement(tags="Disable")

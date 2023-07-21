@@ -8,6 +8,8 @@ from tk_up.widgets.frame import Frame_up, LabelFrame_up
 from tk_up.widgets.treeview import Treeview_up
 from tk_up.widgets.button import Button_up, Toggle_Button_up
 
+from tk_up.widgets import SCROLL_ALL
+
 from tk_up.object.image import Wimage
 
 from PyThreadUp import ThreadManager
@@ -42,13 +44,10 @@ class source(Frame_up):
         self.frameButton = Frame_up(self)
         self.frameButton.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
 
-        self.list = Treeview_up(self, show="headings", resize_column=False, width=700, height=400)
+        self.list = Treeview_up(self, scroll=SCROLL_ALL, show="headings", width=700, height=400)
         self.list.gridPosSize(row=1, column=0).show()
-
-        test = ("test", "test2")
-
-        self.list.addElement(values=test[0])
-        self.list.setColumns(("Source",))
+        self.list.bind("<ButtonRelease-1>", self.selected)
+        self.list.setColumns(("Source Name", "Source Path"), size=[200, 250])
         self.list.setTags((
             {
             "name": "Disable",
@@ -62,34 +61,33 @@ class source(Frame_up):
 
         self.add_button = Button_up(self.frameButton, style="nobg.TButton", images=[
             Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
-            Wimage(self.ctx["exe_path"]+"/img/addSub.png", (36, 36)),
         ])
         self.add_button.gridPosSize(column=0, row=0).show()
 
         self.edit_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], style="nobg.TButton")
         self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], style="nobg.TButton")
+        self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
         self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], style="nobg.TButton")
+        self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.list.moveDownSelectedElement, style="nobg.TButton")
         self.move_down.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
 
-        self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], style="nobg.TButton")
+        self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.list.moveUpSelectedElement, style="nobg.TButton")
         self.move_up.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
 
-        self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], style="nobg.TButton")
+        self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
         self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
 
-        # self.onOffRule_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
-        # self.onOffRule_button.set_toggle_function(func1=self.onOffRule, func2=self.onOffRule)
-        # self.onOffRule_button.custom_toggle(
-        #     image=(
-        #         (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
-        #         (self.ctx["exe_path"]+"/img/off.png", (36, 36))
-        #     )
-        # )
-        # self.onOffRule_button.gridPosSize(column=6, row=0).show().disable()
+        self.onOffSource_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
+        self.onOffSource_button.set_toggle_function(func1=self.onOffSource, func2=self.onOffSource)
+        self.onOffSource_button.custom_toggle(
+            image=(
+                (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
+                (self.ctx["exe_path"]+"/img/off.png", (36, 36))
+            )
+        )
+        self.onOffSource_button.gridPosSize(column=6, row=0).show().disable()
 
         # return
         self.frame_return = LabelFrame_up(self, text="-")
@@ -102,22 +100,76 @@ class source(Frame_up):
         self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("option"))
         self.button_return.gridPosSize(column=0, row=2, sticky=(E, W), pady=(3,0), ipady=2).show()
 
-    def showSelected(self, e):
-        self.log.debug(self.list.getSelectedElement(), "SOURCE")
+
+    # Button logic =================================================================
+    def delete(self):
+        self.list.removeSelectedElement()
+        self.unselect()
+
+    def unselect(self):
+        try:
+            self.edit_button.disable()
+            self.remove.disable()
+            self.unselect_button.disable()
+            self.move_up.disable()
+            self.move_down.disable()
+            self.onOffSource_button.disable()
+            self.list.tree.selection_remove(self.list.tree.selection()[0])
+            self.add_button.set_image("add")
+        except:
+            self.log.debug("No Item selected")
+
+    def selected(self, event):
+        if self.list.getItemSelectedRow():
+
+            tags = self.list.getItemSelectedRow("tags")
+            if not "Disable" in tags:
+                self.onOffSource_button.set_status(True, True)
+            elif "Disable" in tags:
+                self.onOffSource_button.set_status(False, True)
+
+            self.edit_button.enable()
+            self.remove.enable()
+            self.unselect_button.enable()
+            self.move_up.enable()
+            self.move_down.enable()
+            self.onOffSource_button.enable()
+            self.add_button.set_image("addSub")
+
+    def onOffSource(self):
+
+        tags = self.list.getItemSelectedRow("tags")
+        self.log.debug(tags)
+        if not "Disable" in tags:
+            self.list.editSelectedElement(tags="Disable")
+        elif "Disable" in tags:
+            self.list.editSelectedElement(tags="")
+            # self.treeView.update()
+
+    
 
     #=================================================================
     def addDataToList(self):
         for i in self.list.tree.get_children():
             self.list.tree.delete(i)
 
-        for source in self.config.CONFIG['source']:
-            path: str = source["path"]
+        item: dict = self.config.CONFIG['source']
 
-            if source['disable']:
+        self.log.debug(item)
+
+        for sourceName, sourceValue in item.items():
+
+            self.log.debug(str(sourceName)+" : "+str(sourceValue))
+
+            path: str = sourceValue["path"]
+
+            tag = ""
+
+            if sourceValue['disable']:
                 tag = "Disable"
 
             # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
-            self.list.addElement(iid=END, values=path, tags=tag)
+            self.log.debug(self.list.addElement(iid=END, values=(sourceName, path), tags=tag))
 
     # this function is call if you hide widget
     def disable(self) -> None:

@@ -55,7 +55,7 @@ log = Logger(
     file_path="./debug.log" if argFile == "file" else None
 )
 
-log.customize(level=Level_s("[", "]"), context=Context_s("{ ", " } "), stack=Stack_s("( ", " ) ", 5, "/", False))
+log.customize(level=Level_s("[", "]"), context=Context_s("{ ", " } "), stack=Stack_s("( ", " ) ", 2, "/", False))
 
 if importPyInst.is_compiled:
     pathAppExe = os.path.realpath(sys.executable)
