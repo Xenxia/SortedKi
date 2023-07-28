@@ -13,11 +13,11 @@ class about(Frame_up):
 
     # DONT REMOVE THIS
     ctx: dict[str, Any]
-    manager_class: ManagerWidgets_up
+    wManager: ManagerWidgets_up
 
-    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master, kw={"width":0, "height":0}):
+    def __init__(self, context: dict[str, Any], wManager: ManagerWidgets_up, master, kw={"width":0, "height":0}):
         self.ctx = context.copy()
-        self.manager_class = manager_class
+        self.wManager = wManager
 
         self.langs: Lang = self.ctx["lib"][0]
         self.log: Logger = self.ctx["lib"][2]
@@ -35,7 +35,10 @@ class about(Frame_up):
         self.button_link = Button_up(self, text=f"Project Link : https://github.com/Xenxia/{self.ctx['app_name']}", command=lambda: webbrowser.open(f'https://github.com/Xenxia/{self.ctx["app_name"]}'), style="link.TButton")
         self.button_link.placePosSize(350, 200, 350, 24, anchor="center").show()
 
-        self.button_return = Button_up(self, text=self.langs.t('UI.ABOUT.button_return'), command=lambda: manager_class.showWidget("option"))
+        self.button_link = Button_up(self, text=f"Create New Issues", command=lambda: webbrowser.open(f'https://github.com/Xenxia/{self.ctx["app_name"]}/issues/new/choose'))
+        self.button_link.placePosSize(350, 230, 150, 24, anchor="center").show()
+
+        self.button_return = Button_up(self, text=self.langs.t('UI.ABOUT.button_return'), command=lambda: wManager.showWidget("option"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
 

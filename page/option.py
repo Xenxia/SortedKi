@@ -13,29 +13,31 @@ from PyThreadUp import ThreadManager
 from Pylogger import Logger
 from Pylang import Lang
 
-from func.conf import ConfigTree
+from func.conf import Config_
 from func.function import sendMessage
+
+from page.logic.option import *
 
 class option(Frame_up):
 
     # DONT REMOVE THIS
     ctx: dict[str, Any]
-    manager_class: ManagerWidgets_up
+    wManager: ManagerWidgets_up
 
     #parameters
 
     log: Logger
-    config: ConfigTree
+    config: Config_
     langs: Lang
 
-    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
+    def __init__(self, context: dict[str, Any], wManager: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
         self.ctx = context.copy()
-        self.manager_class = manager_class
+        self.wManager = wManager
 
         self.tm: ThreadManager = self.ctx["tm"]
 
         self.langs: Lang = self.ctx["lib"][0]
-        self.config: ConfigTree = self.ctx["lib"][1]
+        self.config: Config_ = self.ctx["lib"][1]
         self.log: Logger = self.ctx["lib"][2]
 
         Frame_up.__init__(self, master=master, width=kw["width"], height=kw["height"])
@@ -57,7 +59,7 @@ class option(Frame_up):
         self.frame_rules.columnconfigure(0, weight=1)
         self.frame_rules.rowconfigure(3, weight=1)
 
-        self.button_edit_rules = Button_up(self.frame_rules, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("rules"))
+        self.button_edit_rules = Button_up(self.frame_rules, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.wManager.showWidget("rules"))
         self.button_edit_rules.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         #Source
@@ -66,18 +68,18 @@ class option(Frame_up):
         self.frame_source.columnconfigure(0, weight=1)
         self.frame_source.rowconfigure(3, weight=1)
 
-        self.button_edit_source = Button_up(self.frame_source, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.manager_class.showWidget("source"))
+        self.button_edit_source = Button_up(self.frame_source, text=self.langs.t('UI.OPTION_MENU.button_edit'), command=lambda: self.wManager.showWidget("source"))
         self.button_edit_source.gridPosSize(row=2, column=0, sticky=(E, W, S, N), pady=(3,0)).show()
 
         #=======
 
-        self.button_export = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_export'), command=self.export_conf)
+        self.button_export = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_export'), command=lambda: export_conf(self))
         self.button_export.placePosSize(350, 75, 120, 24, anchor="center").show()
 
-        self.button_import = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_import'), command=self.import_conf)
+        self.button_import = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_import'), command=lambda: import_conf(self))
         self.button_import.placePosSize(350, 105, 120, 24, anchor="center").show()
 
-        self.button_delete = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), command=self.delete_conf, style="fgred.TButton")
+        self.button_delete = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_delete_conf'), command=lambda: delete_conf(self), style="fgred.TButton")
         self.button_delete.placePosSize(350, 148, 120, 48, anchor="center").show()
 
         self.sep = Separator_up(self).placePosSize(350, 187, 500, 0, anchor=CENTER).show()
@@ -102,14 +104,14 @@ class option(Frame_up):
 
         self.combox_option_lang = OptionMenu_up(self.frame_lang, default=0, list=self.langs.getLocalesLong(), justify='center')
         self.combox_option_lang.current(self.langs.getIndexDefaultLang())
-        self.combox_option_lang.bind("<<ComboboxSelected>>", self.fixLang)
+        self.combox_option_lang.bind("<<ComboboxSelected>>", lambda event: fixLang(self, event))
         self.combox_option_lang.gridPosSize(row=0, column=0, sticky=(E, W, S, N), pady=(5,0)).show()
 
         # Other
-        self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: manager_class.showWidget("main"))
+        self.button_return = Button_up(self, text=self.langs.t('UI.OPTION_MENU.button_return'), command=lambda: self.wManager.showWidget("main"))
         self.button_return.placePosSize(350, 550, 120, 24, anchor="center").show()
 
-        self.button_about = Button_up(self, text=self.langs.t('UI.ABOUT.button_about'), command=lambda: manager_class.showWidget("about"))
+        self.button_about = Button_up(self, text=self.langs.t('UI.ABOUT.button_about'), command=lambda: self.wManager.showWidget("about"))
         self.button_about.placePosSize(350, 577, 120, 24, anchor="center").show()
 
         self.label_error_option = Label_up(self, text="", wraplength=320, justify=CENTER, anchor="center")
@@ -122,32 +124,3 @@ class option(Frame_up):
 
     def disable(self):
         pass
-
-    def export_conf(self):
-        try:
-            self.config.exportConfig()
-            self.tm.start("confExport")
-        except:
-            print('export')
-
-    def import_conf(self):
-        try:
-            self.config.importConfig()
-            self.tm.start("confImport")
-        except:
-            print('import')
-
-    def fixLang(self, event):
-        lc = self.langs.getLocaleShort(self.combox_option_lang.get())
-        self.config.CONFIG["lang"] = lc
-        self.config.saveConfig()
-        self.langs.setLang(lc)
-        self.log.debug(f"lang : {self.langs.defaultLang}")
-        self.event_generate("<<TK_UP.Update>>")
-        self.tm.start("lang")
-
-    def delete_conf(self):
-
-        self.config.delete()
-        self.tm.start("confDelete")
-    

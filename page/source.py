@@ -5,10 +5,13 @@ from tkinter import END, W, E, N, S
 from tk_up.managerWidgets import ManagerWidgets_up
 
 from tk_up.widgets.frame import Frame_up, LabelFrame_up
-from tk_up.widgets.treeview import Treeview_up
+from tk_up.widgets.view import Treeview_up
 from tk_up.widgets.button import Button_up, Toggle_Button_up
+from tk_up.widgets.label import Label_up
+from tk_up.widgets.entry import Entry_up
+from tk_up.widgets.toplevel import Toplevel_up
 
-from tk_up.widgets import SCROLL_ALL
+from tk_up.enum import Scroll
 
 from tk_up.object.image import Wimage
 
@@ -16,22 +19,25 @@ from PyThreadUp import ThreadManager
 from Pylogger import Logger
 from Pylang import Lang
 
-from func.conf import ConfigTree
+from func.conf import Config_
+
+from page.logic.source import *
+from page.logic.source_toplevel import *
 
 class source(Frame_up):
 
     # DONT REMOVE THIS
     ctx: dict[str, Any]
-    manager_class: ManagerWidgets_up
+    wManager: ManagerWidgets_up
 
-    def __init__(self, context: dict, manager_class: ManagerWidgets_up, master, kw={"width":0, "height":0}):
+    def __init__(self, context: dict, wManager: ManagerWidgets_up, master, kw={"width":0, "height":0}):
         self.ctx = context.copy()
-        self.manager_class = manager_class
+        self.wManager = wManager
 
         self.tm: ThreadManager = self.ctx["tm"]
         self.langs: Lang = self.ctx["lib"][0]
         self.log: Logger = self.ctx["lib"][2]
-        self.config: ConfigTree = self.ctx["lib"][1]
+        self.config: Config_ = self.ctx["lib"][1]
 
 
         # Use 'self' in your widget
@@ -44,11 +50,14 @@ class source(Frame_up):
         self.frameButton = Frame_up(self)
         self.frameButton.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
 
-        self.list = Treeview_up(self, scroll=SCROLL_ALL, show="headings", width=700, height=400)
-        self.list.gridPosSize(row=1, column=0).show()
-        self.list.bind("<ButtonRelease-1>", self.selected)
-        self.list.setColumns(("Source Name", "Source Path"), size=[200, 250])
-        self.list.setTags((
+        self.listSource = Treeview_up(self, scroll=Scroll.ALL, width=700, height=400)
+        self.listSource.gridPosSize(row=1, column=0).show()
+        self.listSource.bind("<ButtonRelease-1>", lambda e: selected(self, e))
+        self.listSource.setColumns((
+            self.langs.t('UI.EDIT_MENU_SOURCE.col_name_source'),
+            self.langs.t('UI.EDIT_MENU_SOURCE.col_path')
+        ), size=[200, 250])
+        self.listSource.setTags((
             {
             "name": "Disable",
             "fg": "#F70000",
@@ -59,126 +68,88 @@ class source(Frame_up):
             },
         ))
 
-        self.add_button = Button_up(self.frameButton, style="nobg.TButton", images=[
+        self.addSourceBtn = Button_up(self.frameButton, style="nobg.TButton", command=lambda: addMenu(self), images=[
             Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
         ])
-        self.add_button.gridPosSize(column=0, row=0).show()
+        self.addSourceBtn.gridPosSize(column=0, row=0).show()
 
-        self.edit_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], style="nobg.TButton")
-        self.edit_button.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
+        self.editSourceBtn = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/edit.png", (36, 36))], command=lambda: editMenu(self), style="nobg.TButton")
+        self.editSourceBtn.gridPosSize(column=1, row=0, padx=(5, 0)).show().disable()
 
-        self.remove = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.delete, style="nobg.TButton")
-        self.remove.gridPosSize(column=2, row=0, padx=5).show().disable()
+        self.removeSourceBtn = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=lambda: delete(self), style="nobg.TButton")
+        self.removeSourceBtn.gridPosSize(column=2, row=0, padx=5).show().disable()
 
-        self.move_down = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.list.moveDownSelectedElement, style="nobg.TButton")
-        self.move_down.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
+        self.moveDownSourceBtn = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/down.png", (36, 36))], command=self.listSource.moveDownSelectedItem, style="nobg.TButton")
+        self.moveDownSourceBtn.gridPosSize(column=3, row=0, padx=(25, 0)).show().disable()
 
-        self.move_up = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.list.moveUpSelectedElement, style="nobg.TButton")
-        self.move_up.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
+        self.moveUpSourceBtn = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/up.png", (36, 36))], command=self.listSource.moveUpSelectedItem, style="nobg.TButton")
+        self.moveUpSourceBtn.gridPosSize(column=4, row=0, padx=(0, 25)).show().disable()
 
-        self.unselect_button = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=self.unselect, style="nobg.TButton")
-        self.unselect_button.gridPosSize(column=5, row=0, padx=5).show().disable()
+        self.unselectSourceBtn = Button_up(self.frameButton, images=[Wimage(self.ctx["exe_path"]+"/img/selectNone.png", (36, 36))], command=lambda: unselect(self), style="nobg.TButton")
+        self.unselectSourceBtn.gridPosSize(column=5, row=0, padx=5).show().disable()
 
-        self.onOffSource_button = Toggle_Button_up(self.frameButton, style="nobg.TButton")
-        self.onOffSource_button.set_toggle_function(func1=self.onOffSource, func2=self.onOffSource)
-        self.onOffSource_button.custom_toggle(
+        self.enableDisableSourceBtn = Toggle_Button_up(self.frameButton, style="nobg.TButton")
+        self.enableDisableSourceBtn.set_toggle_function(func1=lambda: onOffSource(self), func2=lambda: onOffSource(self))
+        self.enableDisableSourceBtn.custom_toggle(
             image=(
                 (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
                 (self.ctx["exe_path"]+"/img/off.png", (36, 36))
             )
         )
-        self.onOffSource_button.gridPosSize(column=6, row=0).show().disable()
+        self.enableDisableSourceBtn.gridPosSize(column=6, row=0).show().disable()
 
         # return
-        self.frame_return = LabelFrame_up(self, text="-")
-        self.frame_return.placePosSize(350, 570, 120, 80, anchor="center").show()
-        self.frame_return.columnconfigure(0, weight=1)
+        self.saveReturnFrame = LabelFrame_up(self, text="-")
+        self.saveReturnFrame.placePosSize(350, 570, 120, 80, anchor="center").show()
+        self.saveReturnFrame.columnconfigure(0, weight=1)
 
-        self.button_saveAndReturn = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return_save'))
-        self.button_saveAndReturn.gridPosSize(column=0, row=1, sticky=(E, W), pady=(3,0), ipady=2).show()
+        self.saveAndReturnBtn = Button_up(self.saveReturnFrame, text=self.langs.t('UI.EDIT_MENU_SOURCE.button_return_save'), command=lambda: saveDataInList(self))
+        self.saveAndReturnBtn.gridPosSize(column=0, row=1, sticky=(E, W), pady=(3,0), ipady=2).show()
 
-        self.button_return = Button_up(self.frame_return, text=self.langs.t('UI.EDIT_MENU.button_return'), command=lambda: self.manager_class.showWidget("option"))
-        self.button_return.gridPosSize(column=0, row=2, sticky=(E, W), pady=(3,0), ipady=2).show()
+        self.returnBtn = Button_up(self.saveReturnFrame, text=self.langs.t('UI.EDIT_MENU_SOURCE.button_return'), command=lambda: self.wManager.showWidget("option"))
+        self.returnBtn.gridPosSize(column=0, row=2, sticky=(E, W), pady=(3,0), ipady=2).show()
+
+        #### ==== TopLevel ====
+
+        self.addOrEditSourceToplevel = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x130+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
+        self.addOrEditSourceToplevel.config(background='#000000')
+        self.addOrEditSourceToplevel.resizable(0, 0)
+        self.addOrEditSourceToplevel.hide()
+
+        #Labels
+        nameSourceLabel = Label_up(self.addOrEditSourceToplevel, text=self.langs.t('UI.EDIT_MENU_SOURCE.col_name_source'))
+        nameSourceLabel.gridPosSize(row=0, column=0, sticky="W", padx=(5,5)).show()
+
+        pathFolderSourceLabel = Label_up(self.addOrEditSourceToplevel, text=self.langs.t('UI.EDIT_MENU_SOURCE.col_path'))
+        pathFolderSourceLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5)).show()
+
+        #Entry boxes
+        self.nameSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80, takefocus=True)
+        self.nameSourceEntry.gridPosSize(row=0, column=1, sticky=W, pady=(10, 10)).show()
+
+        self.pathFolderSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80)
+        self.pathFolderSourceEntry.gridPosSize(row=1, column=1, sticky=W, pady=(0, 10)).show()
 
 
-    # Button logic =================================================================
-    def delete(self):
-        self.list.removeSelectedElement()
-        self.unselect()
+        # ApplyCancel
+        footerBtnFrame = Frame_up(self.addOrEditSourceToplevel)
 
-    def unselect(self):
-        try:
-            self.edit_button.disable()
-            self.remove.disable()
-            self.unselect_button.disable()
-            self.move_up.disable()
-            self.move_down.disable()
-            self.onOffSource_button.disable()
-            self.list.tree.selection_remove(self.list.tree.selection()[0])
-            self.add_button.set_image("add")
-        except:
-            self.log.debug("No Item selected")
+        self.addOrEditBtn = Button_up(footerBtnFrame, width=15)
+        self.addOrEditBtn.gridPosSize(row=0, column=0, padx=(0,3)).show()
 
-    def selected(self, event):
-        if self.list.getItemSelectedRow():
+        self.cancelBtn = Button_up(footerBtnFrame, width=15, text=self.langs.t('UI.EDIT_MENU_SOURCE.button_cancel'), command=self.addOrEditSourceToplevel.hide)
+        self.cancelBtn.gridPosSize(row=0, column=1).show()
 
-            tags = self.list.getItemSelectedRow("tags")
-            if not "Disable" in tags:
-                self.onOffSource_button.set_status(True, True)
-            elif "Disable" in tags:
-                self.onOffSource_button.set_status(False, True)
-
-            self.edit_button.enable()
-            self.remove.enable()
-            self.unselect_button.enable()
-            self.move_up.enable()
-            self.move_down.enable()
-            self.onOffSource_button.enable()
-            self.add_button.set_image("addSub")
-
-    def onOffSource(self):
-
-        tags = self.list.getItemSelectedRow("tags")
-        self.log.debug(tags)
-        if not "Disable" in tags:
-            self.list.editSelectedElement(tags="Disable")
-        elif "Disable" in tags:
-            self.list.editSelectedElement(tags="")
-            # self.treeView.update()
-
-    
-
-    #=================================================================
-    def addDataToList(self):
-        for i in self.list.tree.get_children():
-            self.list.tree.delete(i)
-
-        item: dict = self.config.CONFIG['source']
-
-        self.log.debug(item)
-
-        for sourceName, sourceValue in item.items():
-
-            self.log.debug(str(sourceName)+" : "+str(sourceValue))
-
-            path: str = sourceValue["path"]
-
-            tag = ""
-
-            if sourceValue['disable']:
-                tag = "Disable"
-
-            # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
-            self.log.debug(self.list.addElement(iid=END, values=(sourceName, path), tags=tag))
+        footerBtnFrame.gridPosSize(row=3, column=1, sticky=W, pady=(15,0)).show()
 
     # this function is call if you hide widget
     def disable(self) -> None:
-        pass
+        unselect(self)
 
     # this function is call if you show widget
     def enable(self):
         self.grid_propagate(False)
-        self.addDataToList()
+        addDataToList(self)
     
     # this function is call if <<TK_UP.Update>> event is call
     def __update(self, event) -> None:

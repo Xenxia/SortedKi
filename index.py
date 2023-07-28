@@ -25,7 +25,7 @@ from page.option import option
 from page.main import main
 
 PLATFORME_SYS = platform.system()
-VERSION = "2.0.1"
+VERSION = "3.0.0b"
 APP_NAME = "SortedKi"
 ARGS = sys.argv
 
@@ -34,7 +34,7 @@ importPyInst.add_path(folder_path='func')
 importPyInst.add_path(folder_path='page')
 
 from update import Update
-from conf import ConfigTree
+from conf import Config_
 from sort import Sorting, NAME_FOLDER_UNSORTED
 
 executionPath = importPyInst.get_execute_path()
@@ -70,9 +70,8 @@ log.debug(f"{executionPath}", "EXE_PATH")
 
 nameAppExe = ntpath.basename(pathAppExe)
 
-conf = ConfigTree(log, pathDirExe)
+conf = Config_(log, pathDirExe)
 conf.loadConfig()
-conf.CONFIG["doNotSort"].append("debug.log") if log.isEnableFile() else None
 
 langageTask = ThreadUP(target=lambda: Lang(f"{executionPath}/lang"), returnValue=True).start()
 
@@ -125,7 +124,7 @@ def sortMain():
         s = Sorting(log, langage, conf, pathDirExe, nameAppExe, main_menu_w)
         s.start()
     except Exception as e:
-        log.error(e, "SORT-MAIN")
+        log.error(e)
 
     main_menu_w.button_tree.enable()
 
@@ -164,7 +163,7 @@ context = {
 }
 
 main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", context=context, width=700, height=670)
-main_frame.showWidget("option")
+main_frame.showWidget("main")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
 main_menu_w: main = main_frame.getClassWidget("main")

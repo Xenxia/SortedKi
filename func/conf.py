@@ -8,10 +8,11 @@ PLATFORM_SYS = platform.system()
 if PLATFORM_SYS == "Windows":
     from ctypes import windll
 
-class ConfigTree():
+class Config_():
     log: Logger
     CONFIG: TypedDict
     CONFIG_FILE_NAME = "config.json"
+    CONFIG_VERSION = "3.0"
     __HIDE_FILE: int = stat.FILE_ATTRIBUTE_HIDDEN+stat.FILE_ATTRIBUTE_SYSTEM
     __SHOW_FILE: int = stat.FILE_ATTRIBUTE_NORMAL
     __DEFAULT_CONFIG = {
@@ -65,13 +66,13 @@ class ConfigTree():
                 "pathStatic": False,
             },
         },
-        "source": {
-            "default" : {
+        "sources": {
+            "Root" : {
                 "path": ".", 
                 "disable": False
             }
         },
-        "version_config_file": "2.0",
+        "version_config_file": "3.0",
         "unsorted": False,
         "doNotSort": [],
         "lang": None
@@ -106,7 +107,6 @@ class ConfigTree():
             self.write_conf(self.path_config, self.CONFIG)
             self.log.info("Save config")
 
-
     def reloadConfig(self) -> None:
         self.CONFIG = None
         self.loadConfig()
@@ -132,7 +132,6 @@ class ConfigTree():
             self.log.debug("Importing config")
 
     def write_conf(self, name_file: str, content: Any) -> None:
-        
 
         if PLATFORM_SYS == "Windows":
             windll.kernel32.SetFileAttributesW(self.path_config, self.__SHOW_FILE)

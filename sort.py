@@ -5,21 +5,21 @@ import shutil
 from Pylogger import Logger
 from Pylang import Lang
 
-from func.conf import ConfigTree
+from func.conf import Config_
 
 #Page
 from page.main import main
 
-NOT_SORT_LIST = ["config.yml", "desktop.ini"]
+NOT_SORT_LIST = ["config.json", "desktop.ini", "debug.log"]
 NAME_FOLDER_UNSORTED = "#_"
 
 class Sorting:
 
     log: Logger
-    conf: ConfigTree
+    conf: Config_
     checkedFile: list
 
-    def __init__(self, log: Logger, lang: Lang, conf: ConfigTree, pathDirExe: str, nameAppExe:str, mSort: main) -> None:
+    def __init__(self, log: Logger, lang: Lang, conf: Config_, pathDirExe: str, nameAppExe:str, mSort: main) -> None:
         self.log = log
         self.conf = conf
         self.checkedFile = []
@@ -38,20 +38,18 @@ class Sorting:
 
         self.checkedFile = []
 
-        self.log.debug("Check Dir", "Sorting-start")
+        for profileName in self.conf.CONFIG['config_sort']:
 
-        for name_profile in self.conf.CONFIG['config_sort']:
+            disable = self.conf.CONFIG['config_sort'][profileName]['disable']
 
-            disable = self.conf.CONFIG['config_sort'][name_profile]['disable']
-
-            for rule in self.conf.CONFIG['config_sort'][name_profile]['rule']:
-                fullPathConfig: str = self.conf.CONFIG['config_sort'][name_profile]['fullPath']
-                pathStatic: bool = self.conf.CONFIG['config_sort'][name_profile]['pathStatic']
+            for rule in self.conf.CONFIG['config_sort'][profileName]['rule']:
+                fullPathConfig: str = self.conf.CONFIG['config_sort'][profileName]['fullPath']
+                pathStatic: bool = self.conf.CONFIG['config_sort'][profileName]['pathStatic']
 
                 if pathStatic:
 
                     if not os.path.exists(f"{fullPathConfig}"):
-                        self.log.debug("Create static Dir : " + f"{self.parentPath}/{fullPathConfig}", "Sorting-start")
+                        self.log.debug("Create static Dir : " + f"{fullPathConfig}", "Sorting-start")
                         os.makedirs(f"{fullPathConfig}", exist_ok=True)
                 else:
 
@@ -62,30 +60,52 @@ class Sorting:
                 if rule == "":
                     break
 
-                self.sort(rule, dontSortFileRule, fullPathConfig, self.parentPath, pathStatic, disable)
+                for key, value in self.conf.CONFIG['sources'].items():
+
+                    if value["disable"]:
+                        continue
+
+                    if key == "Root":
+                        source = self.searchPath
+                    else:
+                        source = value["path"]
+
+                    self.log.debug(f"Source : {source}")
+
+                    self.sort(rule, dontSortFileRule, fullPathConfig, source, pathStatic, disable)
 
         if self.conf.CONFIG['unsorted'] == True :
             if not os.path.exists(f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}"):
-                self.log.debug("Create Unsorted Dir", "Sorting-start")
+                self.log.debug("Create Unsorted Dir")
                 os.mkdir(f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}")
 
-            self.unsorted(dontSortFileRule)
+            for key, value in self.conf.CONFIG['sources'].items():
+
+                if value["disable"]:
+                        continue
+
+                if key == "Root":
+                    source = self.searchPath
+                else:
+                    source = value["path"]
+
+                self.unsorted(dontSortFileRule, source)
 
 
-    def sort(self, rule: str, dontSortFileRule: list, fullPathConfig: str, parentPath: str, staticPath: bool, disableRule: bool):
+    def sort(self, rule: str, dontSortFileRule: list, fullPathConfig: str, source: str, staticPath: bool, disableRule: bool):
 
-        self.log.debug(f"Start sort - rule {rule}", "sort")
+        self.log.debug(f"Start sort - rule {rule}")
 
-        for file in pathlib.Path(self.searchPath).glob(rule):
+        for pathFile in pathlib.Path(source).glob(rule):
 
-            file_name = ntpath.basename(file)
+            nameFile = pathFile.name
 
-            pPath = f"{self.pathDirExe}/{fullPathConfig}"
-            futurSortedPathFile = f"{pPath}/{file_name}"
+            parentPath = f"{self.pathDirExe}/{fullPathConfig}"
+            futurPathFile = f"{parentPath}/{nameFile}"
 
             if staticPath:
-                pPath = f"{fullPathConfig}"
-                futurSortedPathFile = f"{fullPathConfig}/{file_name}"
+                parentPath = f"{fullPathConfig}"
+                futurPathFile = f"{fullPathConfig}/{nameFile}"
 
             duplica = False
             sort = False
@@ -93,28 +113,28 @@ class Sorting:
             new = "new"
             err = [False, "none"]
 
-            if str(file_name) not in dontSortFileRule and str(file_name) not in NOT_SORT_LIST and str(file_name) != self.nameAppExe:
+            if str(nameFile) not in dontSortFileRule and str(nameFile) not in NOT_SORT_LIST and str(nameFile) != self.nameAppExe:
 
-                self.log.debug("file_name - "+file_name, "sort")
+                self.log.debug(f"name file : {nameFile}", "sort")
 
-                self.checkedFile.append(str(file_name))
+                self.checkedFile.append(str(nameFile))
 
                 if disableRule:
                     continue
 
-                if not os.path.exists(futurSortedPathFile):
+                if not os.path.exists(futurPathFile):
 
                     try:
-                        if os.path.isfile(str(file_name)):
+                        if os.path.isfile(pathFile.as_posix()):
 
-                            with open(file_name, "a", encoding="utf8") as file:
+                            with open(pathFile.as_posix(), "a", encoding="utf8") as file:
                                 file.close()
 
-                            shutil.move(str(file_name), futurSortedPathFile)
+                            shutil.move(pathFile.as_posix(), futurPathFile)
                             self.log.debug("OK", "sort")
                             sort = True
                         else:
-                            self.log.debug(f"Not file {str(file_name)}", "sort")
+                            self.log.debug(f"Not file {str(nameFile)}", "sort")
                             break
 
                     # For permission related errors
@@ -123,20 +143,20 @@ class Sorting:
                         permission = True
 
                     # For other errors
-                    except OSError as error:
+                    except ValueError as error:
                         self.log.error(f"OS error - {error}", "sort")
                         err = [True, error]
 
                 else:
                     try:
-                        if os.path.isfile(str(file_name)):
-                            self.log.debug(f"Duplicate {file_name}", "sort")
-                            new = self.duplicate(str(file_name), f"{pPath}")
+                        if os.path.isfile(pathFile.as_posix()):
+                            self.log.debug(f"Duplicate {nameFile}", "sort")
+                            new = self.duplicate(str(nameFile), f"{parentPath}")
 
-                            with open(file_name, "a", encoding="utf8") as file:
+                            with open(pathFile.as_posix(), "a", encoding="utf8") as file:
                                 file.close()
                             
-                            shutil.move(src = file_name, dst = f"{pPath}/{new}")
+                            shutil.move(src = pathFile.as_posix(), dst = f"{parentPath}/{new}")
                             sort, duplica = True, True
                         else:
                             break
@@ -151,40 +171,39 @@ class Sorting:
                         err = [True, error]
 
             if sort and not duplica:
-                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Green", "Bold", None, "Bold"])
+                self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Green", "Bold", None, "Bold"])
 
             if sort and duplica:
-                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Blue", "Bold", None, "Bold", None, "Bold"])
+                self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {str(fullPathConfig)}", color=["Blue", "Bold", None, "Bold", None, "Bold"])
 
             if permission:
-                self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
+                self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
 
             if err[0]:
                 self.console.printLastLine("@ : ", str(err[1]), color=["Red", None])
                 self.log.error("❌: " + str(err[1]))
 
-    def unsorted(self, dontSortFileRule: list):
-        for file_path in pathlib.Path(self.pathDirExe).glob('*.*'):
+    def unsorted(self, dontSortFileRule: list, source):
+        for pathFile in pathlib.Path(source).glob('*.*'):
 
-            file_name = ntpath.basename(file_path)
+            nameFile = pathFile.name
+            self.log.debug(self.checkedFile)
 
-            self.log.debug(self.checkedFile, "UNSORTED")
-
-            if str(file_name) not in dontSortFileRule and str(file_name) not in NOT_SORT_LIST and str(file_name) not in self.checkedFile and str(file_name) != self.nameAppExe:
+            if str(nameFile) not in dontSortFileRule and str(nameFile) not in NOT_SORT_LIST and str(nameFile) not in self.checkedFile and str(nameFile) != self.nameAppExe:
 
                 try:
-                    os.rename(str(file_name), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(file_name)}")
-                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple", "Bold", None, "Bold"])
+                    shutil.move(pathFile.as_posix(), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(nameFile)}")
+                    self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple", "Bold", None, "Bold"])
 
                 # For permission related errors
                 except PermissionError:
-                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
+                    self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('ERROR.permission_file'), color=["Orange", "Bold", None])
 
                 # For File Exists errors
                 except FileExistsError:
-                    new = self.duplicate(str(file_name), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}")
-                    shutil.move(src = str(file_name), dst = f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{new}")
-                    self.console.printLastLine("@ : ", f"{str(file_name)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple2", "Bold", None, "Bold", None, "Bold"])
+                    new = self.duplicate(str(nameFile), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}")
+                    shutil.move(src = pathFile.as_posix(), dst = f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{new}")
+                    self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.rename'), f" {str(new)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple2", "Bold", None, "Bold", None, "Bold"])
 
                 # For other errors
                 except OSError as error:
@@ -235,23 +254,5 @@ class Sorting:
                     numberDuplicate += 1
 
             pathFile = f"{path}/{newName}{fileExt}"
-
-        # os.rename(file, pathFile)
-        
-
-        # while True:
-            # if numWhile != 0:
-            #     new_name = new_name.replace(new_name[-2:], "_"+str(numWhile))
-            # else:
-            #     if fileName[-2]!="_":
-            #         new_name = fileName+'_'+str(numWhile)
-            #     else:
-            #         new_name = fileName.replace(fileName[-2:], "_"+str(numWhile+1))
-
-            # new_path = path+'/'+new_name+fileExt
-            # if not os.path.exists(new_path):
-            #     os.rename(fileName+fileExt, new_path)
-            #     break
-            # numWhile += 1
 
         return newName+fileExt

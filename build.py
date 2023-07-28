@@ -70,17 +70,46 @@ if args.Command_Name == "config":
 with open(CONFIG_FILE, 'r', encoding='utf8') as file:
     config = json.load(file)
 
+tempDirClear: list[str] = []
+
 if config["compile_dir"] != []:
     for path in config["compile_dir"]:
 
+        print(f"\n#=== Compile {path}")
+
         compileall.compile_dir(dir=path, legacy=True, force=True)
 
-        path_comp = f"./{path}/comp"
-        if os.path.exists(path_comp):
-            shutil.rmtree(path_comp)
-        os.mkdir(path_comp)
-        for file in pathlib.Path(f"./{path}").glob("*.pyc"):
-            os.rename(str(file), f"{path_comp}/{file.name}")
+        path_temp = f"./{path}/temp"
+        if os.path.exists(path_temp): shutil.rmtree(path_temp)
+        os.mkdir(path_temp)
+        tempDirClear.append(path_temp)
+
+        files: list[pathlib.Path] = []
+
+        print(f"\n#=== Check .PYC {path}")
+
+        for file in pathlib.Path(f"./{path}").rglob("*.pyc"):
+
+            if file.__str__().__contains__("__pycache__"):
+                continue
+
+            files.append(file)
+
+        for i in files: print(f"# {i}")
+        print(f"\n#=== Move .PYC {path}")
+
+        for f in files:
+            pathfile = "/".join(os.path.normpath(f).split(os.sep)[1:])
+
+            comppath = f"{path_temp}/{os.path.split(pathfile)[0]}"
+
+            if not os.path.exists(comppath):
+                os.mkdir(comppath)
+
+            print(f"# Move {f}")
+            
+            
+            os.rename(str(f), f"{path_temp}/{pathfile}")
 
 if args.Command_Name == "dev":
 
@@ -131,3 +160,4 @@ else:
     PyInstaller.__main__.run(arg)
     print("\n========================================= END BUILD PROD ==========================================\n")
 
+for c in tempDirClear: shutil.rmtree(c) if os.path.exists(c) else ""

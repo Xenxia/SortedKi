@@ -10,8 +10,8 @@
         "page"
     ],
     "add_data": [
-        "func/comp;func",
-        "page/comp;page",
+        "func/temp;func",
+        "page/temp;page",
         "img;img",
         "lang;lang",
         "themes;themes"
@@ -28,7 +28,7 @@
         "tkinter",
         "requests",
         "webbrowser",
-        "tk_up.widgets.treeview",
+        "tk_up.widgets.view",
         "tk_up.widgets.toplevel",
         "tk_up.widgets.entry"
     ]

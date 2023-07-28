@@ -17,11 +17,11 @@ class main(Frame_up):
 
      # DONT REMOVE THIS
     ctx: dict[str, Any]
-    manager_class: ManagerWidgets_up
+    wManager: ManagerWidgets_up
 
-    def __init__(self, context: dict[str, Any], manager_class: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
+    def __init__(self, context: dict[str, Any], wManager: ManagerWidgets_up, master=None, kw={"width":0, "height":0}):
         self.ctx = context.copy()
-        self.manager_class = manager_class
+        self.wManager = wManager
 
         tm: ThreadManager = self.ctx["tm"]
         langs: Lang = self.ctx["lib"][0]

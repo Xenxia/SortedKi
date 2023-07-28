@@ -27,9 +27,10 @@
         "button_delete_conf": "Supprimer la configuration",
         "message_change_lang": "Redémarrer l'application pour changer de langue"
       },
-      "EDIT_MENU": {
+      "EDIT_MENU_RULE": {
         "title_edit": "Editer la règle",
         "title_add": "Ajouter une règle",
+        "title_add_sub": "Ajouter une sous règle",
         "col_name_profil": "Nom du profile",
         "col_folder": "Nom du dossier",
         "col_extention": "Règle",
@@ -48,6 +49,26 @@
         "label_not_sort": "Ne pas trié",
         "label_unsorted": "Non trié"
       },
+
+      "EDIT_MENU_SOURCE": {
+        "title_edit": "Editer la source",
+        "title_add": "Ajouter une source",
+        "col_name_source": "Nom de la source",
+        "col_path": "Chemain de la source",
+        "button_add": "Ajouter",
+        "button_edit": "Editer",
+        "button_apply": "Appliquer",
+        "button_cancel": "Annuler",
+        "button_delete": "Suprimmer",
+        "button_unselect": "Déselectionner",
+        "button_onOff_rule": [
+          "Disable",
+          "Enable"
+        ],
+        "button_return_save": "Sauvegarder",
+        "button_return": "Retour"
+      },
+
       "ABOUT": {
         "button_return": "Retour",
         "button_about": "A propos"

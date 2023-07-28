@@ -27,9 +27,10 @@
         "button_delete_conf": "Delete config file",
         "message_change_lang": "Restart the application to change the language"
       },
-      "EDIT_MENU": {
+      "EDIT_MENU_RULE": {
         "title_edit": "Edit rule",
         "title_add": "Add rule",
+        "title_add_sub": "Add sub rule",
         "col_name_profil": "Profile name",
         "col_folder": "Folder Name",
         "col_extention": "Rule",
@@ -48,6 +49,26 @@
         "label_not_sort": "Do not sort",
         "label_unsorted": "Unsorted"
       },
+
+      "EDIT_MENU_SOURCE": {
+        "title_edit": "Edit source",
+        "title_add": "Add Source",
+        "col_name_source": "Source Name",
+        "col_path": "Source Path",
+        "button_add": "Add",
+        "button_edit": "Edit",
+        "button_apply": "Apply",
+        "button_cancel": "Cancel",
+        "button_delete": "Delete",
+        "button_unselect": "Deselect",
+        "button_onOff_rule": [
+          "Disable",
+          "Enable"
+        ],
+        "button_return_save": "Save",
+        "button_return": "Return"
+      },
+
       "ABOUT": {
         "button_return": "Return",
         "button_about": "About"
