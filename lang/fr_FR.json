@@ -2,7 +2,7 @@
     "LONG_LANG": "Français",
     "ERROR": {
       "create_config_file": "Erreur durant la création du fichier de configuration de trie.",
-      "permission_file": "{file} utilisé par un autre processus."
+      "permission_file": "est utilisé par un autre processus."
     },
     "TERM": {
       "move": "déplacé ❯",
