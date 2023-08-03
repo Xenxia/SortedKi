@@ -1,0 +1,108 @@
+{
+    "config_sort": {
+        "Runtime": {
+            "disable": false,
+            "parent": null,
+            "folder": "Runtime",
+            "fullPath": "Runtime",
+            "rule": [
+                "*.exe",
+                "*.msi",
+                "*.apk",
+                "*.app",
+                "*.gadget",
+                "*.inf",
+                "*.run",
+                "*.vbs",
+                "*.ws",
+                "*.jar"
+            ],
+            "pathStatic": false
+        },
+        "Document": {
+            "disable": false,
+            "parent": null,
+            "folder": "Document",
+            "fullPath": "Document",
+            "rule": [
+                "*.xlsx",
+                "*.docx",
+                "*.pptx",
+                "*.pdf"
+            ],
+            "pathStatic": false
+        },
+        "Archive": {
+            "disable": false,
+            "parent": null,
+            "folder": "Archive",
+            "fullPath": "Archive",
+            "rule": [
+                "*.7z",
+                "*.rar",
+                "*.zip",
+                "*.tar",
+                "*.iso",
+                "*.sbx",
+                "*.gz"
+            ],
+            "pathStatic": false
+        },
+        "Music": {
+            "disable": false,
+            "parent": null,
+            "folder": "Music",
+            "fullPath": "Music",
+            "rule": [
+                "*.mp3",
+                "*.ogg",
+                "*.flac",
+                "*.wav",
+                "*.aac"
+            ],
+            "pathStatic": false
+        },
+        "Picture": {
+            "disable": false,
+            "parent": null,
+            "folder": "Picture",
+            "fullPath": "Picture",
+            "rule": [
+                "*.png",
+                "*.jpeg",
+                "*.jpg",
+                "*.bmp",
+                "*.tiff",
+                "*.gif"
+            ],
+            "pathStatic": false
+        },
+        "Video": {
+            "disable": false,
+            "parent": null,
+            "folder": "Video",
+            "fullPath": "Video",
+            "rule": [
+                "*.mp4",
+                "*.mkv",
+                "*.mka",
+                "*.mks",
+                "*.avi",
+                "*.wmv",
+                "*.flv",
+                "*.mov"
+            ],
+            "pathStatic": false
+        }
+    },
+    "sources": {
+        "Root": {
+            "path": ".",
+            "disable": false
+        }
+    },
+    "version_config_file": "3.0",
+    "unsorted": false,
+    "doNotSort": [],
+    "lang": null
+}
