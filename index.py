@@ -156,7 +156,7 @@ context = {
 }
 
 main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", context=context, width=700, height=670)
-main_frame.showWidget("source")
+main_frame.showWidget("main")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
 main_menu_w: main = main_frame.getClassWidget("main")

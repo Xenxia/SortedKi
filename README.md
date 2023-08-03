@@ -8,10 +8,15 @@
     <br><br>
     <img width="500" heigth="400" src="https://raw.githubusercontent.com/Xenxia/SortedKi/main/assets/img/preview.png" />
     <br><br>
-    <h1><a href="https://github.com/Xenxia/SortedKi/releases/latest">Download</a></h1>
-    <h1><a href="https://xenxia.github.io/SortedKi/">Convert config</a></h1>
 </div>
 
+---
+
+- ### [Download](https://github.com/Xenxia/SortedKi/releases/latest)
+- ### [Wiki](https://github.com/Xenxia/SortedKi/wiki)
+- ### [Config Converter](https://xenxia.github.io/SortedKi/)
+
+---
 
 SortedKi is a portable file-sorting program. To start using it, you need to copy the .exe into the folder you want to use to group all your files for sorting.
 
