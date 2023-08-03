@@ -117,9 +117,6 @@ class option(Frame_up):
         self.label_error_option = Label_up(self, text="", wraplength=320, justify=CENTER, anchor="center")
         self.label_error_option.placePosSize(350, 620, 320, 64, anchor="center").show()
 
-        self.tm.thread("confExport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Exporter"))
-        self.tm.thread("confImport", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Config Importer"))
-        self.tm.thread("confDelete", target=lambda: sendMessage(self.label_error_option, "#00ff00", "Delete config", 3))
         self.tm.thread("lang", target=lambda: sendMessage(self.label_error_option, "#00ca00", self.langs.t('UI.OPTION_MENU.message_change_lang'), 3))
 
     def disable(self):
