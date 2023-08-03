@@ -4,6 +4,7 @@ build/
 dist/
 config.json
 *.configKi.json
+!assets/config/*/*.configKi.json
 *.spec
 *.pyc
 *.pem
