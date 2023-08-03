@@ -9,6 +9,8 @@ dist/
 *.txt
 *.yml
 !.drone.yml
+config.json
+
 *.csr
 *.key
 *.bat

@@ -14,12 +14,22 @@ document.querySelector("form").addEventListener("submit", async (event) => {
     let newConfig = {}
 
     try {
-        const config = jsyaml.load(text)
+        
 
         switch (selectedValue) {
-            case "100to200":
-                newConfig = _100to200(config)
+            case "100to200": {
+                const config = jsyaml.load(text)
+                const newConfig = _100to200(config)
+                saveYML(newConfig, file)
                 break;
+            }
+
+            case "200to300":{
+                const config = jsyaml.load(text)
+                newConfig = _200to300(config)
+                saveJSON(newConfig, file)
+                break;
+            }
 
             default:
                 break;
@@ -29,8 +39,15 @@ document.querySelector("form").addEventListener("submit", async (event) => {
         console.log(e);
     }
 
+})
 
-    const yml = jsyaml.dump(newConfig, {
+/**
+ * 
+ * @param {object} config
+ * @param {File} file
+ */
+function saveYML(config, file) {
+    const yml = jsyaml.dump(config, {
         "indent": 4,
         "noRefs": true,
         "condenseFlow": true
@@ -39,8 +56,21 @@ document.querySelector("form").addEventListener("submit", async (event) => {
 
     console.log(yml);
 
-    saveAndDownload(yml, file.name.replace(".configTree.yml", ""));
-})
+    saveAndDownload(yml, file);
+}
+
+/**
+ * 
+ * @param {object} config
+ * @param {File} file
+ */
+function saveJSON(config, file) {
+    const json = JSON.stringify(config)
+
+    console.log(json);
+
+    saveAndDownload(json, file.name.replace(".configTree.yml", ".confki.json"));
+}
 
 /**
  * 
@@ -81,21 +111,48 @@ function _100to200(config) {
 
 /**
  * 
+ * @param {object} config
+ * @returns {object}
+ */
+function _200to300(config) {
+
+    const j = {};
+
+    if (config["version_config_file"] != "2.0") {
+        console.log("is not 2.0 version file")
+        return j
+    }
+
+    j["config_sort"] = config["config_sort"]
+    j["version_config_file"] = "3.0";
+    j["sources"] = {
+        "Root": {
+            "path": ".",
+            "disable": false
+        }
+    };
+    j["unsorted"] = config["unsorted"] ?? false;
+    j["doNotSort"] = config["doNotSort"] ?? [];
+    j["lang"] = config["lang"] ?? null;
+
+    return j
+
+}
+
+/**
+ * 
  * @param {object} content
  * @param {string} fileName
  * @returns {}
  */
 function saveAndDownload(content, fileName) {
-    const extention = ".configTree.yml"
     const link = document.querySelector("a")
-
-    
 
     let formBlob = new Blob([content], { type: 'text/plain' });
 
     link.href = window.URL.createObjectURL(formBlob);
-    link.text = `⤓ Download : ${fileName}${extention}`
-    link.download = `${fileName}${extention}`
+    link.text = `⤓ Download : ${fileName}`
+    link.download = `${fileName}`
 }
 
 // document.getElementById("Test").addEventListener("click", (event) => {
