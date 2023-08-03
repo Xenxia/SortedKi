@@ -17,17 +17,19 @@
         "themes;themes"
     ],
     "hidden_import": [
+        "sys",
         "locale",
-        "ruamel.yaml",
         "typing",
         "ctypes",
-        "sys",
+        "requests",
+        "pyperclip",
+        "webbrowser",
+
+        "tkinter",
         "tkinter.ttk",
         "tkinter.scrolledtext",
         "tkinter.filedialog",
-        "tkinter",
-        "requests",
-        "webbrowser",
+
         "tk_up.widgets.view",
         "tk_up.widgets.toplevel",
         "tk_up.widgets.entry"
