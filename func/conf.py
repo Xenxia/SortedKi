@@ -13,6 +13,10 @@ class Config_():
     CONFIG: TypedDict
     CONFIG_FILE_NAME = "config.json"
     CONFIG_VERSION = "3.0"
+    CONFIG_EXT = ".confki.json"
+    __SYS_WINDOWS: bool = (PLATFORM_SYS == "Windows")
+    __SYS_LINUX: bool = (PLATFORM_SYS == "Linux")
+
     __HIDE_FILE: int = stat.FILE_ATTRIBUTE_HIDDEN+stat.FILE_ATTRIBUTE_SYSTEM
     __SHOW_FILE: int = stat.FILE_ATTRIBUTE_NORMAL
     __DEFAULT_CONFIG = {
@@ -72,7 +76,7 @@ class Config_():
                 "disable": False
             }
         },
-        "version_config_file": "3.0",
+        "version_config_file": f"{CONFIG_VERSION}",
         "unsorted": False,
         "doNotSort": [],
         "lang": None
@@ -90,7 +94,7 @@ class Config_():
         if not os.path.exists(self.path_config):
             self.write_conf(self.path_config, self.__DEFAULT_CONFIG)
 
-            if PLATFORM_SYS == "Windows":
+            if self.__SYS_WINDOWS:
                 windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
 
             self.log.info("Create config")
@@ -113,33 +117,31 @@ class Config_():
         self.log.info("Reload config")
 
     def exportConfig(self) -> None:
-        pathfile = filedialog.asksaveasfilename(defaultextension=".configKi.json" ,initialdir="./", title="Save config", filetypes=[("config file", "*.configKi.json")])
+        pathfile = filedialog.asksaveasfilename(defaultextension=self.CONFIG_EXT ,initialdir="./", title="Save config", filetypes=[("config file", f"*{self.CONFIG_EXT}")])
         if pathfile != '':
             shutil.copy(src=self.path_config, dst=pathfile)
             self.log.info("Exporting config")
 
     def importConfig(self) -> None:
-        pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", "*.configKi.json")])
+        pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", f"*{self.CONFIG_EXT}")])
         if pathfile != '':
             if os.path.exists(self.path_config):
                 os.remove(self.path_config)
             shutil.copy(src=pathfile, dst=self.path_config)
 
-            if PLATFORM_SYS == "Windows":
-                windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
+            if self.__SYS_WINDOWS: windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
 
             self.reloadConfig()
             self.log.debug("Importing config")
 
     def write_conf(self, name_file: str, content: Any) -> None:
 
-        if PLATFORM_SYS == "Windows":
-            windll.kernel32.SetFileAttributesW(self.path_config, self.__SHOW_FILE)
+        if self.__SYS_WINDOWS: windll.kernel32.SetFileAttributesW(self.path_config, self.__SHOW_FILE)
 
         with open(name_file, 'w') as file:
             json.dump(content, file, indent=4, )
 
-        if PLATFORM_SYS == "Windows":
+        if self.__SYS_WINDOWS:
             windll.kernel32.SetFileAttributesW(self.path_config, self.__HIDE_FILE)
         
     def read_conf(self, name_file: str) -> TypedDict:
@@ -153,16 +155,16 @@ class Config_():
 
         path = rule["fullPath"]
 
-        if path[0] == "/" and PLATFORM_SYS == "Linux":
+        if path[0] == "/" and self.__SYS_LINUX:
             return True
 
-        if path[0] == "/" and PLATFORM_SYS != "Linux":
+        if path[0] == "/" and not self.__SYS_LINUX:
             return False
         
-        if path[1] == ":" and PLATFORM_SYS == "Windows":
+        if path[1] == ":" and self.__SYS_WINDOWS:
             return True
 
-        if path[1] == ":" and PLATFORM_SYS != "Windows":
+        if path[1] == ":" and not self.__SYS_WINDOWS:
             return False
         
     def delete(self):
