@@ -50,7 +50,7 @@ class source(Frame_up):
         self.frameButton = Frame_up(self)
         self.frameButton.gridPosSize(row=0, column=0, sticky=(E, W, S, N)).show()
 
-        self.listSource = Treeview_up(self, scroll=Scroll.ALL, width=700, height=400)
+        self.listSource = Treeview_up(self, scroll=Scroll.Y, width=700, height=400)
         self.listSource.gridPosSize(row=1, column=0).show()
         self.listSource.bind("<ButtonRelease-1>", lambda e: selected(self, e))
         self.listSource.setColumns((
@@ -121,14 +121,18 @@ class source(Frame_up):
         nameSourceLabel.gridPosSize(row=0, column=0, sticky="W", padx=(5,5)).show()
 
         pathFolderSourceLabel = Label_up(self.addOrEditSourceToplevel, text=self.langs.t('UI.EDIT_MENU_SOURCE.col_path'))
-        pathFolderSourceLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5)).show()
+        pathFolderSourceLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5), pady=(6, 0)).show()
 
         #Entry boxes
         self.nameSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80, takefocus=True)
-        self.nameSourceEntry.gridPosSize(row=0, column=1, sticky=W, pady=(10, 10)).show()
+        self.nameSourceEntry.gridPosSize(row=0, column=1, columnspan=2, sticky="EW", pady=(10, 10)).show()
 
         self.pathFolderSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80)
         self.pathFolderSourceEntry.gridPosSize(row=1, column=1, sticky=W, pady=(0, 10)).show()
+
+        #button
+        self.folderBtn = Button_up(self.addOrEditSourceToplevel, image=Wimage(self.ctx["exe_path"]+"/img/browseFolder.png", (28, 28)), style="nobg.TButton", command=lambda: getFolder(self))
+        self.folderBtn.gridPosSize(row=1, column=2, sticky=W, pady=(0, 10), padx=(5, 2)).show()
 
 
         # ApplyCancel

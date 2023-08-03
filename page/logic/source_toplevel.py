@@ -1,4 +1,4 @@
-from tkinter import END
+from tkinter import END, filedialog, messagebox
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: from page.source import source
@@ -30,15 +30,30 @@ def editMenu(self: "source"):
 
 def edit(self: "source"):
 
+    nameSource = self.nameSourceEntry.get()
+    folderSource = self.pathFolderSourceEntry.get()
+
+    if nameSource == "":
+        messagebox.showerror("Name Source", "Name source is require")
+        self.log.error("Name source is require")
+        self.addOrEditSourceToplevel.focus_force()
+        return
+
+    if folderSource == "":
+        messagebox.showerror("Folder Source", "Folder source is require")
+        self.log.error("Folder source is require")
+        self.addOrEditSourceToplevel.focus_force()
+        return
+
     try:
 
         iid = self.listSource.getSelectedRow()[0]
 
 
-        self.listSource.editItem(iid, values=[self.nameSourceEntry.get(), self.pathFolderSourceEntry.get()])
+        self.listSource.editItem(iid, values=[nameSource, folderSource])
         self.addOrEditSourceToplevel.hide()
     except ValueError as e:
-        self.log.debug("error : "+e)
+        self.log.error("error : "+e)
 
 # ADD
 def addMenu(self: "source"):
@@ -56,15 +71,32 @@ def add(self: "source"):
     nameSource = self.nameSourceEntry.get()
     folderSource = self.pathFolderSourceEntry.get()
 
-    if nameSource!="" and folderSource!="":
-        try:
-            self.listSource.addItem(iid=nameSource, values=(nameSource, folderSource), tags=('evenrow',))
-            unselect(self)
-            self.addOrEditSourceToplevel.hide()
-            self.log.debug("ok")
+    if nameSource == "":
+        messagebox.showerror("Name Source", "Name source is require")
+        self.log.error("Name source is require")
+        self.addOrEditSourceToplevel.focus_force()
+        return
 
-        except ValueError as e:
-            self.log.debug("error : "+e)
+    if folderSource == "":
+        messagebox.showerror("Folder Source", "Folder source is require")
+        self.log.error("Folder source is require")
+        self.addOrEditSourceToplevel.focus_force()
+        return
 
-    else:
-        self.log.debug("nameSource And folderSource is required")
+    try:
+        self.listSource.addItem(iid=nameSource, values=(nameSource, folderSource), tags=('evenrow',))
+        unselect(self)
+        self.addOrEditSourceToplevel.hide()
+        self.log.debug("ok")
+
+    except ValueError as e:
+        self.log.error("error : "+e)
+
+
+# Select Folder
+
+def getFolder(self: "source"):
+    path = filedialog.askdirectory(initialdir="./", title="Select Path", mustexist=True)
+    self.log.debug(path)
+    self.pathFolderSourceEntry.insert(END, str(path))
+    self.addOrEditSourceToplevel.focus_force()
