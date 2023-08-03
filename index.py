@@ -153,17 +153,20 @@ theme = ManagerThemes(window, themes_folder=f"{executionPath}/themes").setTheme(
 # log.debug(theme.get_theme_use())
 # log.debug(theme.get_info_element('listbox'))
 # exit()
+last_version = update.get_version()
 context = {
     "lib": [langage, conf, log],
     "exe_path": executionPath,
     "sort_func": sortMain,
     "screenMain": window,
     "tm": tm,
-    "app_name": APP_NAME
+    "app_name": APP_NAME,
+    "app_version": VERSION,
+    "app_last_version": last_version
 }
 
 main_frame = ManagerWidgets_up(master=window, asset_folder=f"{executionPath}/page", context=context, width=700, height=670)
-main_frame.showWidget("main")
+main_frame.showWidget("source")
 main_frame.gridPosSize(0, 0, sticky=(E, W, S, N)).show()
 
 main_menu_w: main = main_frame.getClassWidget("main")
@@ -180,16 +183,14 @@ footer.gridPosSize(1, 0, sticky=(S)).show()
 # style = ttk.Style(window)
 
 #LANG
-label_lang = Label_up(footer, text=f"{langage.t('UI.MAIN_MENU.lang')} : {langage.selectedLang}")
-label_lang.placePosSize(x=350, y=16, width=120, height=32, anchor="center").show()
+label_lang = Label_up(footer, text=f"{langage.t('UI.MAIN_MENU.lang')} : {langage.getLocaleLong(langage.selectedLang)}", anchor="center")
+label_lang.placePosSize(x=350, y=16, width=220, height=32, anchor="center").show()
 
 #VERSION
 frame_version = Frame_up(master=footer, borderwidth=0)
 # frame_version.propagate(False)
 # frame_version.grid_propagate(False)
 frame_version.placePosSize(x=640, y=18.5, width=126, height=32, anchor="center").show()
-
-last_version = update.get_version()
 
 label_version_text = Label_up(frame_version, text="version :")
 label_version_text.gridPosSize(row=0, column=0, sticky=W).show()
