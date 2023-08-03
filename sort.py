@@ -1,4 +1,3 @@
-import ntpath
 import os
 import pathlib
 import shutil
@@ -10,7 +9,7 @@ from func.conf import Config_
 #Page
 from page.main import main
 
-NOT_SORT_LIST = ["config.json", "desktop.ini", "debug.log"]
+NOT_SORT_LIST = ["config.json", "desktop.ini", "debug_ki.log"]
 NAME_FOLDER_UNSORTED = "#_"
 
 class Sorting:

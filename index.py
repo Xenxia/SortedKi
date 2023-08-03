@@ -39,20 +39,10 @@ from sort import Sorting, NAME_FOLDER_UNSORTED
 
 executionPath = importPyInst.get_execute_path()
 
-try:
-    argDebug = ARGS[1]
-except:
-    argDebug = ""
-
-try:
-    argFile = ARGS[2]
-except:
-    argFile = ""
-
 log = Logger(
     format="{time} | {levelname} : {stack}{msg}",
-    levellog=DEBUG if argDebug == "debug" else INFO,
-    file_path="./debug.log" if argFile == "file" else None
+    levellog=DEBUG if "debug" in ARGS else INFO,
+    file_path="./debug_ki.log" if "file" in ARGS else None
 )
 
 log.customize(level=Level_s("[", "]"), context=Context_s("{ ", " } "), stack=Stack_s("( ", " ) ", 2, "/", False))
