@@ -1,4 +1,4 @@
-from tkinter import END
+from tkinter import END, messagebox
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: from page.rules import rules
@@ -37,6 +37,21 @@ def editMenu(self: "rules"):
 
 def edit(self: "rules"):
 
+    nameProfile = self.nameProfileEntry.get()
+    pathProfile = self.pathFolderEntry.get()
+
+    if nameProfile == "":
+        messagebox.showerror("Profile Name", "Profile name is require")
+        self.log.error("Profile name is require")
+        self.addOrEditToplevel.focus_force()
+        return
+    
+    if pathProfile == "":
+        messagebox.showerror("Profile Path", "Profile path is require")
+        self.log.error("Profile path is require")
+        self.addOrEditToplevel.focus_force()
+        return
+
     try:
 
         iid = self.treeViewRules.tree.selection()[0]
@@ -47,10 +62,10 @@ def edit(self: "rules"):
             rule.append(v["values"][0])
 
 
-        self.treeViewRules.editItem(iid, values=[self.nameProfileEntry.get(), self.pathFolderEntry.get(), "|".join(rule)])
+        self.treeViewRules.editItem(iid, values=[nameProfile, pathProfile, "|".join(rule)])
         self.addOrEditToplevel.hide()
     except ValueError as e:
-        self.log.debug("error : "+e)
+        self.log.error("error : "+e)
 
 def addMenu(self: "rules"):
     if self.treeViewRules.isSelect():
@@ -69,8 +84,20 @@ def addMenu(self: "rules"):
     self.addOrEditToplevel.show()
 
 def add(self: "rules"):
-    profile_name = self.nameProfileEntry.get()
-    folder = self.pathFolderEntry.get()
+    nameProfile = self.nameProfileEntry.get()
+    pathProfile = self.pathFolderEntry.get()
+
+    if nameProfile == "":
+        messagebox.showerror("Profile Name", "Profile name is require")
+        self.log.error("Profile name is require")
+        self.addOrEditToplevel.focus_force()
+        return
+    
+    if pathProfile == "":
+        messagebox.showerror("Profile Path", "Profile path is require")
+        self.log.error("Profile path is require")
+        self.addOrEditToplevel.focus_force()
+        return
     
     rule = []
 
@@ -84,16 +111,11 @@ def add(self: "rules"):
     except:
         self.log.debug("No select")
 
-    if profile_name!="" and folder!="":
-        try:
-            self.treeViewRules.tree.insert(parent=sellect, index=END, iid=profile_name, text=profile_name, values=(folder, "|".join(rule)), tags=('evenrow',))
-            unselect(self)
-            self.addOrEditToplevel.hide()
-            self.log.debug("ok")
+    try:
+        self.treeViewRules.addItem(parent=sellect, iid=nameProfile, values=[nameProfile, pathProfile, "|".join(rule)], tags=('evenrow',))
+        unselect(self)
+        self.addOrEditToplevel.hide()
+        self.log.debug("ok")
 
-        except ValueError as e:
-            self.log.debug("error : "+e)
-
-    else:
-        self.tm.start("requireProfileNameFolder")
-        self.log.debug("Profile name and Folder is required")
+    except Exception as e:
+        self.log.error("error : "+e)

@@ -18,7 +18,6 @@ from Pylogger import Logger
 from Pylang import Lang
 
 from func.conf import Config_
-from func.function import sendMessage
 
 from page.logic.rules import *
 from page.logic.rules_toplevel import *
@@ -52,7 +51,7 @@ class rules(Frame_up):
         
         self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
 
-        self.treeViewRules = Treeview_up(self, scroll=Scroll.ALL, child=True, editRow=True, width=700, height=400)
+        self.treeViewRules = Treeview_up(self, scroll=Scroll.Y, child=True, editRow=True, width=700, height=400)
         self.treeViewRules.bind("<ButtonRelease-1>", lambda event: selected(self, event))
         self.treeViewRules.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
         self.treeViewRules.setColumns(
