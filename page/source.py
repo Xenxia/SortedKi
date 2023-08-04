@@ -114,7 +114,11 @@ class source(Frame_up):
         self.addOrEditSourceToplevel = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x130+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
         self.addOrEditSourceToplevel.config(background='#000000')
         self.addOrEditSourceToplevel.resizable(0, 0)
+        self.addOrEditSourceToplevel.grid_propagate(False)
+        self.addOrEditSourceToplevel.columnconfigure(0, minsize=155)
+        self.addOrEditSourceToplevel.columnconfigure(1, minsize=500)
         self.addOrEditSourceToplevel.hide()
+        
 
         #Labels
         nameSourceLabel = Label_up(self.addOrEditSourceToplevel, text=self.langs.t('UI.EDIT_MENU_SOURCE.col_name_source'))
@@ -124,15 +128,15 @@ class source(Frame_up):
         pathFolderSourceLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5), pady=(6, 0)).show()
 
         #Entry boxes
-        self.nameSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80, takefocus=True)
+        self.nameSourceEntry = Entry_up(self.addOrEditSourceToplevel, takefocus=True)
         self.nameSourceEntry.gridPosSize(row=0, column=1, columnspan=2, sticky="EW", pady=(10, 10)).show()
 
-        self.pathFolderSourceEntry = Entry_up(self.addOrEditSourceToplevel, width=80)
-        self.pathFolderSourceEntry.gridPosSize(row=1, column=1, sticky=W, pady=(0, 10)).show()
+        self.pathFolderSourceEntry = Entry_up(self.addOrEditSourceToplevel)
+        self.pathFolderSourceEntry.gridPosSize(row=1, column=1, sticky="EW", pady=(0, 10)).show()
 
         #button
-        self.folderBtn = Button_up(self.addOrEditSourceToplevel, image=Wimage(self.ctx["exe_path"]+"/img/browseFolder.png", (28, 28)), style="nobg.TButton", command=lambda: getFolder(self))
-        self.folderBtn.gridPosSize(row=1, column=2, sticky=W, pady=(0, 10), padx=(5, 2)).show()
+        self.folderSourceBtn = Button_up(self.addOrEditSourceToplevel, image=Wimage(self.ctx["exe_path"]+"/img/browseFolder.png", (28, 28)), style="nobg.TButton", command=lambda: getFolder(self))
+        self.folderSourceBtn.gridPosSize(row=1, column=2, sticky=W, pady=(0, 10), padx=(5, 0)).show()
 
 
         # ApplyCancel
