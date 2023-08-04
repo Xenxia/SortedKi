@@ -32,7 +32,7 @@
         "title_add": "Add rule",
         "title_add_sub": "Add sub rule",
         "col_name_profil": "Profile name",
-        "col_folder": "Folder Name",
+        "col_folder": "Folder path",
         "col_extention": "Rule",
         "button_add": "Add",
         "button_edit": "Edit",
@@ -46,7 +46,7 @@
         ],
         "button_return_save": "Save",
         "button_return": "Return",
-        "label_not_sort": "Do not sort",
+        "label_exception": "Sorting exception",
         "label_unsorted": "Unsorted"
       },
 

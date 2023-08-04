@@ -32,7 +32,7 @@
         "title_add": "Ajouter une règle",
         "title_add_sub": "Ajouter une sous règle",
         "col_name_profil": "Nom du profile",
-        "col_folder": "Nom du dossier",
+        "col_folder": "Chemain du dossier",
         "col_extention": "Règle",
         "button_add": "Ajouter",
         "button_edit": "Editer",
@@ -46,7 +46,7 @@
         ],
         "button_return_save": "Sauvegarder",
         "button_return": "Retour",
-        "label_not_sort": "Ne pas trié",
+        "label_exception": "Exception de trie",
         "label_unsorted": "Non trié"
       },
 
