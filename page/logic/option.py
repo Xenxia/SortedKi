@@ -5,15 +5,15 @@ if TYPE_CHECKING: from page.option import option
 
 def export_conf(self: "option"):
     try:
-        self.config.exportConfig()
-        messagebox.showinfo("Export", "Config is exported")
+        if self.config.exportConfig():
+            messagebox.showinfo("Export", "Config is exported")
     except Exception as e:
         self.log.error(e)
 
 def import_conf(self: "option"):
     try:
-        self.config.importConfig()
-        messagebox.showinfo("Import", "Config is imported")
+        if self.config.importConfig():
+            messagebox.showinfo("Import", "Config is imported")
     except Exception as e:
         self.log.error(e)
 
