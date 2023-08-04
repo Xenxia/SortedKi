@@ -78,7 +78,7 @@ class Config_():
         },
         "version_config_file": f"{CONFIG_VERSION}",
         "unsorted": False,
-        "doNotSort": [],
+        "sorting_exception": [],
         "lang": None
     }
 
@@ -116,14 +116,22 @@ class Config_():
         self.loadConfig()
         self.log.info("Reload config")
 
-    def exportConfig(self) -> None:
+    def exportConfig(self) -> bool:
         pathfile = filedialog.asksaveasfilename(defaultextension=self.CONFIG_EXT ,initialdir="./", title="Save config", filetypes=[("config file", f"*{self.CONFIG_EXT}")])
+
+        self.log.debug(pathfile)
         if pathfile != '':
             shutil.copy(src=self.path_config, dst=pathfile)
             self.log.info("Exporting config")
+            return True
 
-    def importConfig(self) -> None:
+        return False
+
+    def importConfig(self) -> bool:
         pathfile = filedialog.askopenfilename(initialdir="./", title="Import config", filetypes=[("config file", f"*{self.CONFIG_EXT}")])
+
+        self.log.debug(pathfile)
+
         if pathfile != '':
             if os.path.exists(self.path_config):
                 os.remove(self.path_config)
@@ -133,6 +141,9 @@ class Config_():
 
             self.reloadConfig()
             self.log.debug("Importing config")
+            return True
+    
+        return False
 
     def write_conf(self, name_file: str, content: Any) -> None:
 
