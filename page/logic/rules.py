@@ -23,10 +23,10 @@ def editUi(self: "rules"):
         self.treeViewRules.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(rule)])
 
     self.unsortedBtn.set_default_status(self.config.CONFIG["unsorted"])
-    doNotSort = "|".join(self.config.CONFIG["doNotSort"])
-    if not doNotSort == "":
+    sortingException = "|".join(self.config.CONFIG["sorting_exception"])
+    if not sortingException == "":
         self.notSortEntry.delete(0, END)
-        self.notSortEntry.insert(0, doNotSort)
+        self.notSortEntry.insert(0, sortingException)
 
         # self.show()
 
@@ -132,11 +132,14 @@ def saveDataInTree(self: "rules"):
         self.config.CONFIG['config_sort'][key]['pathStatic'] = pathStatic
 
     self.config.CONFIG["unsorted"] = self.unsortedBtn.get_status()
-    doNotSort2 = self.notSortEntry.get()
-    if not doNotSort2 == "":
-        self.config.CONFIG["doNotSort"] = doNotSort2.split("|")
-    else:
-        self.config.CONFIG["doNotSort"] = []
+
+    exception = []
+
+    for _, i in self.listException.getItems().items():
+        exception.append(i["values"][0])
+
+    self.config.CONFIG["sorting_exception"] = exception
+    
 
     self.config.saveConfig()
 
@@ -160,12 +163,11 @@ def addDataToTree(self: "rules"):
 
         parent = parent if parent is not None else ''
 
-        # self.treeView.tree.insert(parent=parent, index=END, iid=key, text="", values=(key, folder, '|'.join(rule)))
         self.treeViewRules.addItem(parent=parent, iid=key, values=[key, folder, '|'.join(rule)], tags=tag)
 
     self.unsortedBtn.set_default_status(self.config.CONFIG["unsorted"])
-    doNotSort = "|".join(self.config.CONFIG["doNotSort"])
-    if not doNotSort == "":
-        self.notSortEntry.delete(0, END)
-        self.notSortEntry.insert(0, doNotSort)
+
+    self.listException.removeAllItems()
+    for i in self.config.CONFIG["sorting_exception"]:
+        self.listException.addItem(values=[i])
 

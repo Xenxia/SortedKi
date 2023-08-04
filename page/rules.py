@@ -51,7 +51,7 @@ class rules(Frame_up):
         
         self.sep = Separator_up(self).gridPosSize(row=3, column=0, sticky=(E, W), pady=(2,0)).show()
 
-        self.treeViewRules = Treeview_up(self, scroll=Scroll.Y, child=True, editRow=True, width=700, height=400)
+        self.treeViewRules = Treeview_up(self, scroll=Scroll.Y, child=True, width=700, height=400)
         self.treeViewRules.bind("<ButtonRelease-1>", lambda event: selected(self, event))
         self.treeViewRules.gridPosSize(row=2, column=0, sticky=(E, W, S, N)).show()
         self.treeViewRules.setColumns(
@@ -104,17 +104,32 @@ class rules(Frame_up):
         )
         self.enableDisableRuleBtn.gridPosSize(column=6, row=0).show().disable()
 
+        self.listExceptionFrame = Frame_up(self)
 
-        notSortLabel = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU_RULE.label_not_sort'), anchor=W)
-        notSortLabel.gridPosSize(row=0, column=0, pady=(20, 10), padx=(5, 10)).show()
+        exceptionLabel = Label_up(self.listExceptionFrame, text=self.langs.t('UI.EDIT_MENU_RULE.label_exception'), anchor=W)
+        exceptionLabel.gridPosSize(row=0, column=1, pady=(0, 5)).show()
 
-        self.notSortEntry = Entry_up(self.frameBox, width=80)
-        self.notSortEntry.grid(row=0, column=1, sticky=W, pady=(13, 0))
+        self.listException = Listview_up(self.listExceptionFrame, scroll=Scroll.Y, selectmode="extended", editRow=True, width=200, height=170)
+        self.listException.setColumnsSize([150])
+        self.listException.gridPosSize(row=1, column=1, rowspan=15, sticky=W).show()
 
-        unsortedLabel = Label_up(self.frameBox, text=self.langs.t('UI.EDIT_MENU_RULE.label_unsorted'), justify="right")
+        self.addExceptionBtn = Button_up(self.listExceptionFrame, command=self.listException.addEmptyRow, style="nobg.TButton", images=[
+            Wimage(self.ctx["exe_path"]+"/img/add.png", (36, 36)),
+        ])
+        self.addExceptionBtn.gridPosSize(column=0, row=1).show()
+
+        self.removeExceptionBtn = Button_up(self.listExceptionFrame, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.listException.removeSelectedItem, style="nobg.TButton")
+        self.removeExceptionBtn.gridPosSize(column=0, row=2).show()
+
+        self.listExceptionFrame.placePosSize(130, 570, 250, 220, anchor="center").show()
+
+        self.unsortedFrame = Frame_up(self)
+
+        unsortedLabel = Label_up(self.unsortedFrame, text=self.langs.t('UI.EDIT_MENU_RULE.label_unsorted'), justify="right")
         unsortedLabel.gridPosSize(row=1, column=0, padx=(5, 10)).show()
 
-        self.unsortedBtn = Toggle_Button_up(self.frameBox, style="nobg.TButton")
+
+        self.unsortedBtn = Toggle_Button_up(self.unsortedFrame, style="nobg.TButton")
         self.unsortedBtn.custom_toggle(
             image=(
                 (self.ctx["exe_path"]+"/img/on.png", (36, 36)),
@@ -123,16 +138,13 @@ class rules(Frame_up):
         )
         self.unsortedBtn.gridPosSize(column=1, row=1, sticky=W).show()
 
-        # self.back = Button_up(self.frameBox, text="back", width=10, command=lambda: self.manager_class.showWidget("menu_option"))
-        # self.back.gridPosSize(column=0, row=2, padx=(5, 0), pady=(50, 0)).show()
+        self.unsortedFrame.placePosSize(350, 480, 120, 60, anchor="center").show()
+
 
         # return
         self.returnSaveFrame = LabelFrame_up(self, text="-")
         self.returnSaveFrame.placePosSize(350, 570, 120, 80, anchor="center").show()
         self.returnSaveFrame.columnconfigure(0, weight=1)
-        # self.frame_return.rowconfigure(1, weight=1)
-        # self.frame_return.rowconfigure(2, weight=1)
-        # self.frame_return.grid_propagate(True)
 
         self.saveAndReturnBtn = Button_up(self.returnSaveFrame, text=self.langs.t('UI.EDIT_MENU_RULE.button_return_save'), command=lambda: saveDataInTree(self))
         self.saveAndReturnBtn.gridPosSize(column=0, row=1, sticky=(E, W), pady=(3,0), ipady=2).show()
@@ -145,6 +157,9 @@ class rules(Frame_up):
         self.addOrEditToplevel = Toplevel_up(self.ctx["screenMain"]).configWindows(geometry="700x330+center", iconbitmap=f"{self.ctx['exe_path']}/img/icon.ico")
         self.addOrEditToplevel.config(background='#000000')
         self.addOrEditToplevel.resizable(0, 0)
+        self.addOrEditToplevel.grid_propagate(False)
+        self.addOrEditToplevel.columnconfigure(0, minsize=155)
+        self.addOrEditToplevel.columnconfigure(1, minsize=500)
         self.addOrEditToplevel.hide()
 
         #Labels
@@ -152,20 +167,20 @@ class rules(Frame_up):
         nameProfileLabel.gridPosSize(row=0, column=0, sticky="W", padx=(5,5)).show()
 
         pathFolderLabel = Label_up(self.addOrEditToplevel, text=self.langs.t('UI.EDIT_MENU_RULE.col_folder'))
-        pathFolderLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5)).show()
+        pathFolderLabel.gridPosSize(row=1, column=0, sticky="NW", padx=(5,5), pady=(6, 0)).show()
 
         ruleLabel = Label_up(self.addOrEditToplevel, text=self.langs.t('UI.EDIT_MENU_RULE.col_extention'))
         ruleLabel.gridPosSize(row=2, column=0, sticky="NW", padx=(5,5), pady=(15,0)).show()
 
-        #Entry boxes
-        self.nameProfileEntry = Entry_up(self.addOrEditToplevel, width=80, takefocus=True)
-        self.nameProfileEntry.gridPosSize(row=0, column=1, sticky=W, pady=(10, 10)).show()
+        self.nameProfileEntry = Entry_up(self.addOrEditToplevel, takefocus=True)
+        self.nameProfileEntry.gridPosSize(row=0, column=1, columnspan=2, sticky="WE", pady=(10, 10), padx=(0, 5)).show()
 
-        self.pathFolderEntry = Entry_up(self.addOrEditToplevel, width=80)
-        self.pathFolderEntry.gridPosSize(row=1, column=1, sticky=W, pady=(0, 10)).show()
+        self.pathFolderEntry = Entry_up(self.addOrEditToplevel)
+        self.pathFolderEntry.gridPosSize(row=1, column=1, sticky="EW", pady=(0, 10)).show()
 
-        # self.rule_box = Entry_up(self.addEditWindow, width=80)
-        # self.rule_box.gridPosSize(row=2, column=1, sticky=W).show()
+        self.folderRuleBtn = Button_up(self.addOrEditToplevel, image=Wimage(self.ctx["exe_path"]+"/img/browseFolder.png", (28, 28)), style="nobg.TButton", command=lambda: getFolder(self))
+        self.folderRuleBtn.gridPosSize(row=1, column=2, sticky="EW", pady=(0, 10), padx=(5, 2)).show()
+
 
         self.listRuleFrame = Frame_up(self.addOrEditToplevel)
 
@@ -181,8 +196,8 @@ class rules(Frame_up):
         self.removeRuleFromListBtn = Button_up(self.listRuleFrame, images=[Wimage(self.ctx["exe_path"]+"/img/delete.png", (36, 36))], command=self.listRule.removeSelectedItem, style="nobg.TButton")
         self.removeRuleFromListBtn.gridPosSize(column=0, row=1).show()
 
-
         self.listRuleFrame.gridPosSize(row=2, column=1, sticky=W, pady=(5,0)).show()
+
 
         footerBtnFrame = Frame_up(self.addOrEditToplevel)
 
@@ -193,6 +208,7 @@ class rules(Frame_up):
         self.cancelBtn.gridPosSize(row=0, column=1).show()
 
         footerBtnFrame.gridPosSize(row=3, column=1, sticky=W, pady=(15,0)).show()
+
 
     # this function is call if you hide widget
     def disable(self):

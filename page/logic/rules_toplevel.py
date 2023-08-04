@@ -1,4 +1,4 @@
-from tkinter import END, messagebox
+from tkinter import END, filedialog, messagebox
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: from page.rules import rules
@@ -119,3 +119,9 @@ def add(self: "rules"):
 
     except Exception as e:
         self.log.error("error : "+e)
+
+def getFolder(self: "rules"):
+    path = filedialog.askdirectory(initialdir="./", title="Select Path", mustexist=True)
+    self.log.debug(path)
+    self.pathFolderEntry.insert(END, str(path))
+    self.addOrEditToplevel.focus_force()
