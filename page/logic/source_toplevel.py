@@ -34,13 +34,19 @@ def edit(self: "source"):
     folderSource = self.pathFolderSourceEntry.get()
 
     if nameSource == "":
-        messagebox.showerror("Name Source", "Name source is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_name", 0), 
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_name", 1)
+        )
         self.log.error("Name source is require")
         self.addOrEditSourceToplevel.focus_force()
         return
 
     if folderSource == "":
-        messagebox.showerror("Folder Source", "Folder source is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_folder", 0), 
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_folder", 1)
+        )
         self.log.error("Folder source is require")
         self.addOrEditSourceToplevel.focus_force()
         return
@@ -72,13 +78,19 @@ def add(self: "source"):
     folderSource = self.pathFolderSourceEntry.get()
 
     if nameSource == "":
-        messagebox.showerror("Name Source", "Name source is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_name", 0), 
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_name", 1)
+        )
         self.log.error("Name source is require")
         self.addOrEditSourceToplevel.focus_force()
         return
 
     if folderSource == "":
-        messagebox.showerror("Folder Source", "Folder source is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_folder", 0), 
+            self.langs.t("UI.EDIT_MENU_SOURCE.box_error_folder", 1)
+        )
         self.log.error("Folder source is require")
         self.addOrEditSourceToplevel.focus_force()
         return

@@ -25,7 +25,11 @@
         "button_sorted_root": "Déplacer triées vers racine",
         "button_unsorted_root": "Déplacer non triées vers racine",
         "button_delete_conf": "Supprimer la configuration",
-        "message_change_lang": "Redémarrer l'application pour changer de langue"
+        "message_change_lang": "Redémarrer l'application pour changer de langue",
+        "box_confirm_import": ["Importation", "La config est importée"],
+        "box_confirm_export": ["Exportation", "La config est exportée"],
+        "box_confirm_delete": ["Suppression", "Le fichier 'config.json' a été supprimé"],
+        "box_ask_delete": ["Suppression", "Êtes-vous sûr de vouloir supprimer la configuration ?"]
       },
       "EDIT_MENU_RULE": {
         "title_edit": "Editer la règle",
@@ -47,7 +51,9 @@
         "button_return_save": "Sauvegarder",
         "button_return": "Retour",
         "label_exception": "Exception de trie",
-        "label_unsorted": "Non trié"
+        "label_unsorted": "Non trié",
+        "box_error_name": ["Nom du profil", "Le nom du profil est requis"],
+        "box_error_folder": ["Chemin du profil", "Le chemin du profil est requis"]
       },
 
       "EDIT_MENU_SOURCE": {
@@ -66,7 +72,9 @@
           "Enable"
         ],
         "button_return_save": "Sauvegarder",
-        "button_return": "Retour"
+        "button_return": "Retour",
+        "box_error_name": ["Nom de la source", "Le nom de la source est requis"],
+        "box_error_folder": ["Dossier source", "Le dossier source est requis"]
       },
 
       "ABOUT": {

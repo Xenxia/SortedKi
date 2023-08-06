@@ -6,14 +6,20 @@ if TYPE_CHECKING: from page.option import option
 def export_conf(self: "option"):
     try:
         if self.config.exportConfig():
-            messagebox.showinfo("Export", "Config is exported")
+            messagebox.showinfo(
+                self.langs.t("UI.OPTION_MENU.box_confirm_export", 0),
+                self.langs.t("UI.OPTION_MENU.box_confirm_export", 1)
+            )
     except Exception as e:
         self.log.error(e)
 
 def import_conf(self: "option"):
     try:
         if self.config.importConfig():
-            messagebox.showinfo("Import", "Config is imported")
+            messagebox.showinfo(
+                self.langs.t("UI.OPTION_MENU.box_confirm_import", 0),
+                self.langs.t("UI.OPTION_MENU.box_confirm_import", 1)
+            )
     except Exception as e:
         self.log.error(e)
 
@@ -29,8 +35,14 @@ def fixLang(self: "option", event):
 def delete_conf(self: "option"):
 
     try:
-        if messagebox.askyesno("Delete Config", "Are you sure you want to delete the config ?"):
+        if messagebox.askyesno(
+                self.langs.t("UI.OPTION_MENU.box_ask_delete", 0),
+                self.langs.t("UI.OPTION_MENU.box_ask_delete", 1)
+            ):
             self.config.delete()
-            messagebox.showinfo("Delete Config", "The 'config.json' file has been deleted")
+            messagebox.showinfo(
+                self.langs.t("UI.OPTION_MENU.box_confirm_delete", 0),
+                self.langs.t("UI.OPTION_MENU.box_confirm_delete", 1)
+            )
     except Exception as e:
         self.log.error(e)

@@ -23,12 +23,9 @@ def editUi(self: "rules"):
         self.treeViewRules.addElement(parent=parent, iid=key, text="", values=[key, folder, '|'.join(rule)])
 
     self.unsortedBtn.set_default_status(self.config.CONFIG["unsorted"])
-    sortingException = "|".join(self.config.CONFIG["sorting_exception"])
-    if not sortingException == "":
-        self.notSortEntry.delete(0, END)
-        self.notSortEntry.insert(0, sortingException)
 
-        # self.show()
+    for i in self.config.CONFIG["sorting_exception"]:
+        self.listException.addItem(values=[i])
 
 def unselect(self: "rules"):
     try:

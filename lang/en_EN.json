@@ -25,7 +25,11 @@
         "button_sorted_root": "Move sorted to root",
         "button_unsorted_root": "Move unsoted to root",
         "button_delete_conf": "Delete config file",
-        "message_change_lang": "Restart the application to change the language"
+        "message_change_lang": "Restart the application to change the language",
+        "box_confirm_import": ["Import", "Config is imported"],
+        "box_confirm_export": ["Export", "Config is exported"],
+        "box_confirm_delete": ["Delete", "The 'config.json' file has been deleted"],
+        "box_ask_delete": ["Delete", "Are you sure you want to delete the config ?"]
       },
       "EDIT_MENU_RULE": {
         "title_edit": "Edit rule",
@@ -47,7 +51,9 @@
         "button_return_save": "Save",
         "button_return": "Return",
         "label_exception": "Sorting exception",
-        "label_unsorted": "Unsorted"
+        "label_unsorted": "Unsorted",
+        "box_error_name": ["Profile Name", "Profile name is require"],
+        "box_error_folder": ["Profile Path", "Profile path is require"]
       },
 
       "EDIT_MENU_SOURCE": {
@@ -66,7 +72,9 @@
           "Enable"
         ],
         "button_return_save": "Save",
-        "button_return": "Return"
+        "button_return": "Return",
+        "box_error_name": ["Name Source", "Source name is require"],
+        "box_error_folder": ["Source Folder", "Source folder is require"]
       },
 
       "ABOUT": {

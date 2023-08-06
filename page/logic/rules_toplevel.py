@@ -41,13 +41,19 @@ def edit(self: "rules"):
     pathProfile = self.pathFolderEntry.get()
 
     if nameProfile == "":
-        messagebox.showerror("Profile Name", "Profile name is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_name", 0), 
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_name", 1)
+        )
         self.log.error("Profile name is require")
         self.addOrEditToplevel.focus_force()
         return
     
     if pathProfile == "":
-        messagebox.showerror("Profile Path", "Profile path is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_folder", 0), 
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_folder", 1)
+        )
         self.log.error("Profile path is require")
         self.addOrEditToplevel.focus_force()
         return
@@ -88,13 +94,19 @@ def add(self: "rules"):
     pathProfile = self.pathFolderEntry.get()
 
     if nameProfile == "":
-        messagebox.showerror("Profile Name", "Profile name is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_name", 0), 
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_name", 1)
+        )
         self.log.error("Profile name is require")
         self.addOrEditToplevel.focus_force()
         return
     
     if pathProfile == "":
-        messagebox.showerror("Profile Path", "Profile path is require")
+        messagebox.showerror(
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_folder", 0), 
+            self.langs.t("UI.EDIT_MENU_RULE.box_error_folder", 1)
+        )
         self.log.error("Profile path is require")
         self.addOrEditToplevel.focus_force()
         return
