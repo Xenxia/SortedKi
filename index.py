@@ -24,9 +24,10 @@ from Pylang import Lang
 from page.option import option
 from page.main import main
 
-PLATFORME_SYS = platform.system()
-VERSION = "3.0.0b"
 APP_NAME = "SortedKi"
+VERSION = "3.0.0"
+
+PLATFORME_SYS = platform.system()
 ARGS = sys.argv
 
 importPyInst = Import_pyInst()
@@ -55,8 +56,9 @@ else:
 
 pathDirExe = ntpath.dirname(pathAppExe)
 
-log.debug(f"{PLATFORME_SYS}", "OS")
-log.debug(f"{executionPath}", "EXE_PATH")
+log.debug(f"{PLATFORME_SYS}")
+log.debug(f"{executionPath}")
+log.debug(f"{ARGS}")
 
 nameAppExe = ntpath.basename(pathAppExe)
 
