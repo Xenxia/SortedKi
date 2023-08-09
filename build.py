@@ -118,6 +118,8 @@ if args.Command_Name == "dev":
         f"--name={config['name_app']}_dev",
     ]
 
+    arg_dev.append("--upx-dir=./upx")
+
     if config["onefile"]: arg_dev.append("--onefile")
     if config["clean"]: arg_dev.append("--clean")
     if config["icon"] != "": arg_dev.append(f"--icon={config['icon']}")
@@ -140,6 +142,8 @@ else:
         config["index"],
         f"--name={config['name_app']}",
     ]
+
+    arg.append("--upx-dir=./upx")
 
     if PLATFORM_SYS == "Windows":
         arg.append("--windowed")
