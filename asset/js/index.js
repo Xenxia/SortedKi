@@ -132,7 +132,7 @@ function _200to300(config) {
         }
     };
     j["unsorted"] = config["unsorted"] ?? false;
-    j["doNotSort"] = config["doNotSort"] ?? [];
+    j["sorting_exception"] = config["doNotSort"] ?? [];
     j["lang"] = config["lang"] ?? null;
 
     return j
