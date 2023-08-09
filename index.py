@@ -109,7 +109,7 @@ def notDev():
 # function Sorting
 def sortMain():
 
-    log.info("Start", "SORT-MAIN")
+    log.info("Start")
     main_menu_w.button_tree.disable()
 
     try:

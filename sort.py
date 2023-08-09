@@ -191,8 +191,11 @@ class Sorting:
             if str(nameFile) not in dontSortFileRule and str(nameFile) not in NOT_SORT_LIST and str(nameFile) not in self.checkedFile and str(nameFile) != self.nameAppExe:
 
                 try:
-                    shutil.move(pathFile.as_posix(), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(nameFile)}")
-                    self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple", "Bold", None, "Bold"])
+                    if not os.path.exists(f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(nameFile)}"):
+                        shutil.move(pathFile.as_posix(), f"{self.pathDirExe}/{NAME_FOLDER_UNSORTED}/{str(nameFile)}")
+                        self.console.printLastLine("@ : ", f"{str(nameFile)} ", self.langage.t('TERM.move'), f" {NAME_FOLDER_UNSORTED}", color=["Purple", "Bold", None, "Bold"])
+                    else:
+                        raise FileExistsError
 
                 # For permission related errors
                 except PermissionError:
@@ -211,9 +214,21 @@ class Sorting:
 
     def __dontSortFiles(self) -> list:
         list_temp = []
-        for f in self.conf.CONFIG["doNotSort"]:
-            for file in pathlib.Path('./').glob(f):
-                list_temp.append(str(file))
+        sourcesPath = []
+
+        sources: dict[str, dict] = self.conf.CONFIG["sources"]
+
+        for _, v in sources.items():
+            if not v["disable"]:
+                sourcesPath.append(v["path"])
+
+        self.log.debug(f"PathSource : {sourcesPath}")
+
+
+        for f in self.conf.CONFIG["sorting_exception"]:
+            for path in sourcesPath:
+                for file in pathlib.Path(path).glob(f):
+                    list_temp.append(str(file))
         return list_temp
 
     def duplicate(self, file: str, path: str) -> str:
