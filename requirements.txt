@@ -1,5 +1,7 @@
-# ImportPyinstaller == 1.0.0
-# PyThreadUp == 1.0.0
+# ImportPyinstaller
+# PyThreadUp
+# PyLang
+# PyLogger
 # Tk_up
 Pillow >= 9.5.0
 pyinstaller >= 5.13.0

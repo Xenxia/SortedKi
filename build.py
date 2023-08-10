@@ -45,10 +45,12 @@ subparsers = parser.add_subparsers(title='Commande',
                                    dest='Command_Name',
                                    )
 
+parser.add_argument("--upx", help="enable UPX for windows", action="store_true", dest="UPX")
+
 parser_dev = subparsers.add_parser('dev', help='Build app development',
                                     formatter_class=argparse.RawTextHelpFormatter)
 
-parser_dev = subparsers.add_parser('config', help='Générate template config',
+parser_config = subparsers.add_parser('config', help='Générate template config',
                                     formatter_class=argparse.RawTextHelpFormatter)
 
 # parser_prod = subparsers.add_parser('prod', help='Build app production',
@@ -118,7 +120,8 @@ if args.Command_Name == "dev":
         f"--name={config['name_app']}_dev",
     ]
 
-    arg_dev.append("--upx-dir=./upx")
+    if PLATFORM_SYS == "Windows":
+        if args.UPX: arg_dev.append("--upx-dir=./upx")
 
     if config["onefile"]: arg_dev.append("--onefile")
     if config["clean"]: arg_dev.append("--clean")
@@ -143,10 +146,11 @@ else:
         f"--name={config['name_app']}",
     ]
 
-    arg.append("--upx-dir=./upx")
 
     if PLATFORM_SYS == "Windows":
+        if args.UPX: arg.append("--upx-dir=./upx")
         arg.append("--windowed")
+
 
     if config["onefile"]: arg.append("--onefile")
     if config["clean"]: arg.append("--clean")
