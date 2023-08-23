@@ -127,6 +127,8 @@ def saveDataInTree(self: "rules"):
         self.config.CONFIG['config_sort'][key]['rule'] = value[2].split("|")
         self.config.CONFIG['config_sort'][key]['pathStatic'] = pathStatic
 
+        if key != value[0]: self.config.CONFIG['config_sort'][value[0]] = self.config.CONFIG['config_sort'].pop(key)
+
     self.config.CONFIG["unsorted"] = self.unsortedBtn.get_status()
 
     exception = []
